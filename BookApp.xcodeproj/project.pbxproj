@@ -18,9 +18,22 @@
 		6688647A2DCCB3C5008FA66E /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = .swiftlint.yml; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		6688651F2DCCCD5E008FA66E /* Exceptions for "BookApp" folder in "BookApp" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Resources/Info.plist,
+			);
+			target = 660016922DCCAC100096C8F1 /* BookApp */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		660016952DCCAC100096C8F1 /* BookApp */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				6688651F2DCCCD5E008FA66E /* Exceptions for "BookApp" folder in "BookApp" target */,
+			);
 			path = BookApp;
 			sourceTree = "<group>";
 		};
