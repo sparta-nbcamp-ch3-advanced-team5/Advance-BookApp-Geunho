@@ -38,6 +38,7 @@ class BookSearchViewController: UIViewController {
         collectionView.delegate = self
         collectionView.dataSource = self
         collectionView.backgroundColor = .secondarySystemBackground
+        collectionView.showsVerticalScrollIndicator = false
         return collectionView
     }()
     

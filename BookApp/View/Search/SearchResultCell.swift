@@ -87,12 +87,12 @@ class SearchResultCell: UICollectionViewCell {
         
         bookAuthorLabel.snp.makeConstraints {
             $0.centerY.equalToSuperview()
-            $0.width.equalToSuperview().multipliedBy(0.25) // 너비를 부모 뷰 너비의 절반으로 설정
+            $0.width.equalToSuperview().multipliedBy(0.25)
         }
         
         bookPriceLabel.snp.makeConstraints {
             $0.centerY.equalToSuperview()
-            $0.width.equalToSuperview().multipliedBy(0.25) // 너비를 부모 뷰 너비의 절반으로 설정
+            $0.width.equalToSuperview().multipliedBy(0.25) 
         }
     }
     
