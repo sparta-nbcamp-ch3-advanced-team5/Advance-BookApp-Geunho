@@ -11,7 +11,7 @@ class BookCartViewController: UIViewController {
 
     private lazy var cartCollectionView: UICollectionView = {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: createLayout())
-        collectionView.register(SearchResultCell.self, forCellWithReuseIdentifier: SearchResultCell.id)
+        collectionView.register(BookInfoCell.self, forCellWithReuseIdentifier: BookInfoCell.id)
         collectionView.delegate = self
         collectionView.dataSource = self
         collectionView.backgroundColor = .secondarySystemBackground
@@ -92,8 +92,8 @@ extension BookCartViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView,
                         cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(
-            withReuseIdentifier: SearchResultCell.id,
-            for: indexPath) as? SearchResultCell else {
+            withReuseIdentifier: BookInfoCell.id,
+            for: indexPath) as? BookInfoCell else {
             return UICollectionViewCell()
         }
 

@@ -33,7 +33,7 @@ class BookSearchViewController: UIViewController {
     private lazy var searchCollectionView: UICollectionView = {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: createLayout())
         collectionView.register(RecentBookCell.self, forCellWithReuseIdentifier: RecentBookCell.id)
-        collectionView.register(SearchResultCell.self, forCellWithReuseIdentifier: SearchResultCell.id)
+        collectionView.register(BookInfoCell.self, forCellWithReuseIdentifier: BookInfoCell.id)
         collectionView.register(
             SectionHeaderView.self,
             forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
@@ -179,8 +179,8 @@ extension BookSearchViewController: UICollectionViewDataSource {
             return cell
         case .searchResult:
             guard let cell = collectionView.dequeueReusableCell(
-                withReuseIdentifier: SearchResultCell.id,
-                for: indexPath) as? SearchResultCell else {
+                withReuseIdentifier: BookInfoCell.id,
+                for: indexPath) as? BookInfoCell else {
                 return UICollectionViewCell()
             }
             return cell

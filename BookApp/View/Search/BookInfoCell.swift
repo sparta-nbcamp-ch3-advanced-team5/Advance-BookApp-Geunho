@@ -7,8 +7,8 @@
 
 import UIKit
 
-class SearchResultCell: UICollectionViewCell {
-    static let id = String(describing: SearchResultCell.self)
+class BookInfoCell: UICollectionViewCell {
+    static let id = String(describing: BookInfoCell.self)
 
     private let containerView: UIView = {
         let view = UIView()
