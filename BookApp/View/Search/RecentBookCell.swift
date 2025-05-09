@@ -9,7 +9,7 @@ import UIKit
 
 class RecentBookCell: UICollectionViewCell {
     static let id = String(describing: RecentBookCell.self)
-    
+
     private lazy var bookImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(named: "bookImage")
@@ -19,25 +19,25 @@ class RecentBookCell: UICollectionViewCell {
         imageView.layer.cornerRadius = 10
         return imageView
     }()
-    
+
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
+
         setUI()
         configure()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     private func setUI() {
         contentView.addSubview(bookImageView)
-    
+
         bookImageView.frame = contentView.bounds
     }
-    
+
     func configure() {
-        
+
     }
 }

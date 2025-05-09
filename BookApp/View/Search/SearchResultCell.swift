@@ -9,20 +9,20 @@ import UIKit
 
 class SearchResultCell: UICollectionViewCell {
     static let id = String(describing: SearchResultCell.self)
-    
+
     private let containerView: UIView = {
         let view = UIView()
         view.backgroundColor = .systemBackground
         view.layer.cornerRadius = 10
         return view
     }()
-    
+
     private lazy var bookInfoHStack: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .horizontal
         return stackView
     }()
-    
+
     private lazy var bookTitleLabel: UILabel = {
         let label = UILabel()
         label.text = "세이노의 가르침"
@@ -31,7 +31,7 @@ class SearchResultCell: UICollectionViewCell {
         label.textColor = .label
         return label
     }()
-    
+
     private lazy var bookAuthorLabel: UILabel = {
         let label = UILabel()
         label.text = "세이노"
@@ -40,7 +40,7 @@ class SearchResultCell: UICollectionViewCell {
         label.textAlignment = .center
         return label
     }()
-    
+
     private lazy var bookPriceLabel: UILabel = {
         let label = UILabel()
         label.text = "14,000원"
@@ -49,54 +49,54 @@ class SearchResultCell: UICollectionViewCell {
         label.textAlignment = .right
         return label
     }()
-    
+
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
+
         setUI()
         configure()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     private func setUI() {
-        
+
         contentView.addSubview(containerView)
-        
+
         containerView.addSubview(bookInfoHStack)
-        
+
         [bookTitleLabel, bookAuthorLabel, bookPriceLabel].forEach {
             bookInfoHStack.addArrangedSubview($0)
         }
-        
+
         containerView.snp.makeConstraints {
             $0.edges.equalToSuperview()
         }
-        
+
         bookInfoHStack.snp.makeConstraints {
             $0.verticalEdges.equalToSuperview()
             $0.horizontalEdges.equalToSuperview().inset(20)
         }
-                
+
         bookTitleLabel.snp.makeConstraints {
             $0.centerY.equalToSuperview()
             $0.width.equalToSuperview().multipliedBy(0.5) // 너비를 부모 뷰 너비의 절반으로 설정
         }
-        
+
         bookAuthorLabel.snp.makeConstraints {
             $0.centerY.equalToSuperview()
             $0.width.equalToSuperview().multipliedBy(0.25)
         }
-        
+
         bookPriceLabel.snp.makeConstraints {
             $0.centerY.equalToSuperview()
-            $0.width.equalToSuperview().multipliedBy(0.25) 
+            $0.width.equalToSuperview().multipliedBy(0.25)
         }
     }
-    
+
     private func configure() {
-        
+
     }
 }

@@ -7,7 +7,7 @@
 
 import UIKit
 extension UIViewController {
-    
+
     func navigateToBookInfoView() {
         let bottomSheetVC = BookInfoViewController()
         if let sheet = bottomSheetVC.sheetPresentationController {
