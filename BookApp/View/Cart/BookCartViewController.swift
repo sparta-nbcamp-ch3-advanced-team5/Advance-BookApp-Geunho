@@ -20,13 +20,18 @@ class BookCartViewController: UIViewController {
     
     private func createLayout() -> UICollectionViewCompositionalLayout {
         
-        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
-                                              heightDimension: .fractionalHeight(1.0))
+        // 아이템
+        let itemSize = NSCollectionLayoutSize(
+            widthDimension: .fractionalWidth(1.0),
+            heightDimension: .fractionalHeight(1.0)
+        )
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
         
         // 그룹
-        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
-                                               heightDimension: .fractionalWidth(0.2))
+        let groupSize = NSCollectionLayoutSize(
+            widthDimension: .fractionalWidth(1.0),
+            heightDimension: .fractionalWidth(0.2)
+        )
         let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitems: [item])
         
         // 섹션
@@ -41,6 +46,10 @@ class BookCartViewController: UIViewController {
         super.viewDidLoad()
         
         setUI()
+        
+        navigationItem.title = "담은 책"
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "전체 삭제", style: .plain, target: self, action: #selector(removeAll))
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "추가", style: .plain,target: self, action: #selector(addToCart))
     }
     
     private func setUI() {
@@ -52,6 +61,14 @@ class BookCartViewController: UIViewController {
             $0.verticalEdges.equalTo(view.safeAreaLayoutGuide)
             $0.horizontalEdges.equalTo(view.safeAreaLayoutGuide)
         }
+    }
+    
+    @objc private func addToCart() {
+        
+    }
+    
+    @objc private func removeAll() {
+        
     }
 }
 
