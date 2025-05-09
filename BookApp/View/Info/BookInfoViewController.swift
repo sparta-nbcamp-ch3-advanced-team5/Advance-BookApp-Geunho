@@ -68,6 +68,7 @@ class BookInfoViewController: UIViewController {
         let stackView = UIStackView()
         stackView.axis = .horizontal
         stackView.distribution = .fill
+        stackView.spacing = 10
         return stackView
     }()
     
@@ -146,7 +147,6 @@ class BookInfoViewController: UIViewController {
         }
         
         descriptionLabel.snp.makeConstraints {
-            $0.centerX.equalToSuperview()
             $0.top.equalTo(priceLabel.snp.bottom).offset(20)
             $0.bottom.equalToSuperview().offset(-20)
             $0.horizontalEdges.equalToSuperview().inset(20)
@@ -158,14 +158,15 @@ class BookInfoViewController: UIViewController {
             $0.height.equalTo(60)
         }
         
-        addButton.snp.makeConstraints {
-            $0.width.equalToSuperview().multipliedBy(3.0/4.0)
+        // spacing 만큼의 값을 각 버튼의 multipliedBy(비율)만큼 곱하여 offset으로 뺌
+        let stackViewSpacing = buttonStackView.spacing
+        
+        addButton.snp.makeConstraints { make in
+            make.width.equalTo(buttonStackView.snp.width).multipliedBy(3.0/4.0).offset(-stackViewSpacing * (3.0/4.0))
         }
         
-        closeButton.snp.makeConstraints {
-            $0.width.equalToSuperview().multipliedBy(0.9/4.0)
-            // 2/3으로 했어서 오류가 났었음. (정수 나눗셈으로 계산되어 1/3 = 0), 소수로 해야 원하는 값이 나옴
+        closeButton.snp.makeConstraints { make in
+            make.width.equalTo(buttonStackView.snp.width).multipliedBy(1.0/4.0).offset(-stackViewSpacing * (1.0/4.0))
         }
-        
     }
 }
