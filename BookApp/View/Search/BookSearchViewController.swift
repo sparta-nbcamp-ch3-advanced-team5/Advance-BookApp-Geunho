@@ -8,6 +8,7 @@
 import UIKit
 import SnapKit
 
+/// 섹션 종류: 최근 본 책, 검색 결과
 enum Section: Int, CaseIterable {
     case recentBook
     case searchResult
@@ -24,6 +25,7 @@ enum Section: Int, CaseIterable {
 
 class BookSearchViewController: UIViewController {
 
+    // MARK: - UI Components
     private lazy var searchBar: UISearchBar = {
         let searchBar = UISearchBar()
         searchBar.searchBarStyle = .minimal
@@ -32,8 +34,11 @@ class BookSearchViewController: UIViewController {
 
     private lazy var searchCollectionView: UICollectionView = {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: createLayout())
+        // 최근 본 책 Cell
         collectionView.register(RecentBookCell.self, forCellWithReuseIdentifier: RecentBookCell.id)
+        // 검색 결과 Cell
         collectionView.register(BookInfoCell.self, forCellWithReuseIdentifier: BookInfoCell.id)
+        // 헤더 뷰
         collectionView.register(
             SectionHeaderView.self,
             forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
@@ -45,6 +50,7 @@ class BookSearchViewController: UIViewController {
         return collectionView
     }()
 
+    // MARK: - Init & SetUp
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -71,11 +77,13 @@ class BookSearchViewController: UIViewController {
 
     }
 
+    // MARK: - Private Methods
     private func createLayout() -> UICollectionViewCompositionalLayout {
 
         let layout = UICollectionViewCompositionalLayout { (sectionIndex: Int, _: NSCollectionLayoutEnvironment)
             -> NSCollectionLayoutSection in
-
+            
+            // sectionIndex에 따라 레이아웃 따로 설정
             switch Section(rawValue: sectionIndex) {
             case .recentBook:
                 // 아이템
@@ -145,6 +153,7 @@ class BookSearchViewController: UIViewController {
     }
 }
 
+// MARK: - CollectionViewDelegate
 extension BookSearchViewController: UICollectionViewDelegate {
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
@@ -152,6 +161,7 @@ extension BookSearchViewController: UICollectionViewDelegate {
     }
 }
 
+// MARK: - CollectionViewDataSource
 extension BookSearchViewController: UICollectionViewDataSource {
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {

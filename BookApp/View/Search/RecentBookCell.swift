@@ -10,6 +10,7 @@ import UIKit
 class RecentBookCell: UICollectionViewCell {
     static let id = String(describing: RecentBookCell.self)
 
+    // MARK: - UI Components
     private lazy var bookImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(named: "bookImage")
@@ -20,6 +21,7 @@ class RecentBookCell: UICollectionViewCell {
         return imageView
     }()
 
+    // MARK: - Init & SetUp
     override init(frame: CGRect) {
         super.init(frame: frame)
 
@@ -37,6 +39,7 @@ class RecentBookCell: UICollectionViewCell {
         bookImageView.frame = contentView.bounds
     }
 
+    // MARK: - Internal Methods
     func configure() {
 
     }

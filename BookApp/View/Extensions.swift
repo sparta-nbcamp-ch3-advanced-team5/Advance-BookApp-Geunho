@@ -7,7 +7,8 @@
 
 import UIKit
 extension UIViewController {
-
+    
+    /// 영화 상세 뷰 모달 띄우기
     func navigateToBookInfoView() {
         let bottomSheetVC = BookInfoViewController()
         if let sheet = bottomSheetVC.sheetPresentationController {

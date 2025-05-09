@@ -11,6 +11,7 @@ class SectionHeaderView: UICollectionReusableView {
 
     static let id = String(describing: SectionHeaderView.self)
 
+    // MARK: - UI Components
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 20, weight: .bold)
@@ -18,6 +19,7 @@ class SectionHeaderView: UICollectionReusableView {
         return label
     }()
 
+    // MARK: - Init & SetUp
     override init(frame: CGRect) {
         super.init(frame: frame)
 
@@ -37,6 +39,7 @@ class SectionHeaderView: UICollectionReusableView {
         }
     }
 
+    // MARK: - Internal Methods
     func configure(with title: String) {
         titleLabel.text = title
     }

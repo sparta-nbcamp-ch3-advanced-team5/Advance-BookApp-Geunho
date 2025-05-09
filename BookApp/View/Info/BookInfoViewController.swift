@@ -10,6 +10,7 @@ import SnapKit
 
 class BookInfoViewController: UIViewController {
 
+    // MARK: - UI Components
     private let bookInfoContentView = UIView()
 
     private let scrollView: UIScrollView = {
@@ -90,6 +91,7 @@ class BookInfoViewController: UIViewController {
         return button
     }()
 
+    // MARK: - Init & SetUp
     override func viewDidLoad() {
         super.viewDidLoad()
 

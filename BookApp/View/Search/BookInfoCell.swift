@@ -10,6 +10,7 @@ import UIKit
 class BookInfoCell: UICollectionViewCell {
     static let id = String(describing: BookInfoCell.self)
 
+    // MARK: - UI Components
     private let containerView: UIView = {
         let view = UIView()
         view.backgroundColor = .systemBackground
@@ -50,6 +51,7 @@ class BookInfoCell: UICollectionViewCell {
         return label
     }()
 
+    // MARK: - Init & SetUp
     override init(frame: CGRect) {
         super.init(frame: frame)
 
@@ -96,6 +98,7 @@ class BookInfoCell: UICollectionViewCell {
         }
     }
 
+    // MARK: - Private Methods
     private func configure() {
 
     }

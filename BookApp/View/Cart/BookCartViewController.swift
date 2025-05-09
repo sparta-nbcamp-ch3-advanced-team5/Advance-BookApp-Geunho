@@ -9,6 +9,7 @@ import UIKit
 
 class BookCartViewController: UIViewController {
 
+    // MARK: - UI Components
     private lazy var cartCollectionView: UICollectionView = {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: createLayout())
         collectionView.register(BookInfoCell.self, forCellWithReuseIdentifier: BookInfoCell.id)
@@ -17,31 +18,8 @@ class BookCartViewController: UIViewController {
         collectionView.backgroundColor = .secondarySystemBackground
         return collectionView
     }()
-
-    private func createLayout() -> UICollectionViewCompositionalLayout {
-
-        // 아이템
-        let itemSize = NSCollectionLayoutSize(
-            widthDimension: .fractionalWidth(1.0),
-            heightDimension: .fractionalHeight(1.0)
-        )
-        let item = NSCollectionLayoutItem(layoutSize: itemSize)
-
-        // 그룹
-        let groupSize = NSCollectionLayoutSize(
-            widthDimension: .fractionalWidth(1.0),
-            heightDimension: .fractionalWidth(0.2)
-        )
-        let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitems: [item])
-
-        // 섹션
-        let section = NSCollectionLayoutSection(group: group)
-        section.interGroupSpacing = 10
-        section.contentInsets = .init(top: 10, leading: 10, bottom: 20, trailing: 10)
-
-        return UICollectionViewCompositionalLayout(section: section)
-    }
-
+    
+    // MARK: - Init & SetUp
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -66,7 +44,33 @@ class BookCartViewController: UIViewController {
             $0.horizontalEdges.equalTo(view.safeAreaLayoutGuide)
         }
     }
+    
+    // MARK: - Private Methods
+    private func createLayout() -> UICollectionViewCompositionalLayout {
+        
+        // 아이템
+        let itemSize = NSCollectionLayoutSize(
+            widthDimension: .fractionalWidth(1.0),
+            heightDimension: .fractionalHeight(1.0)
+        )
+        let item = NSCollectionLayoutItem(layoutSize: itemSize)
+        
+        // 그룹
+        let groupSize = NSCollectionLayoutSize(
+            widthDimension: .fractionalWidth(1.0),
+            heightDimension: .fractionalWidth(0.2)
+        )
+        let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitems: [item])
+        
+        // 섹션
+        let section = NSCollectionLayoutSection(group: group)
+        section.interGroupSpacing = 10
+        section.contentInsets = .init(top: 10, leading: 10, bottom: 20, trailing: 10)
+        
+        return UICollectionViewCompositionalLayout(section: section)
+    }
 
+    // MARK: - Actions
     @objc private func addToCart() {
 
     }
@@ -76,6 +80,7 @@ class BookCartViewController: UIViewController {
     }
 }
 
+// MARK: - CollectionViewDelegate
 extension BookCartViewController: UICollectionViewDelegate {
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
@@ -83,6 +88,7 @@ extension BookCartViewController: UICollectionViewDelegate {
     }
 }
 
+// MARK: - CollectionViewDataSource
 extension BookCartViewController: UICollectionViewDataSource {
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
