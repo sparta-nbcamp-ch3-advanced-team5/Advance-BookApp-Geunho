@@ -1,0 +1,27 @@
+//
+//  BookSearchViewModel.swift
+//  BookApp
+//
+//  Created by 정근호 on 5/10/25.
+//
+
+import Foundation
+import RxSwift
+
+class BookSearchViewModel {
+    var searchingText: String = ""
+    let disposeBag = DisposeBag()
+    let searchedBookSubject = BehaviorSubject(value: [Book]())
+    
+    func searchBooks() {
+        guard let url = URL(string: "https://dapi.kakao.com/v3/search/book?query=\(searchingText)")
+        else { return }
+        
+        NetworkManager.shared.fetch(url: url)
+            .subscribe(onSuccess: { [weak self] (bookResponse: BookResponse) in
+                self?.searchedBookSubject.onNext(bookResponse.documents)
+            }, onFailure: { [weak self] error in
+                self?.searchedBookSubject.onError(error)
+            }).disposed(by: disposeBag)
+    }
+}
