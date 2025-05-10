@@ -56,7 +56,6 @@ class BookInfoCell: UICollectionViewCell {
         super.init(frame: frame)
 
         setUI()
-        configure()
     }
 
     required init?(coder: NSCoder) {
@@ -98,8 +97,10 @@ class BookInfoCell: UICollectionViewCell {
         }
     }
 
-    // MARK: - Private Methods
-    private func configure() {
-
+    // MARK: - Internal Methods
+    func configure(with book: Book) {
+        self.bookTitleLabel.text = book.title
+        self.bookAuthorLabel.text = book.authors.joined(separator: ", ")
+        self.bookPriceLabel.text = "\(book.price)원"
     }
 }
