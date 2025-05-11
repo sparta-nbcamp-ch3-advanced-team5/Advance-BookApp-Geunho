@@ -108,21 +108,10 @@ class BookSearchViewController: UIViewController {
                 // 섹션
                 let section = NSCollectionLayoutSection(group: group)
                 section.orthogonalScrollingBehavior = .continuous
-                section.interGroupSpacing = isLandscape ? 15 : 10
+                section.interGroupSpacing = isLandscape ? 8 : 10
                 section.contentInsets = .init(top: 10, leading: 10, bottom: 20, trailing: 10)
-
-                // 헤더 추가
-                let headerSize = NSCollectionLayoutSize(
-                    widthDimension: .fractionalWidth(1.0),
-                    heightDimension: .estimated(44)
-                )
-                let header = NSCollectionLayoutBoundarySupplementaryItem(
-                    layoutSize: headerSize,
-                    elementKind: UICollectionView.elementKindSectionHeader,
-                    alignment: .top
-                )
-                section.boundarySupplementaryItems = [self.createSectionHeader()]
-
+                section.boundarySupplementaryItems = [self.createSectionHeaderLayout()]
+                
                 return section
 
             case .searchResult:
@@ -140,9 +129,8 @@ class BookSearchViewController: UIViewController {
                 let section = NSCollectionLayoutSection(group: group)
                 section.interGroupSpacing = 10
                 section.contentInsets = .init(top: 10, leading: 10, bottom: 20, trailing: 10)
-
-                section.boundarySupplementaryItems = [self.createSectionHeader()]
-
+                section.boundarySupplementaryItems = [self.createSectionHeaderLayout()]
+                
                 return section
             default:
                 fatalError("Index \(sectionIndex) does not exists.")
@@ -151,8 +139,8 @@ class BookSearchViewController: UIViewController {
         return layout
     }
     
-    /// 헤더 추가
-    private func createSectionHeader() -> NSCollectionLayoutBoundarySupplementaryItem{
+    /// 헤더 레이아웃 추가
+    private func createSectionHeaderLayout() -> NSCollectionLayoutBoundarySupplementaryItem{
         let headerSize = NSCollectionLayoutSize(
             widthDimension: .fractionalWidth(1.0),
             heightDimension: .estimated(44)
