@@ -36,7 +36,9 @@ class RecentBookCell: UICollectionViewCell {
     private func setUI() {
         contentView.addSubview(bookImageView)
 
-        bookImageView.frame = contentView.bounds
+        bookImageView.snp.makeConstraints {
+            $0.edges.equalToSuperview()
+        }
     }
 
     // MARK: - Internal Methods
