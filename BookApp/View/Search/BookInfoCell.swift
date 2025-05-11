@@ -26,7 +26,6 @@ class BookInfoCell: UICollectionViewCell {
 
     private lazy var bookTitleLabel: UILabel = {
         let label = UILabel()
-        label.text = "세이노의 가르침"
         label.font = .systemFont(ofSize: 17, weight: .medium)
         label.textAlignment = .left
         label.textColor = .label
@@ -35,7 +34,6 @@ class BookInfoCell: UICollectionViewCell {
 
     private lazy var bookAuthorLabel: UILabel = {
         let label = UILabel()
-        label.text = "세이노"
         label.font = .systemFont(ofSize: 14, weight: .regular)
         label.textColor = .secondaryLabel
         label.textAlignment = .center
@@ -44,7 +42,6 @@ class BookInfoCell: UICollectionViewCell {
 
     private lazy var bookPriceLabel: UILabel = {
         let label = UILabel()
-        label.text = "14,000원"
         label.font = .systemFont(ofSize: 17, weight: .medium)
         label.textColor = .label
         label.textAlignment = .right
@@ -56,7 +53,6 @@ class BookInfoCell: UICollectionViewCell {
         super.init(frame: frame)
 
         setUI()
-        configure()
     }
 
     required init?(coder: NSCoder) {
@@ -98,8 +94,10 @@ class BookInfoCell: UICollectionViewCell {
         }
     }
 
-    // MARK: - Private Methods
-    private func configure() {
-
+    // MARK: - Internal Methods
+    func configure(with book: Book) {
+        self.bookTitleLabel.text = book.title
+        self.bookAuthorLabel.text = book.authors.joined(separator: ", ")
+        self.bookPriceLabel.text = "\(book.price)원"
     }
 }

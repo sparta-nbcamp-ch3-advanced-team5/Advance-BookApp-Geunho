@@ -79,6 +79,7 @@ class BookInfoViewController: UIViewController {
         button.titleLabel?.textColor = .systemBackground
         button.backgroundColor = .label
         button.layer.cornerRadius = 10
+        button.addTarget(self, action: #selector(addToCart), for: .touchUpInside)
         return button
     }()
 
@@ -88,6 +89,7 @@ class BookInfoViewController: UIViewController {
         button.titleLabel?.textColor = .systemBackground
         button.backgroundColor = .lightGray
         button.layer.cornerRadius = 10
+        button.addTarget(self, action: #selector(closeSelf), for: .touchUpInside)
         return button
     }()
 
@@ -151,7 +153,7 @@ class BookInfoViewController: UIViewController {
         descriptionLabel.snp.makeConstraints {
             $0.top.equalTo(priceLabel.snp.bottom).offset(20)
             $0.bottom.equalToSuperview().offset(-20)
-            $0.horizontalEdges.equalToSuperview().inset(20)
+            $0.horizontalEdges.equalTo(view.safeAreaLayoutGuide).inset(20)
         }
 
         buttonStackView.snp.makeConstraints {
@@ -173,4 +175,14 @@ class BookInfoViewController: UIViewController {
                 .offset(-stackViewSpacing * (1.0/4.0))
         }
     }
+    
+    // MARK: - Actions
+    @objc private func addToCart() {
+        
+    }
+    
+    @objc private func closeSelf() {
+        self.dismiss(animated: true)
+    }
+    
 }

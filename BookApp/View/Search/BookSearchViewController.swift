@@ -7,6 +7,7 @@
 
 import UIKit
 import SnapKit
+import RxSwift
 
 /// 섹션 종류: 최근 본 책, 검색 결과
 enum Section: Int, CaseIterable {
@@ -24,11 +25,16 @@ enum Section: Int, CaseIterable {
 }
 
 class BookSearchViewController: UIViewController {
+    private let viewModel = BookSearchViewModel()
+    private let disposeBag = DisposeBag()
+    private var searchedBooks = [Book]()
 
     // MARK: - UI Components
     private lazy var searchBar: UISearchBar = {
         let searchBar = UISearchBar()
         searchBar.searchBarStyle = .minimal
+        searchBar.delegate = self
+        searchBar.autocapitalizationType = .none
         return searchBar
     }()
 
@@ -55,6 +61,7 @@ class BookSearchViewController: UIViewController {
         super.viewDidLoad()
 
         setUI()
+        bindViewModel()
     }
 
     private func setUI() {
@@ -80,8 +87,10 @@ class BookSearchViewController: UIViewController {
     // MARK: - Private Methods
     private func createLayout() -> UICollectionViewCompositionalLayout {
 
-        let layout = UICollectionViewCompositionalLayout { (sectionIndex: Int, _: NSCollectionLayoutEnvironment)
+        let layout = UICollectionViewCompositionalLayout { (sectionIndex: Int, layoutEnvironment: NSCollectionLayoutEnvironment)
             -> NSCollectionLayoutSection in
+            
+            let isLandscape = layoutEnvironment.traitCollection.verticalSizeClass == .compact
             
             // sectionIndex에 따라 레이아웃 따로 설정
             switch Section(rawValue: sectionIndex) {
@@ -92,28 +101,17 @@ class BookSearchViewController: UIViewController {
                 let item = NSCollectionLayoutItem(layoutSize: itemSize)
 
                 // 그룹
-                let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.25),
-                                                       heightDimension: .fractionalWidth(0.4))
+                let groupSize = NSCollectionLayoutSize(widthDimension: isLandscape ? .fractionalWidth(0.125) : .fractionalWidth(0.25),
+                                                       heightDimension: isLandscape ? .fractionalWidth(0.2) : .fractionalWidth(0.4))
                 let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
 
                 // 섹션
                 let section = NSCollectionLayoutSection(group: group)
                 section.orthogonalScrollingBehavior = .continuous
-                section.interGroupSpacing = 10
+                section.interGroupSpacing = isLandscape ? 8 : 10
                 section.contentInsets = .init(top: 10, leading: 10, bottom: 20, trailing: 10)
-
-                // 헤더 추가
-                let headerSize = NSCollectionLayoutSize(
-                    widthDimension: .fractionalWidth(1.0),
-                    heightDimension: .estimated(44)
-                )
-                let header = NSCollectionLayoutBoundarySupplementaryItem(
-                    layoutSize: headerSize,
-                    elementKind: UICollectionView.elementKindSectionHeader,
-                    alignment: .top
-                )
-                section.boundarySupplementaryItems = [header]
-
+                section.boundarySupplementaryItems = [self.createSectionHeaderLayout()]
+                
                 return section
 
             case .searchResult:
@@ -124,32 +122,48 @@ class BookSearchViewController: UIViewController {
 
                 // 그룹
                 let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
-                                                       heightDimension: .fractionalWidth(0.2))
+                                                       heightDimension: isLandscape ? .fractionalWidth(0.1) : .fractionalWidth(0.2))
                 let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitems: [item])
 
                 // 섹션
                 let section = NSCollectionLayoutSection(group: group)
                 section.interGroupSpacing = 10
                 section.contentInsets = .init(top: 10, leading: 10, bottom: 20, trailing: 10)
-
-                // 헤더 추가
-                let headerSize = NSCollectionLayoutSize(
-                    widthDimension: .fractionalWidth(1.0),
-                    heightDimension: .estimated(44)
-                )
-                let header = NSCollectionLayoutBoundarySupplementaryItem(
-                    layoutSize: headerSize,
-                    elementKind: UICollectionView.elementKindSectionHeader,
-                    alignment: .top
-                )
-                section.boundarySupplementaryItems = [header]
-
+                section.boundarySupplementaryItems = [self.createSectionHeaderLayout()]
+                
                 return section
             default:
                 fatalError("Index \(sectionIndex) does not exists.")
             }
         }
         return layout
+    }
+    
+    /// 헤더 레이아웃 추가
+    private func createSectionHeaderLayout() -> NSCollectionLayoutBoundarySupplementaryItem{
+        let headerSize = NSCollectionLayoutSize(
+            widthDimension: .fractionalWidth(1.0),
+            heightDimension: .estimated(44)
+        )
+        let header = NSCollectionLayoutBoundarySupplementaryItem(
+            layoutSize: headerSize,
+            elementKind: UICollectionView.elementKindSectionHeader,
+            alignment: .top
+        )
+        return header
+    }
+    
+    private func bindViewModel() {
+        viewModel.searchedBookSubject
+            .observe(on: MainScheduler.instance)
+            .subscribe(onNext: { [weak self] books in
+                self?.searchedBooks = books
+                print("firstSearchedBook: \(books.first)")
+                print("searchedBooksCount: \(books.count)")
+                self?.searchCollectionView.reloadData()
+            }, onError: { error in
+                print("에러 발생: \(error)")
+            }).disposed(by: disposeBag)
     }
 }
 
@@ -169,7 +183,7 @@ extension BookSearchViewController: UICollectionViewDataSource {
         case .recentBook:
             return 10
         case .searchResult:
-            return 15
+            return self.searchedBooks.count
         default:
             return 0
         }
@@ -193,6 +207,7 @@ extension BookSearchViewController: UICollectionViewDataSource {
                 for: indexPath) as? BookInfoCell else {
                 return UICollectionViewCell()
             }
+            cell.configure(with: searchedBooks[indexPath.row])
             return cell
         default:
             return UICollectionViewCell()
@@ -219,5 +234,15 @@ extension BookSearchViewController: UICollectionViewDataSource {
 
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return Section.allCases.count
+    }
+}
+
+// MARK: - SearchBarDelegate
+extension BookSearchViewController: UISearchBarDelegate {
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        guard let text = searchBar.text else { return }
+        viewModel.searchingText = text
+        print("searchingText: \(text)")
+        viewModel.searchBooks()
     }
 }
