@@ -108,7 +108,7 @@ class BookSearchViewController: UIViewController {
                 // 섹션
                 let section = NSCollectionLayoutSection(group: group)
                 section.orthogonalScrollingBehavior = .continuous
-                section.interGroupSpacing = isLandscape ? 5 : 10
+                section.interGroupSpacing = isLandscape ? 15 : 10
                 section.contentInsets = .init(top: 10, leading: 10, bottom: 20, trailing: 10)
 
                 // 헤더 추가
@@ -121,7 +121,7 @@ class BookSearchViewController: UIViewController {
                     elementKind: UICollectionView.elementKindSectionHeader,
                     alignment: .top
                 )
-                section.boundarySupplementaryItems = [header]
+                section.boundarySupplementaryItems = [self.createSectionHeader()]
 
                 return section
 
@@ -141,17 +141,7 @@ class BookSearchViewController: UIViewController {
                 section.interGroupSpacing = 10
                 section.contentInsets = .init(top: 10, leading: 10, bottom: 20, trailing: 10)
 
-                // 헤더 추가
-                let headerSize = NSCollectionLayoutSize(
-                    widthDimension: .fractionalWidth(1.0),
-                    heightDimension: .estimated(44)
-                )
-                let header = NSCollectionLayoutBoundarySupplementaryItem(
-                    layoutSize: headerSize,
-                    elementKind: UICollectionView.elementKindSectionHeader,
-                    alignment: .top
-                )
-                section.boundarySupplementaryItems = [header]
+                section.boundarySupplementaryItems = [self.createSectionHeader()]
 
                 return section
             default:
@@ -159,6 +149,20 @@ class BookSearchViewController: UIViewController {
             }
         }
         return layout
+    }
+    
+    /// 헤더 추가
+    private func createSectionHeader() -> NSCollectionLayoutBoundarySupplementaryItem{
+        let headerSize = NSCollectionLayoutSize(
+            widthDimension: .fractionalWidth(1.0),
+            heightDimension: .estimated(44)
+        )
+        let header = NSCollectionLayoutBoundarySupplementaryItem(
+            layoutSize: headerSize,
+            elementKind: UICollectionView.elementKindSectionHeader,
+            alignment: .top
+        )
+        return header
     }
     
     private func bindViewModel() {
