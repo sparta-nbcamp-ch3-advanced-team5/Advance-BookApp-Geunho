@@ -87,8 +87,10 @@ class BookSearchViewController: UIViewController {
     // MARK: - Private Methods
     private func createLayout() -> UICollectionViewCompositionalLayout {
 
-        let layout = UICollectionViewCompositionalLayout { (sectionIndex: Int, _: NSCollectionLayoutEnvironment)
+        let layout = UICollectionViewCompositionalLayout { (sectionIndex: Int, layoutEnvironment: NSCollectionLayoutEnvironment)
             -> NSCollectionLayoutSection in
+            
+            let isLandscape = layoutEnvironment.traitCollection.verticalSizeClass == .compact
             
             // sectionIndex에 따라 레이아웃 따로 설정
             switch Section(rawValue: sectionIndex) {
@@ -99,14 +101,14 @@ class BookSearchViewController: UIViewController {
                 let item = NSCollectionLayoutItem(layoutSize: itemSize)
 
                 // 그룹
-                let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.25),
-                                                       heightDimension: .fractionalWidth(0.4))
+                let groupSize = NSCollectionLayoutSize(widthDimension: isLandscape ? .fractionalWidth(0.125) : .fractionalWidth(0.25),
+                                                       heightDimension: isLandscape ? .fractionalWidth(0.2) : .fractionalWidth(0.4))
                 let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
 
                 // 섹션
                 let section = NSCollectionLayoutSection(group: group)
                 section.orthogonalScrollingBehavior = .continuous
-                section.interGroupSpacing = 10
+                section.interGroupSpacing = isLandscape ? 5 : 10
                 section.contentInsets = .init(top: 10, leading: 10, bottom: 20, trailing: 10)
 
                 // 헤더 추가
@@ -131,7 +133,7 @@ class BookSearchViewController: UIViewController {
 
                 // 그룹
                 let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
-                                                       heightDimension: .fractionalWidth(0.2))
+                                                       heightDimension: isLandscape ? .fractionalWidth(0.1) : .fractionalWidth(0.2))
                 let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitems: [item])
 
                 // 섹션
