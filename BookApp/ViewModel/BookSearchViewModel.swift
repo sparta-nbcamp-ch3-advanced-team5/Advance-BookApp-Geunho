@@ -12,9 +12,11 @@ class BookSearchViewModel {
     var searchingText: String = ""
     let disposeBag = DisposeBag()
     let searchedBookSubject = BehaviorSubject(value: [Book]())
+    /// 한 페이지에 보여질 문서 수, 1~50 사이의 값, 기본 값 10
+    let size = 50
     
     func searchBooks() {
-        guard let url = URL(string: "https://dapi.kakao.com/v3/search/book?query=\(searchingText)")
+        guard let url = URL(string: "https://dapi.kakao.com/v3/search/book?query=\(searchingText)&size=\(size)")
         else { return }
         
         NetworkManager.shared.fetch(url: url)

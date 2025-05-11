@@ -82,4 +82,3 @@ class NetworkManager {
         return value
     }
 }
-
