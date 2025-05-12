@@ -13,4 +13,5 @@ struct Book: Codable {
     let price: Int
     let title: String
     let thumbnail: String
+    let isbn: String
 }
