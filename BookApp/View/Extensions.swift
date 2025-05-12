@@ -20,3 +20,16 @@ extension UIViewController {
         present(bottomSheetVC, animated: true, completion: nil)
     }
 }
+
+extension String {
+    
+    func formatToWon() -> String {
+        if let self = Int(self) {
+            let numberFormatter = NumberFormatter()
+            numberFormatter.numberStyle = .decimal
+            return (numberFormatter.string(from: NSNumber(value: self))!) + "원"
+        } else {
+            return self
+        }
+    }
+}
