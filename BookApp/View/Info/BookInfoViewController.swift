@@ -108,7 +108,11 @@ class BookInfoViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
+        if let documentsDirectoryURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).last {
+            print("Documents Directory: \(documentsDirectoryURL)")
+        }
+        
         configure()
         setUI()
     }
@@ -194,7 +198,7 @@ class BookInfoViewController: UIViewController {
     
     // MARK: - Actions
     @objc private func addToCart() {
-        
+        viewModel.addBookToCart()
     }
     
     @objc private func closeSelf() {

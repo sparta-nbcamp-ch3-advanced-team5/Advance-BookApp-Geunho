@@ -8,9 +8,16 @@
 import UIKit
 extension UIViewController {
     
+    
     /// 영화 상세 뷰 모달 띄우기
     func navigateToBookInfoView(selectedBook book: Book) {
-        let bottomSheetVC = BookInfoViewController(viewModel: BookInfoViewModel(book: book))
+        
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
+            return 
+        }
+        let managedObjectContext = appDelegate.persistentContainer.viewContext
+        
+        let bottomSheetVC = BookInfoViewController(viewModel: BookInfoViewModel(book: book, bookStorageManger: BookStorageManager(context: managedObjectContext)))
         if let sheet = bottomSheetVC.sheetPresentationController {
             sheet.detents = [.custom(resolver: { context in
                 return context.maximumDetentValue * 0.9 })]
