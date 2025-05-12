@@ -206,7 +206,7 @@ class BookInfoViewController: UIViewController {
         titleLabel.text = viewModel.title
         authorLabel.text = viewModel.author
         priceLabel.text = viewModel.price
-        contentsLabel.text = viewModel.contents
+        contentsLabel.text = (viewModel.contents ?? "") + "..."
         guard let imageURL = viewModel.thumbnailURL else { return }
         thumbnailView.kf.setImage(with: URL(string: imageURL))
         
