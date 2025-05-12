@@ -73,4 +73,36 @@ final class BookStorageManager {
             return false
         }
     }
+    
+    func fetchCartItems() -> [CartItem] {
+        
+        let fetchRequest: NSFetchRequest<CartItemEntity> = CartItemEntity.fetchRequest()
+        
+        do {
+            let cartItemEntities = try context.fetch(fetchRequest)
+            
+            return cartItemEntities.map { cartItemEntity -> CartItem in
+                
+                // CartItemEntity에 연결되어있는 BookEntity 가져옴
+                guard let bookEntity = cartItemEntity.book else {
+                    fatalError("Cart item has no associated book entity!")
+                }
+                
+                return CartItem(
+                    isbn: bookEntity.isbn ?? "",
+                    title: bookEntity.title ?? "",
+                    authors: bookEntity.authors ?? [],
+                    contents: bookEntity.contents ?? "",
+                    price: Int(bookEntity.price),
+                    thumbnailURL: bookEntity.thumbnailURL ?? "",
+                    quantity: Int(cartItemEntity.quantity),
+                    addedData: cartItemEntity.addedDate ?? Date()
+                )
+                
+            }
+        } catch {
+            print("장바구니 아이템 가져오기 실패: \(error)")
+            return []
+        }
+    }
 }
