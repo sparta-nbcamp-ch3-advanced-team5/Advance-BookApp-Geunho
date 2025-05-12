@@ -98,6 +98,6 @@ class BookInfoCell: UICollectionViewCell {
     func configure(with book: Book) {
         self.bookTitleLabel.text = book.title
         self.bookAuthorLabel.text = book.authors.joined(separator: ", ")
-        self.bookPriceLabel.text = "\(book.price)원"
+        self.bookPriceLabel.text = String(book.price).formatToWon()
     }
 }
