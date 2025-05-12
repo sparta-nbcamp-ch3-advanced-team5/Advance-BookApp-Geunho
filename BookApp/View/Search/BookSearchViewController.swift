@@ -171,7 +171,7 @@ class BookSearchViewController: UIViewController {
 extension BookSearchViewController: UICollectionViewDelegate {
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        navigateToBookInfoView()
+        navigateToBookInfoView(selectedBook: searchedBooks[indexPath.row])
     }
 }
 
