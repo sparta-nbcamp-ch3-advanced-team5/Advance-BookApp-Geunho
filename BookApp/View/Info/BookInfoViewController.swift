@@ -27,6 +27,8 @@ class BookInfoViewController: UIViewController {
         label.font = .systemFont(ofSize: 20, weight: .bold)
         label.textAlignment = .left
         label.textColor = .label
+        label.textAlignment = .center
+        label.numberOfLines = 0
         return label
     }()
 
@@ -35,6 +37,8 @@ class BookInfoViewController: UIViewController {
         label.font = .systemFont(ofSize: 15, weight: .medium)
         label.textAlignment = .left
         label.textColor = .secondaryLabel
+        label.textAlignment = .center
+        label.numberOfLines = 0
         return label
     }()
 
@@ -50,7 +54,7 @@ class BookInfoViewController: UIViewController {
     private lazy var priceLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 20, weight: .bold)
-        label.textAlignment = .left
+        label.textAlignment = .center
         label.textColor = .label
         return label
     }()
@@ -139,11 +143,13 @@ class BookInfoViewController: UIViewController {
         titleLabel.snp.makeConstraints {
             $0.centerX.equalToSuperview()
             $0.top.equalToSuperview().inset(20)
+            $0.horizontalEdges.equalTo(view.safeAreaLayoutGuide).inset(20)
         }
 
         authorLabel.snp.makeConstraints {
             $0.centerX.equalToSuperview()
             $0.top.equalTo(titleLabel.snp.bottom).offset(10)
+            $0.horizontalEdges.equalTo(view.safeAreaLayoutGuide).inset(20)
         }
 
         thumbnailView.snp.makeConstraints {
@@ -157,6 +163,7 @@ class BookInfoViewController: UIViewController {
         priceLabel.snp.makeConstraints {
             $0.centerX.equalToSuperview()
             $0.top.equalTo(thumbnailView.snp.bottom).offset(10)
+            $0.horizontalEdges.equalTo(view.safeAreaLayoutGuide).inset(20)
         }
 
         contentsLabel.snp.makeConstraints {
