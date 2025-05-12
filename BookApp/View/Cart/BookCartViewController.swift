@@ -7,11 +7,15 @@
 
 import UIKit
 import SnapKit
+import RxSwift
 
 class BookCartViewController: UIViewController {
     
     private let viewModel: BookCartViewModel
-
+    private let disposeBag = DisposeBag()
+    
+    private var cartItems: [CartItem] = []
+    
     // MARK: - UI Components
     private lazy var cartCollectionView: UICollectionView = {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: createLayout())
@@ -21,6 +25,17 @@ class BookCartViewController: UIViewController {
         collectionView.backgroundColor = .secondarySystemBackground
         return collectionView
     }()
+    
+    private lazy var emptyLabel: UILabel = {
+        let label = UILabel()
+        label.text = "장바구니가 비었습니다."
+        label.textColor = .label
+        return label
+    }()
+    
+    // 네비게이션 바 버튼들
+    private lazy var removeAllBarButton = UIBarButtonItem(title: "전체 삭제", style: .plain, target: self, action: #selector(removeAllButtonTapped))
+    private lazy var addToCartBarButton = UIBarButtonItem(title: "추가", style: .plain, target: self, action: #selector(addToCartButtonTapped))
     
     // MARK: - Init & SetUp
     init(viewModel: BookCartViewModel) {
@@ -35,30 +50,60 @@ class BookCartViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
+        setupNavigation()
         setUI()
-
-        navigationItem.title = "담은 책"
-        navigationItem.leftBarButtonItem = UIBarButtonItem(
-            title: "전체 삭제", style: .plain, target: self, action: #selector(removeAll)
-        )
-        navigationItem.rightBarButtonItem = UIBarButtonItem(
-            title: "추가", style: .plain, target: self, action: #selector(addToCart)
-        )
+        bindViewModel()
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        // 카트뷰 새로고침
+        viewModel.refreshCartItems()
+    }
+    
+    private func setupNavigation() {
+        navigationItem.title = "담은 책"
+        navigationItem.leftBarButtonItem = removeAllBarButton
+         navigationItem.rightBarButtonItem = addToCartBarButton
+    }
+    
     private func setUI() {
         view.backgroundColor = .secondarySystemBackground
-
+        
         view.addSubview(cartCollectionView)
-
+        view.addSubview(emptyLabel)
+        
+        emptyLabel.snp.makeConstraints {
+            $0.center.equalToSuperview()
+        }
+        
         cartCollectionView.snp.makeConstraints {
-            $0.verticalEdges.equalTo(view.safeAreaLayoutGuide)
-            $0.horizontalEdges.equalTo(view.safeAreaLayoutGuide)
+            $0.edges.equalTo(view.safeAreaLayoutGuide)
         }
     }
     
-    // MARK: - Private Methods
+    private func bindViewModel() {
+        // viewModel.cartItems 스트림 구독
+        viewModel.cartItems
+            .observe(on: MainScheduler.instance) // UI 업데이트는 메인 스레드에서
+            .subscribe(onNext: { [weak self] items in
+                self?.cartItems = items // 로컬 프로퍼티 업데이트
+                self?.cartCollectionView.reloadData() // 컬렉션 뷰 새로고침
+            })
+            .disposed(by: disposeBag)
+        
+        // viewModel.isCartEmpty 스트림 구독
+        viewModel.isCartEmpty
+            .observe(on: MainScheduler.instance)
+            .subscribe(onNext: { [weak self] isEmpty in
+                self?.cartCollectionView.isHidden = isEmpty
+                self?.emptyLabel.isHidden = !isEmpty
+            })
+            .disposed(by: disposeBag)
+    }
+    
     private func createLayout() -> UICollectionViewCompositionalLayout {
         
         // 아이템
@@ -84,28 +129,26 @@ class BookCartViewController: UIViewController {
     }
 
     // MARK: - Actions
-    @objc private func addToCart() {
-
+    @objc private func addToCartButtonTapped() {
+    
     }
-
-    @objc private func removeAll() {
-
+    
+    @objc private func removeAllButtonTapped() {
     }
 }
 
 // MARK: - CollectionViewDelegate
 extension BookCartViewController: UICollectionViewDelegate {
-
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-//        navigateToBookInfoView(selectedBook: )
+        let selectedCartItem = cartItems[indexPath.row]
+        print("선택된 아이템: \(selectedCartItem.title)")
     }
 }
 
 // MARK: - CollectionViewDataSource
 extension BookCartViewController: UICollectionViewDataSource {
-
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        10
+        return cartItems.count
     }
 
     func collectionView(_ collectionView: UICollectionView,
@@ -115,7 +158,9 @@ extension BookCartViewController: UICollectionViewDataSource {
             for: indexPath) as? BookInfoCell else {
             return UICollectionViewCell()
         }
-
+        let cartItem = cartItems[indexPath.row]
+        cell.configureInCartView(with: cartItem)
+        
         return cell
     }
 

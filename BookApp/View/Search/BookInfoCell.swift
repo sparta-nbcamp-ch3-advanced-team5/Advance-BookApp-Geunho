@@ -100,4 +100,10 @@ class BookInfoCell: UICollectionViewCell {
         self.bookAuthorLabel.text = book.authors.joined(separator: ", ")
         self.bookPriceLabel.text = String(book.price).formatToWon()
     }
+    
+    func configureInCartView(with cartItem: CartItem) {
+        self.bookTitleLabel.text = cartItem.title
+        self.bookAuthorLabel.text = cartItem.authors.joined(separator: ", ")
+        self.bookPriceLabel.text = String(cartItem.price).formatToWon()
+    }
 }
