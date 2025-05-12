@@ -6,8 +6,11 @@
 //
 
 import UIKit
+import SnapKit
 
 class BookCartViewController: UIViewController {
+    
+    private let viewModel: BookCartViewModel
 
     // MARK: - UI Components
     private lazy var cartCollectionView: UICollectionView = {
@@ -20,6 +23,16 @@ class BookCartViewController: UIViewController {
     }()
     
     // MARK: - Init & SetUp
+    init(viewModel: BookCartViewModel) {
+        self.viewModel = viewModel
+        
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
