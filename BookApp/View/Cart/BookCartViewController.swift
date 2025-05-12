@@ -84,7 +84,7 @@ class BookCartViewController: UIViewController {
 extension BookCartViewController: UICollectionViewDelegate {
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        navigateToBookInfoView()
+//        navigateToBookInfoView(selectedBook: )
     }
 }
 
