@@ -12,4 +12,5 @@ struct Book: Codable {
     let contents: String
     let price: Int
     let title: String
+    let thumbnail: String
 }
