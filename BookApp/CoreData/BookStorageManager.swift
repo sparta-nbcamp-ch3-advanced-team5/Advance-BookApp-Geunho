@@ -110,4 +110,27 @@ final class BookStorageManager {
             return []
         }
     }
+    
+    func removeAllCartItems() {
+        guard let context = context else { return }
+        let fetchRequest: NSFetchRequest<NSFetchRequestResult> = CartItemEntity.fetchRequest()
+        let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+        batchDeleteRequest.resultType = .resultTypeCount // 삭제된 객체의 수를 결과로 받도록 설정 (선택 사항)
+        
+        do {
+            let result = try context.execute(batchDeleteRequest) as? NSBatchDeleteResult
+            let numDeleted = result?.result as? Int ?? 0
+            print("\(numDeleted)개의 장바구니 아이템이 batch delete로 삭제되었습니다.")
+            
+            // NSBatchDeleteRequest는 Persistent Store에서 직접 작동하므로,
+            // 현재 NSManagedObjectContext의 메모리 내 객체들은 이 변경사항을 자동으로 알지 못함
+            // UI가 이 변경사항을 반영하려면 컨텍스트 리셋 필요
+            context.reset()
+            // context.reset()을 호출하면, 다음에 fetch를 할 때 데이터베이스에서 최신 상태를 가져옴
+            // 전체 삭제 시 ViewModel에서 refreshCartItems() 호출 필요
+            
+        } catch let error as NSError {
+            print("NSBatchDeleteRequest를 사용한 전체 삭제 실패: \(error), \(error.userInfo)")
+        }
+    }
 }

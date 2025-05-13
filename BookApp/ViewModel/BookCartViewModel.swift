@@ -35,4 +35,9 @@ class BookCartViewModel {
         let updatedItems = bookStorageManager.fetchCartItems()
         cartItems.onNext(updatedItems)
     }
+    
+    func removeAllCartItems() {
+        bookStorageManager.removeAllCartItems()
+        self.refreshCartItems()
+    }
 }

@@ -135,6 +135,9 @@ class BookCartViewController: UIViewController {
     
     @objc private func removeAllButtonTapped() {
         
+        showAlert(title: "전체 삭제", message: "전체를 삭제하시겠습니까?", deleteAction: { [weak self] action in
+            self?.viewModel.removeAllCartItems()
+        })
     }
 }
 

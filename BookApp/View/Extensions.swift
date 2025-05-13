@@ -8,15 +8,9 @@
 import UIKit
 extension UIViewController {
     
-    
     /// 영화 상세 뷰 모달 띄우기
     func navigateToBookInfoView(selectedBook book: Book) {
-        
-        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
-            return 
-        }
-        let managedObjectContext = appDelegate.persistentContainer.viewContext
-        
+     
         let bottomSheetVC = BookInfoViewController(viewModel: BookInfoViewModel(book: book))
         if let sheet = bottomSheetVC.sheetPresentationController {
             sheet.detents = [.custom(resolver: { context in
@@ -25,6 +19,24 @@ extension UIViewController {
         }
         bottomSheetVC.modalPresentationStyle = .pageSheet
         present(bottomSheetVC, animated: true, completion: nil)
+    }
+    
+    /// 알림 창 띄우기
+    func showAlert(title: String,
+                   message: String,
+                   cancelAction: ((UIAlertAction) -> Void)? = nil,
+                   deleteAction: ((UIAlertAction) -> Void)? = nil,
+                   completion: (() -> Void)? = nil)
+    {
+        let alertViewController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        
+        let cancelAction = UIAlertAction(title: "취소", style: .cancel, handler: cancelAction)
+        alertViewController.addAction(cancelAction)
+        
+        let deleteAction = UIAlertAction(title: "삭제", style: .destructive, handler: deleteAction)
+        alertViewController.addAction(deleteAction)
+        
+        self.present(alertViewController, animated: true, completion: completion)
     }
 }
 
