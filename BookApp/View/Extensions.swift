@@ -22,8 +22,8 @@ extension UIViewController {
         present(bottomSheetVC, animated: true, completion: nil)
     }
     
-    /// 알림 창 띄우기
-    func showAlert(title: String,
+    /// 알림 창 띄우기 (취소/삭제)
+    func showDeletingAlert(title: String,
                    message: String,
                    cancelAction: ((UIAlertAction) -> Void)? = nil,
                    deleteAction: ((UIAlertAction) -> Void)? = nil,

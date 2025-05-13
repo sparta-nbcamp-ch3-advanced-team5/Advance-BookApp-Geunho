@@ -145,7 +145,7 @@ class BookCartViewController: UIViewController {
     
     @objc private func removeAllButtonTapped() {
         
-        showAlert(title: "전체 삭제", message: "전체를 삭제하시겠습니까?", deleteAction: { [weak self] action in
+        showDeletingAlert(title: "전체 삭제", message: "전체를 삭제하시겠습니까?", deleteAction: { [weak self] _ in
             self?.viewModel.removeAllCartItems()
         })
     }
@@ -214,7 +214,9 @@ extension BookCartViewController: CartItemCellDelegate {
             print("Minus tapped for item: \(cartItem.title)")
 
             if cartItem.quantity <= 1 { // 수량이 1이거나 그 이하면 아이템 삭제
-                viewModel.removeItem(cartItem: cartItem)
+                showDeletingAlert(title: "삭제", message: "장바구니에서 삭제하시겠습니까?", deleteAction: { [weak self] _ in
+                    self?.viewModel.removeItem(cartItem: cartItem)
+                })
             } else {
                 viewModel.minusQuantity(cartItem: cartItem) 
             }
