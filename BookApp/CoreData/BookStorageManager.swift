@@ -193,7 +193,7 @@ final class BookStorageManager {
 }
 
 extension BookStorageManager {
-    private func findCartItemEntity(forBookISBN isbn: String) -> CartItemEntity? {
+    func findCartItemEntity(forBookISBN isbn: String) -> CartItemEntity? {
         guard let context = context else { return nil }
 
         // 1. ISBN으로 BookEntity 찾기

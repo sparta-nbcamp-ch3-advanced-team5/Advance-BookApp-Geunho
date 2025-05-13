@@ -156,6 +156,8 @@ extension BookCartViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let selectedCartItem = cartItems[indexPath.row]
         print("선택된 아이템: \(selectedCartItem.title)")
+        let selectedBook = viewModel.findBookByCartItem(isbn: selectedCartItem.isbn)
+        navigateToBookInfoView(selectedBook: selectedBook)
     }
 }
 

@@ -30,6 +30,19 @@ class BookCartViewModel {
             .share(replay: 1, scope: .whileConnected) // 구독자가 생길 때 최신값 공유
     }
     
+    func findBookByCartItem(isbn: String) -> Book {
+        let cartItem = bookStorageManager.findCartItemEntity(forBookISBN: isbn)
+        
+        return Book(
+            authors: cartItem?.book?.authors ?? [],
+            contents: cartItem?.book?.contents ?? "",
+            price: Int(cartItem?.book?.price ?? 0),
+            title: cartItem?.book?.title ?? "",
+            thumbnail: cartItem?.book?.thumbnailURL ?? "",
+            isbn: cartItem?.book?.isbn ?? ""
+        )
+    }
+    
     // MARK: - Actions
     func refreshCartItems() {
         let updatedItems = bookStorageManager.fetchCartItems()
