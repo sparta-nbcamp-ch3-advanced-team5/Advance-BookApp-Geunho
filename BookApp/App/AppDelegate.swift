@@ -15,6 +15,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
+        if let documentsDirectoryURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).last {
+            print("Documents Directory: \(documentsDirectoryURL)")
+        }
+        
         let window = UIWindow(frame: UIScreen.main.bounds)
         
         let firstVC = UINavigationController(rootViewController: BookSearchViewController())
