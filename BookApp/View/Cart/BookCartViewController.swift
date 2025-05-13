@@ -19,7 +19,7 @@ class BookCartViewController: UIViewController {
     // MARK: - UI Components
     private lazy var cartCollectionView: UICollectionView = {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: createLayout())
-        collectionView.register(BookInfoCell.self, forCellWithReuseIdentifier: BookInfoCell.id)
+        collectionView.register(CartItemCell.self, forCellWithReuseIdentifier: CartItemCell.id)
         collectionView.delegate = self
         collectionView.dataSource = self
         collectionView.backgroundColor = .secondarySystemBackground
@@ -116,7 +116,7 @@ class BookCartViewController: UIViewController {
         // 그룹
         let groupSize = NSCollectionLayoutSize(
             widthDimension: .fractionalWidth(1.0),
-            heightDimension: .fractionalWidth(0.2)
+            heightDimension: .fractionalWidth(0.3)
         )
         let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitems: [item])
         
@@ -168,12 +168,12 @@ extension BookCartViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView,
                         cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(
-            withReuseIdentifier: BookInfoCell.id,
-            for: indexPath) as? BookInfoCell else {
+            withReuseIdentifier: CartItemCell.id,
+            for: indexPath) as? CartItemCell else {
             return UICollectionViewCell()
         }
         let cartItem = cartItems[indexPath.row]
-        cell.configureInCartView(with: cartItem)
+        cell.configure(with: cartItem)
         
         return cell
     }
