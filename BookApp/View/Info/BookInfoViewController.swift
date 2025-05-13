@@ -10,7 +10,7 @@ import SnapKit
 import Kingfisher
 
 protocol BookInfoViewControllerDelegate: AnyObject {
-    func didAddBookToCart()
+    func showToastAlert()
 }
 
 class BookInfoViewController: UIViewController {
@@ -201,7 +201,7 @@ class BookInfoViewController: UIViewController {
     @objc private func addToCart() {
         viewModel.addBookToCart()
         self.dismiss(animated: true) {
-            self.delegate?.didAddBookToCart()
+            self.delegate?.showToastAlert()
         }
     }
     

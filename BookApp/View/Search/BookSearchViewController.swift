@@ -255,9 +255,14 @@ extension BookSearchViewController: UISearchBarDelegate {
 // MARK: - BookInfoDelegate
 extension BookSearchViewController: BookInfoViewControllerDelegate {
     
-    func didAddBookToCart() {
+    func showToastAlert() {
+        if view.viewWithTag(999) != nil {
+            self.view.viewWithTag(999)?.removeFromSuperview()
+        }
+        
         let toast = UILabel()
         toast.text = "책 담기 완료!"
+        toast.tag = 999
         toast.textColor = .systemBackground
         toast.backgroundColor = UIColor.separator.withAlphaComponent(0.7)
         toast.textAlignment = .center
