@@ -9,9 +9,14 @@ import UIKit
 import SnapKit
 import Kingfisher
 
+protocol BookInfoViewControllerDelegate: AnyObject {
+    func didAddBookToCart()
+}
+
 class BookInfoViewController: UIViewController {
     
     private var viewModel: BookInfoViewModel
+    weak var delegate: BookInfoViewControllerDelegate? 
     
     // MARK: - UI Components
     private let bookInfoContentView = UIView()
@@ -199,6 +204,9 @@ class BookInfoViewController: UIViewController {
     // MARK: - Actions
     @objc private func addToCart() {
         viewModel.addBookToCart()
+        self.dismiss(animated: true) {
+            self.delegate?.didAddBookToCart()
+        }
     }
     
     @objc private func closeSelf() {

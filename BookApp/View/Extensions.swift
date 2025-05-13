@@ -12,6 +12,7 @@ extension UIViewController {
     func navigateToBookInfoView(selectedBook book: Book) {
      
         let bottomSheetVC = BookInfoViewController(viewModel: BookInfoViewModel(book: book))
+        bottomSheetVC.delegate = self as? BookInfoViewControllerDelegate
         if let sheet = bottomSheetVC.sheetPresentationController {
             sheet.detents = [.custom(resolver: { context in
                 return context.maximumDetentValue * 0.9 })]
@@ -26,8 +27,7 @@ extension UIViewController {
                    message: String,
                    cancelAction: ((UIAlertAction) -> Void)? = nil,
                    deleteAction: ((UIAlertAction) -> Void)? = nil,
-                   completion: (() -> Void)? = nil)
-    {
+                   completion: (() -> Void)? = nil) {
         let alertViewController = UIAlertController(title: title, message: message, preferredStyle: .alert)
         
         let cancelAction = UIAlertAction(title: "취소", style: .cancel, handler: cancelAction)
