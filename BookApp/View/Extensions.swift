@@ -17,7 +17,7 @@ extension UIViewController {
         }
         let managedObjectContext = appDelegate.persistentContainer.viewContext
         
-        let bottomSheetVC = BookInfoViewController(viewModel: BookInfoViewModel(book: book, bookStorageManger: BookStorageManager(context: managedObjectContext)))
+        let bottomSheetVC = BookInfoViewController(viewModel: BookInfoViewModel(book: book))
         if let sheet = bottomSheetVC.sheetPresentationController {
             sheet.detents = [.custom(resolver: { context in
                 return context.maximumDetentValue * 0.9 })]

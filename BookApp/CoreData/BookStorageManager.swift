@@ -5,25 +5,32 @@
 //  Created by 정근호 on 5/12/25.
 //
 
-import Foundation
 import CoreData
+import UIKit
 
 final class BookStorageManager {
-    private let context: NSManagedObjectContext
+    static let shared = BookStorageManager()
+    private init() {}
     
-    init(context: NSManagedObjectContext) {
-        self.context = context
-    }
+    private let context: NSManagedObjectContext? = {
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
+            print("AppDelegate가 초기화되지 않았습니다.")
+            return nil
+        }
+        return appDelegate.persistentContainer.viewContext
+    }()
     
-    func saveBookToCart(book: Book, quantity: Int = 1) -> Bool {
+    func saveBookToCart(book: Book, quantity: Int = 1) {
+        guard let context = context else { return }
         
         // BookEntity를 찾기
         let bookFetchRequest: NSFetchRequest<BookEntity> = BookEntity.fetchRequest()
         bookFetchRequest.predicate = NSPredicate(format: "isbn == %@", book.isbn)
         
-        let bookEntityToAddToCart: BookEntity
+        var bookEntityToAddToCart = BookEntity()
         
         do {
+            
             let results = try context.fetch(bookFetchRequest)
             if let existingBook = results.first {
                 bookEntityToAddToCart = existingBook
@@ -42,7 +49,6 @@ final class BookStorageManager {
         } catch {
             print("addItemToCart 중 BookEntity를 찾는 데 실패: \(error)")
             context.rollback()
-            return false
         }
         
         // CartItemEntity 로직
@@ -65,16 +71,15 @@ final class BookStorageManager {
             
             try context.save()
             print("CartItem for \(bookEntityToAddToCart.title ?? "") saved/updated successfully.")
-            return true
             
         } catch let error as NSError {
             print("CartItemEntity 저장 또는 업데이트 실패: \(error), \(error.userInfo)")
             context.rollback()
-            return false
         }
     }
     
     func fetchCartItems() -> [CartItem] {
+        guard let context = context else { return [] }
         
         let fetchRequest: NSFetchRequest<CartItemEntity> = CartItemEntity.fetchRequest()
         

@@ -130,10 +130,11 @@ class BookCartViewController: UIViewController {
 
     // MARK: - Actions
     @objc private func addToCartButtonTapped() {
-    
+        
     }
     
     @objc private func removeAllButtonTapped() {
+        
     }
 }
 

@@ -10,7 +10,7 @@ import Foundation
 class BookInfoViewModel {
     
     private var book: Book
-    private let bookStorageManager: BookStorageManager
+    private let bookStorageManager = BookStorageManager.shared
         
     var title: String?
     var author: String?
@@ -18,10 +18,8 @@ class BookInfoViewModel {
     var price: String?
     var contents: String?
     
-    init(book: Book, bookStorageManger: BookStorageManager) {
+    init(book: Book) {
         self.book = book
-        self.bookStorageManager = bookStorageManger
-        
         self.updateBookData()
     }
     
