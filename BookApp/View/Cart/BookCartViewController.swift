@@ -55,7 +55,7 @@ class BookCartViewController: UIViewController {
         setUI()
         bindViewModel()
     }
-
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
@@ -66,7 +66,7 @@ class BookCartViewController: UIViewController {
     private func setupNavigation() {
         navigationItem.title = "담은 책"
         navigationItem.leftBarButtonItem = removeAllBarButton
-         navigationItem.rightBarButtonItem = addToCartBarButton
+        navigationItem.rightBarButtonItem = addToCartBarButton
     }
     
     private func setUI() {
@@ -127,10 +127,20 @@ class BookCartViewController: UIViewController {
         
         return UICollectionViewCompositionalLayout(section: section)
     }
-
+    
     // MARK: - Actions
     @objc private func addToCartButtonTapped() {
-        
+        // 현재 뷰컨트롤러가 UITabBarController에 포함되어 있다면, 그 UITabBarController의 인스턴스를 가져옴
+        if let tabBarController = self.tabBarController {
+            // 탭바의 첫 번째 탭으로 이동
+            tabBarController.selectedIndex = 0
+            
+            // 탭바 컨트롤러의 첫번째 UINavigationController의 루트 ViewController -> BookSearchViewController
+            if let searchNav = tabBarController.viewControllers?[0] as? UINavigationController,
+               let searchVC = searchNav.viewControllers.first as? BookSearchViewController {
+                searchVC.activateSearchBar()
+            }
+        }
     }
     
     @objc private func removeAllButtonTapped() {
@@ -154,7 +164,7 @@ extension BookCartViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return cartItems.count
     }
-
+    
     func collectionView(_ collectionView: UICollectionView,
                         cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(
@@ -167,7 +177,7 @@ extension BookCartViewController: UICollectionViewDataSource {
         
         return cell
     }
-
+    
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1
     }

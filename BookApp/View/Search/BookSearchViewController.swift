@@ -165,6 +165,11 @@ class BookSearchViewController: UIViewController {
                 print("에러 발생: \(error)")
             }).disposed(by: disposeBag)
     }
+    
+    // MARK: - Private Methods
+    func activateSearchBar() {
+        searchBar.becomeFirstResponder()
+    }
 }
 
 // MARK: - CollectionViewDelegate
