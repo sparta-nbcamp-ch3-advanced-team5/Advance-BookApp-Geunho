@@ -67,6 +67,9 @@ class BookCartViewController: UIViewController {
         navigationItem.title = "담은 책"
         navigationItem.leftBarButtonItem = removeAllBarButton
         navigationItem.rightBarButtonItem = addToCartBarButton
+        navigationItem.rightBarButtonItem?.tintColor = .label
+        navigationItem.leftBarButtonItem?.tintColor = .secondaryLabel
+        
     }
     
     private func setUI() {

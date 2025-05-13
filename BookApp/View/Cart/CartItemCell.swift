@@ -61,7 +61,7 @@ class CartItemCell: UICollectionViewCell {
         let stackView = UIStackView()
         stackView.axis = .horizontal
         stackView.backgroundColor = .systemBackground
-        stackView.spacing = 10
+        stackView.spacing = 5
         return stackView
     }()
     
@@ -77,8 +77,9 @@ class CartItemCell: UICollectionViewCell {
         let button = UIButton()
         button.setTitle("+", for: .normal)
         button.setTitleColor(.label, for: .normal) // titleLabel.textColor 대신 사용
+        button.titleLabel?.textAlignment = .center
         button.titleLabel?.font = .systemFont(ofSize: 20, weight: .medium)
-        button.layer.borderWidth = 1
+        button.layer.borderWidth = 0.5
         button.layer.borderColor = UIColor.label.cgColor
         button.layer.cornerRadius = 5
         button.backgroundColor = .systemBackground
@@ -90,8 +91,9 @@ class CartItemCell: UICollectionViewCell {
         let button = UIButton()
         button.setTitle("-", for: .normal)
         button.setTitleColor(.label, for: .normal)
+        button.titleLabel?.textAlignment = .center
         button.titleLabel?.font = .systemFont(ofSize: 20, weight: .medium)
-        button.layer.borderWidth = 1
+        button.layer.borderWidth = 0.5
         button.layer.borderColor = UIColor.label.cgColor
         button.layer.cornerRadius = 5
         button.backgroundColor = .systemBackground
@@ -157,12 +159,14 @@ class CartItemCell: UICollectionViewCell {
             $0.bottom.equalToSuperview().inset(20)
         }
         
+        // 스택 뷰 내부 양 옆 버튼들만 크기 고정
+        // 스택 뷰 내부 레이블 제약은 해당 뷰에서 처리하는 것이 좋음(spacing, distribution(기본값: fill))
         minusButton.snp.makeConstraints {
-            $0.width.equalTo(30) // 버튼 너비 고정
+            $0.width.equalTo(30)
         }
         
         plusButton.snp.makeConstraints {
-            $0.width.equalTo(30) // 버튼 너비 고정
+            $0.width.equalTo(30)
         }
     }
     
