@@ -61,7 +61,7 @@ class CartItemCell: UICollectionViewCell {
         let stackView = UIStackView()
         stackView.axis = .horizontal
         stackView.backgroundColor = .systemBackground
-        stackView.spacing = 8 // 버튼과 레이블 사이 간격
+        stackView.spacing = 10
         return stackView
     }()
     
@@ -130,7 +130,7 @@ class CartItemCell: UICollectionViewCell {
         }
         
         bookInfoHStack.snp.makeConstraints {
-            $0.top.equalToSuperview().inset(30)
+            $0.top.equalToSuperview().inset(20)
             $0.horizontalEdges.equalToSuperview().inset(20)
         }
         
@@ -150,7 +150,7 @@ class CartItemCell: UICollectionViewCell {
         }
         
         quantityHStack.snp.makeConstraints {
-            $0.top.equalTo(containerView.snp.bottom)
+            $0.top.equalTo(bookInfoHStack.snp.bottom)
             $0.trailing.equalToSuperview().inset(20)
             $0.height.equalTo(30)
             $0.width.equalTo(containerView).multipliedBy(0.3)
@@ -158,18 +158,11 @@ class CartItemCell: UICollectionViewCell {
         }
         
         minusButton.snp.makeConstraints {
-            $0.height.equalToSuperview()
-            $0.width.equalToSuperview().multipliedBy(0.3)
+            $0.width.equalTo(30) // 버튼 너비 고정
         }
         
         plusButton.snp.makeConstraints {
-            $0.height.equalToSuperview()
-            $0.width.equalToSuperview().multipliedBy(0.3)
-        }
-        
-        quantityLabel.snp.makeConstraints {
-            $0.height.equalToSuperview()
-            $0.width.equalToSuperview().multipliedBy(0.3)
+            $0.width.equalTo(30) // 버튼 너비 고정
         }
     }
     
