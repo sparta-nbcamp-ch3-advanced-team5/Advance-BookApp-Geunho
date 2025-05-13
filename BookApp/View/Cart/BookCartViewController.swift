@@ -174,11 +174,50 @@ extension BookCartViewController: UICollectionViewDataSource {
         }
         let cartItem = cartItems[indexPath.row]
         cell.configure(with: cartItem)
+        cell.delegate = self
         
         return cell
     }
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1
+    }
+}
+
+// MARK: - CartItemCellDelegate
+extension BookCartViewController: CartItemCellDelegate {
+    
+    func cartItemCellDidTapPlusButton(_ cell: CartItemCell) {
+        guard let indexPath = cartCollectionView.indexPath(for: cell) else { return }
+        
+        // ViewModel의 cartItems 스트림에서 현재 값을 가져옵니다.
+        // BehaviorSubject의 현재 값에 접근해야 합니다.
+        do {
+            let cartItem = try viewModel.cartItems.value()[indexPath.row]
+            
+            print("Plus tapped for item: \(cartItem.title)")
+
+            viewModel.plusQuantity(cartItem: cartItem)
+        } catch {
+            print("Error accessing cart item from BehaviorSubject: \(error)")
+        }
+    }
+    
+    func cartItemCellDidTapMinusButton(_ cell: CartItemCell) {
+        guard let indexPath = cartCollectionView.indexPath(for: cell) else { return }
+        
+        do {
+            let cartItem = try viewModel.cartItems.value()[indexPath.row]
+            
+            print("Minus tapped for item: \(cartItem.title)")
+
+            if cartItem.quantity <= 1 { // 수량이 1이거나 그 이하면 아이템 삭제
+                viewModel.removeItem(cartItem: cartItem)
+            } else {
+                viewModel.minusQuantity(cartItem: cartItem) 
+            }
+        } catch {
+            print("Error accessing cart item from BehaviorSubject: \(error)")
+        }
     }
 }

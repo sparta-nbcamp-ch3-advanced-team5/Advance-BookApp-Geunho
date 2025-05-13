@@ -40,4 +40,19 @@ class BookCartViewModel {
         bookStorageManager.removeAllCartItems()
         self.refreshCartItems()
     }
+    
+    func plusQuantity(cartItem: CartItem) {
+        bookStorageManager.plusQuantity(item: cartItem)
+        self.refreshCartItems()
+    }
+    
+    func minusQuantity(cartItem: CartItem) {
+        bookStorageManager.minusQuantity(item: cartItem)
+        self.refreshCartItems()
+    }
+    
+    func removeItem(cartItem: CartItem) {
+        bookStorageManager.removeItem(item: cartItem)
+        self.refreshCartItems()
+    }
 }

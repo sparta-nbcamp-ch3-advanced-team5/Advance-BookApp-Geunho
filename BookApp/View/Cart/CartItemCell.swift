@@ -7,8 +7,17 @@
 
 import UIKit
 
+protocol CartItemCellDelegate: AnyObject {
+    func cartItemCellDidTapPlusButton(_ cell: CartItemCell)
+    func cartItemCellDidTapMinusButton(_ cell: CartItemCell)
+}
+
 class CartItemCell: UICollectionViewCell {
     static let id = String(describing: CartItemCell.self)
+    
+    weak var delegate: CartItemCellDelegate?
+
+    private var cartItem: CartItem?
     
     // MARK: - UI Components
     private let containerView: UIView = {
@@ -166,15 +175,16 @@ class CartItemCell: UICollectionViewCell {
     
     // MARK: - Actions
     @objc func plusButtonClicked() {
-        print(#function)
+        delegate?.cartItemCellDidTapPlusButton(self)
     }
     
     @objc func minusButtonClicked() {
-        print(#function)
+        delegate?.cartItemCellDidTapMinusButton(self)
     }
     
     // MARK: - Internal Methods
     func configure(with cartItem: CartItem) {
+        self.cartItem = cartItem
         self.bookTitleLabel.text = cartItem.title
         self.bookAuthorLabel.text = cartItem.authors.joined(separator: ", ")
         self.bookPriceLabel.text = String(cartItem.price).formatToWon()

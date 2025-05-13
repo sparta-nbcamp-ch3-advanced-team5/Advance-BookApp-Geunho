@@ -133,4 +133,99 @@ final class BookStorageManager {
             print("NSBatchDeleteRequest를 사용한 전체 삭제 실패: \(error), \(error.userInfo)")
         }
     }
+    
+    func removeItem(item: CartItem) {
+        guard let context = context else { return }
+
+        guard let cartItemEntityToDelete = findCartItemEntity(forBookISBN: item.isbn) else {
+            print("삭제할 장바구니 아이템을 찾지 못했습니다 (ISBN: \(item.isbn)).")
+            return
+        }
+        
+        context.delete(cartItemEntityToDelete) // CartItemEntity 삭제
+        
+        do {
+            try context.save()
+            print("장바구니 아이템 (ISBN: \(item.isbn)) 삭제 성공.")
+        } catch {
+            context.rollback() // 저장 실패 시 롤백
+            print("장바구니 아이템 (ISBN: \(item.isbn)) 삭제 실패.")
+        }
+    }
+    
+    func plusQuantity(item: CartItem) {
+        guard let context = context else { return }
+
+        guard let cartItemEntity = findCartItemEntity(forBookISBN: item.isbn) else {
+            print("수량 증가 대상 장바구니 아이템을 찾지 못했습니다 (ISBN: \(item.isbn)).")
+            return
+        }
+        
+        cartItemEntity.quantity += 1
+        
+        do {
+            try context.save()
+            print("장바구니 아이템 (ISBN: \(item.isbn)) 수량 감소 성공. 현재 수량: \(cartItemEntity.quantity)")
+        } catch {
+            context.rollback()
+            print("장바구니 아이템 (ISBN: \(item.isbn)) 수량 감소 성공. 현재 수량: \(cartItemEntity.quantity)")
+        }
+    }
+    
+    func minusQuantity(item: CartItem) {
+        guard let context = context else { return }
+        
+        guard let cartItemEntity = findCartItemEntity(forBookISBN: item.isbn) else {
+            print("수량 증가 대상 장바구니 아이템을 찾지 못했습니다 (ISBN: \(item.isbn)).")
+            return
+        }
+        
+        cartItemEntity.quantity -= 1
+        
+        do {
+            try context.save()
+            print("장바구니 아이템 (ISBN: \(item.isbn)) 수량 감소 성공. 현재 수량: \(cartItemEntity.quantity)")
+        } catch {
+            context.rollback()
+            print("장바구니 아이템 (ISBN: \(item.isbn)) 수량 감소 실패. 현재 수량: \(cartItemEntity.quantity)")
+        }
+    }
+}
+
+extension BookStorageManager {
+    private func findCartItemEntity(forBookISBN isbn: String) -> CartItemEntity? {
+        guard let context = context else { return nil }
+
+        // 1. ISBN으로 BookEntity 찾기
+        let bookFetchRequest: NSFetchRequest<BookEntity> = BookEntity.fetchRequest()
+        bookFetchRequest.predicate = NSPredicate(format: "isbn == %@", isbn)
+        
+        let bookEntities: [BookEntity]
+        do {
+            bookEntities = try context.fetch(bookFetchRequest)
+        } catch {
+            print("BookEntity 찾기 실패")
+            return nil
+        }
+        
+        guard let foundBookEntity = bookEntities.first else {
+            // 책이 데이터베이스에 없음 -> 이 책에 대한 장바구니 항목도 없음
+            print("BookStorageManager: ISBN \(isbn)에 해당하는 책을 찾을 수 없습니다.")
+            return nil
+        }
+        
+        // 2. 찾은 BookEntity로 CartItemEntity 찾기
+        let cartItemFetchRequest: NSFetchRequest<CartItemEntity> = CartItemEntity.fetchRequest()
+        cartItemFetchRequest.predicate = NSPredicate(format: "book == %@", foundBookEntity)
+        
+        let cartItems: [CartItemEntity]
+        do {
+            cartItems = try context.fetch(cartItemFetchRequest)
+        } catch {
+            print("CartItemEntity 찾기 실패")
+            return nil
+        }
+        
+        return cartItems.first 
+    }
 }
