@@ -7,9 +7,17 @@
 
 import UIKit
 import SnapKit
+import Kingfisher
+
+protocol BookInfoViewControllerDelegate: AnyObject {
+    func showToastAlert()
+}
 
 class BookInfoViewController: UIViewController {
-
+    
+    private var viewModel: BookInfoViewModel
+    weak var delegate: BookInfoViewControllerDelegate? 
+    
     // MARK: - UI Components
     private let bookInfoContentView = UIView()
 
@@ -21,23 +29,25 @@ class BookInfoViewController: UIViewController {
 
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
-        label.text = "세이노의 가르침"
         label.font = .systemFont(ofSize: 20, weight: .bold)
         label.textAlignment = .left
         label.textColor = .label
+        label.textAlignment = .center
+        label.numberOfLines = 0
         return label
     }()
 
     private lazy var authorLabel: UILabel = {
         let label = UILabel()
-        label.text = "세이노"
         label.font = .systemFont(ofSize: 15, weight: .medium)
         label.textAlignment = .left
         label.textColor = .secondaryLabel
+        label.textAlignment = .center
+        label.numberOfLines = 0
         return label
     }()
 
-    private lazy var imageView: UIImageView = {
+    private lazy var thumbnailView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(named: "bookImage")
         imageView.contentMode = .scaleAspectFit
@@ -48,16 +58,14 @@ class BookInfoViewController: UIViewController {
 
     private lazy var priceLabel: UILabel = {
         let label = UILabel()
-        label.text = "14,000원"
         label.font = .systemFont(ofSize: 20, weight: .bold)
-        label.textAlignment = .left
+        label.textAlignment = .center
         label.textColor = .label
         return label
     }()
 
-    private lazy var descriptionLabel: UILabel = {
+    private lazy var contentsLabel: UILabel = {
         let label = UILabel()
-        label.text = "2000년부터 발표된 그의 주옥같은 글들. 독자들이 자발적으로 만든 제본서는 물론, 전자책과 앱까지 나왔던 『세이노의 가르침』이 드디어 전국 서점에서 독자들을 마주한다. 여러 판본을 모으고 저자의 확인을 거쳐 최근 생각을 추가로 수록하였다. 정식 출간본에만 추가로 수록된 글들은 목차와 본문에 별도 표시하였다. 더 많은 사람이 이 책을 보고 힘을 얻길 바라기에 인세도 안 받는 저자의 마음을 담아, 700쪽이 넘는 분량에도 7천 원 안팎에 책을 구매할 수 있도록 했다. 정식 출간 전자책 또한 무료로 선보인다.\n2000년부터 발표된 그의 주옥같은 글들. 독자들이 자발적으로 만든 제본서는 물론, 전자책과 앱까지 나왔던 『세이노의 가르침』이 드디어 전국 서점에서 독자들을 마주한다. 여러 판본을 모으고 저자의 확인을 거쳐 최근 생각을 추가로 수록하였다. 정식 출간본에만 추가로 수록된 글들은 목차와 본문에 별도 표시하였다. 더 많은 사람이 이 책을 보고 힘을 얻길 바라기에 인세도 안 받는 저자의 마음을 담아, 700쪽이 넘는 분량에도 7천 원 안팎에 책을 구매할 수 있도록 했다. 정식 출간 전자책 또한 무료로 선보인다."
         label.font = .systemFont(ofSize: 12, weight: .medium)
         label.numberOfLines = 0
         label.textAlignment = .left
@@ -94,9 +102,19 @@ class BookInfoViewController: UIViewController {
     }()
 
     // MARK: - Init & SetUp
+    init(viewModel: BookInfoViewModel) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
+        configure()
         setUI()
     }
 
@@ -109,7 +127,7 @@ class BookInfoViewController: UIViewController {
 
         scrollView.addSubview(bookInfoContentView)
 
-        [titleLabel, authorLabel, imageView, priceLabel, descriptionLabel].forEach {
+        [titleLabel, authorLabel, thumbnailView, priceLabel, contentsLabel].forEach {
             bookInfoContentView.addSubview($0)
         }
 
@@ -130,27 +148,30 @@ class BookInfoViewController: UIViewController {
         titleLabel.snp.makeConstraints {
             $0.centerX.equalToSuperview()
             $0.top.equalToSuperview().inset(20)
+            $0.horizontalEdges.equalTo(view.safeAreaLayoutGuide).inset(20)
         }
 
         authorLabel.snp.makeConstraints {
             $0.centerX.equalToSuperview()
             $0.top.equalTo(titleLabel.snp.bottom).offset(10)
+            $0.horizontalEdges.equalTo(view.safeAreaLayoutGuide).inset(20)
         }
 
-        imageView.snp.makeConstraints {
+        thumbnailView.snp.makeConstraints {
             $0.centerX.equalToSuperview()
             $0.top.equalTo(authorLabel.snp.bottom).offset(20)
             $0.width.equalTo(bookInfoContentView.snp.width).multipliedBy(1.0 / 2.0)
-            $0.height.equalTo(imageView.snp.width).multipliedBy(3.0/2.0)
+            $0.height.equalTo(thumbnailView.snp.width).multipliedBy(3.0/2.0)
             // width:height = 2:3
         }
 
         priceLabel.snp.makeConstraints {
             $0.centerX.equalToSuperview()
-            $0.top.equalTo(imageView.snp.bottom).offset(10)
+            $0.top.equalTo(thumbnailView.snp.bottom).offset(10)
+            $0.horizontalEdges.equalTo(view.safeAreaLayoutGuide).inset(20)
         }
 
-        descriptionLabel.snp.makeConstraints {
+        contentsLabel.snp.makeConstraints {
             $0.top.equalTo(priceLabel.snp.bottom).offset(20)
             $0.bottom.equalToSuperview().offset(-20)
             $0.horizontalEdges.equalTo(view.safeAreaLayoutGuide).inset(20)
@@ -178,11 +199,24 @@ class BookInfoViewController: UIViewController {
     
     // MARK: - Actions
     @objc private func addToCart() {
-        
+        viewModel.addBookToCart()
+        self.dismiss(animated: true) {
+            self.delegate?.showToastAlert()
+        }
     }
     
     @objc private func closeSelf() {
         self.dismiss(animated: true)
     }
     
+    // MARK: - Private Methods
+    private func configure() {
+        titleLabel.text = viewModel.title
+        authorLabel.text = viewModel.author
+        priceLabel.text = viewModel.price
+        contentsLabel.text = (viewModel.contents ?? "") + "..."
+        guard let imageURL = viewModel.thumbnailURL else { return }
+        thumbnailView.kf.setImage(with: URL(string: imageURL))
+        
+    }
 }

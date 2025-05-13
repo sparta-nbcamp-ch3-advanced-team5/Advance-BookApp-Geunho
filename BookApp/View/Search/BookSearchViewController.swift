@@ -13,7 +13,7 @@ import RxSwift
 enum Section: Int, CaseIterable {
     case recentBook
     case searchResult
-
+    
     var title: String {
         switch self {
         case .recentBook:
@@ -28,7 +28,7 @@ class BookSearchViewController: UIViewController {
     private let viewModel = BookSearchViewModel()
     private let disposeBag = DisposeBag()
     private var searchedBooks = [Book]()
-
+    
     // MARK: - UI Components
     private lazy var searchBar: UISearchBar = {
         let searchBar = UISearchBar()
@@ -37,7 +37,7 @@ class BookSearchViewController: UIViewController {
         searchBar.autocapitalizationType = .none
         return searchBar
     }()
-
+    
     private lazy var searchCollectionView: UICollectionView = {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: createLayout())
         // 최근 본 책 Cell
@@ -55,38 +55,38 @@ class BookSearchViewController: UIViewController {
         collectionView.showsVerticalScrollIndicator = false
         return collectionView
     }()
-
+    
     // MARK: - Init & SetUp
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         setUI()
         bindViewModel()
     }
-
+    
     private func setUI() {
         view.backgroundColor = .secondarySystemBackground
-
+        
         [searchBar, searchCollectionView].forEach {
             view.addSubview($0)
         }
-
+        
         searchBar.snp.makeConstraints {
             $0.top.equalTo(view.safeAreaLayoutGuide)
             $0.horizontalEdges.equalTo(view.safeAreaLayoutGuide)
         }
-
+        
         searchCollectionView.snp.makeConstraints {
             $0.top.equalTo(searchBar.snp.bottom)
             $0.horizontalEdges.equalTo(view.safeAreaLayoutGuide)
             $0.bottom.equalTo(view.safeAreaLayoutGuide)
         }
-
+        
     }
-
+    
     // MARK: - Private Methods
     private func createLayout() -> UICollectionViewCompositionalLayout {
-
+        
         let layout = UICollectionViewCompositionalLayout { (sectionIndex: Int, layoutEnvironment: NSCollectionLayoutEnvironment)
             -> NSCollectionLayoutSection in
             
@@ -99,12 +99,12 @@ class BookSearchViewController: UIViewController {
                 let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
                                                       heightDimension: .fractionalHeight(1.0))
                 let item = NSCollectionLayoutItem(layoutSize: itemSize)
-
+                
                 // 그룹
                 let groupSize = NSCollectionLayoutSize(widthDimension: isLandscape ? .fractionalWidth(0.125) : .fractionalWidth(0.25),
                                                        heightDimension: isLandscape ? .fractionalWidth(0.2) : .fractionalWidth(0.4))
                 let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
-
+                
                 // 섹션
                 let section = NSCollectionLayoutSection(group: group)
                 section.orthogonalScrollingBehavior = .continuous
@@ -113,18 +113,18 @@ class BookSearchViewController: UIViewController {
                 section.boundarySupplementaryItems = [self.createSectionHeaderLayout()]
                 
                 return section
-
+                
             case .searchResult:
                 // 아이템
                 let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
                                                       heightDimension: .fractionalHeight(1.0))
                 let item = NSCollectionLayoutItem(layoutSize: itemSize)
-
+                
                 // 그룹
                 let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
                                                        heightDimension: isLandscape ? .fractionalWidth(0.1) : .fractionalWidth(0.2))
                 let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitems: [item])
-
+                
                 // 섹션
                 let section = NSCollectionLayoutSection(group: group)
                 section.interGroupSpacing = 10
@@ -165,19 +165,24 @@ class BookSearchViewController: UIViewController {
                 print("에러 발생: \(error)")
             }).disposed(by: disposeBag)
     }
+    
+    // MARK: - Private Methods
+    func activateSearchBar() {
+        searchBar.becomeFirstResponder()
+    }
 }
 
 // MARK: - CollectionViewDelegate
 extension BookSearchViewController: UICollectionViewDelegate {
-
+    
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        navigateToBookInfoView()
+        navigateToBookInfoView(selectedBook: searchedBooks[indexPath.row])
     }
 }
 
 // MARK: - CollectionViewDataSource
 extension BookSearchViewController: UICollectionViewDataSource {
-
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         switch Section(rawValue: section) {
         case .recentBook:
@@ -188,10 +193,10 @@ extension BookSearchViewController: UICollectionViewDataSource {
             return 0
         }
     }
-
+    
     func collectionView(_ collectionView: UICollectionView,
                         cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-
+        
         // 섹션별로 나눠서 처리
         switch Section(rawValue: indexPath.section) {
         case .recentBook:
@@ -213,25 +218,25 @@ extension BookSearchViewController: UICollectionViewDataSource {
             return UICollectionViewCell()
         }
     }
-
+    
     func collectionView(_ collectionView: UICollectionView,
                         viewForSupplementaryElementOfKind kind: String,
                         at indexPath: IndexPath) -> UICollectionReusableView {
-
+        
         let kind = UICollectionView.elementKindSectionHeader
-
+        
         guard let headerView = collectionView.dequeueReusableSupplementaryView(
             ofKind: kind,
             withReuseIdentifier: SectionHeaderView.id,
             for: indexPath) as? SectionHeaderView else {
             return UICollectionReusableView()
         }
-
+        
         let sectionType = Section.allCases[indexPath.section]
         headerView.configure(with: sectionType.title)
         return headerView
     }
-
+    
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return Section.allCases.count
     }
@@ -244,5 +249,49 @@ extension BookSearchViewController: UISearchBarDelegate {
         viewModel.searchingText = text
         print("searchingText: \(text)")
         viewModel.searchBooks()
+    }
+}
+
+// MARK: - BookInfoDelegate
+extension BookSearchViewController: BookInfoViewControllerDelegate {
+    
+    func showToastAlert() {
+        if view.viewWithTag(999) != nil {
+            self.view.viewWithTag(999)?.removeFromSuperview()
+        }
+        
+        let toast = UILabel()
+        toast.text = "책 담기 완료!"
+        toast.tag = 999
+        toast.textColor = .systemBackground
+        toast.backgroundColor = UIColor.separator.withAlphaComponent(0.7)
+        toast.textAlignment = .center
+        toast.font = .systemFont(ofSize: 14, weight: .bold)
+        toast.alpha = 0
+        toast.clipsToBounds = true
+        toast.numberOfLines = 0
+        
+        let padding: CGFloat = 20
+        let maxWidth = (view.frame.width - padding * 2) / 2
+        let size = toast.sizeThatFits(CGSize(width: maxWidth, height: .greatestFiniteMagnitude))
+        toast.frame = CGRect(x: view.frame.width/2 - (maxWidth/2),
+                             y: view.frame.maxY - size.height - 130,
+                             width: maxWidth,
+                             height: size.height + 16)
+        
+        toast.layer.cornerRadius = toast.frame.height / 2
+        
+        view.addSubview(toast)
+        
+        UIView.animate(withDuration: 0.3, animations: {
+            toast.alpha = 1
+        }) { _ in
+            UIView.animate(withDuration: 0.3, delay: 1.5, options: [], animations: {
+                toast.alpha = 0
+            }) { _ in
+                toast.removeFromSuperview()
+            }
+        }
+        
     }
 }
