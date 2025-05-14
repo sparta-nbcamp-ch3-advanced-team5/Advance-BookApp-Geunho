@@ -28,6 +28,7 @@ class BookSearchViewController: UIViewController {
     private let viewModel = BookSearchViewModel()
     private let disposeBag = DisposeBag()
     private var searchedBooks = [Book]()
+    private var recentBooks = [Book]()
     
     // MARK: - UI Components
     private lazy var searchBar: UISearchBar = {
@@ -38,7 +39,7 @@ class BookSearchViewController: UIViewController {
         return searchBar
     }()
     
-    private lazy var searchCollectionView: UICollectionView = {
+    private lazy var searchViewCollectionView: UICollectionView = {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: createLayout())
         // 최근 본 책 Cell
         collectionView.register(RecentBookCell.self, forCellWithReuseIdentifier: RecentBookCell.id)
@@ -64,10 +65,19 @@ class BookSearchViewController: UIViewController {
         bindViewModel()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(true)
+        
+        viewModel.fetchRecentBooks()
+        DispatchQueue.main.async {
+            self.searchViewCollectionView.reloadData()
+        }
+    }
+    
     private func setUI() {
         view.backgroundColor = .secondarySystemBackground
         
-        [searchBar, searchCollectionView].forEach {
+        [searchBar, searchViewCollectionView].forEach {
             view.addSubview($0)
         }
         
@@ -76,7 +86,7 @@ class BookSearchViewController: UIViewController {
             $0.horizontalEdges.equalTo(view.safeAreaLayoutGuide)
         }
         
-        searchCollectionView.snp.makeConstraints {
+        searchViewCollectionView.snp.makeConstraints {
             $0.top.equalTo(searchBar.snp.bottom)
             $0.horizontalEdges.equalTo(view.safeAreaLayoutGuide)
             $0.bottom.equalTo(view.safeAreaLayoutGuide)
@@ -153,6 +163,7 @@ class BookSearchViewController: UIViewController {
         return header
     }
     
+    // MARK: - Binding
     private func bindViewModel() {
         viewModel.searchedBookSubject
             .observe(on: MainScheduler.instance)
@@ -160,13 +171,22 @@ class BookSearchViewController: UIViewController {
                 self?.searchedBooks = books
                 print("firstSearchedBook: \(books.first)")
                 print("searchedBooksCount: \(books.count)")
-                self?.searchCollectionView.reloadData()
+                self?.searchViewCollectionView.reloadData()
+            }, onError: { error in
+                print("에러 발생: \(error)")
+            }).disposed(by: disposeBag)
+        
+        viewModel.recentBookSubject
+            .observe(on: MainScheduler.instance)
+            .subscribe(onNext: { [weak self] books in
+                self?.recentBooks = books
+                print("recentBook: \(books.first)")
+                self?.searchViewCollectionView.reloadData()
             }, onError: { error in
                 print("에러 발생: \(error)")
             }).disposed(by: disposeBag)
     }
     
-    // MARK: - Private Methods
     func activateSearchBar() {
         searchBar.becomeFirstResponder()
     }
@@ -176,7 +196,17 @@ class BookSearchViewController: UIViewController {
 extension BookSearchViewController: UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        navigateToBookInfoView(selectedBook: searchedBooks[indexPath.row])
+        
+        switch Section(rawValue: indexPath.section) {
+            
+        case .recentBook:
+            navigateToBookInfoView(selectedBook: recentBooks[indexPath.row])
+        case .searchResult:
+            navigateToBookInfoView(selectedBook: searchedBooks[indexPath.row])
+        default:
+            return
+        }
+            
     }
 }
 
@@ -186,7 +216,7 @@ extension BookSearchViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         switch Section(rawValue: section) {
         case .recentBook:
-            return 10
+            return self.recentBooks.count
         case .searchResult:
             return self.searchedBooks.count
         default:
@@ -205,6 +235,8 @@ extension BookSearchViewController: UICollectionViewDataSource {
                 for: indexPath) as? RecentBookCell else {
                 return UICollectionViewCell()
             }
+            // 제일 나중에 추가된 요소가 맨 앞으로
+            cell.configure(with: recentBooks[recentBooks.count - 1 - indexPath.row])
             return cell
         case .searchResult:
             guard let cell = collectionView.dequeueReusableCell(

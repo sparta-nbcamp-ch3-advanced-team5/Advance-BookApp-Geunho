@@ -15,12 +15,12 @@ class BookCartViewModel {
     /// 장바구니가 비었는지 여부를 나타내는 스트림
     let isCartEmpty: Observable<Bool>
     
-    private let cartBookStorageManager = CoreDataManager.shared
+    private let coreDataManager = CoreDataManager.shared
     private let disposeBag = DisposeBag()
     
     init() {
         // 초기 장바구니 아이템 로드
-        let initialItems = self.cartBookStorageManager.fetchCartItems()
+        let initialItems = self.coreDataManager.fetchCartItems()
         self.cartItems = BehaviorSubject(value: initialItems)
         
         // isCartEmpty는 cartDisplayItems 스트림을 변환하여 생성
@@ -31,7 +31,7 @@ class BookCartViewModel {
     }
     
     func findBookByCartItem(isbn: String) -> Book {
-        let cartItem = cartBookStorageManager.findCartItemEntity(forBookISBN: isbn)
+        let cartItem = coreDataManager.findCartItemEntity(forBookISBN: isbn)
         
         return Book(
             authors: (cartItem?.book?.authors ?? []) as! [String],
@@ -45,27 +45,27 @@ class BookCartViewModel {
     
     // MARK: - Actions
     func refreshCartItems() {
-        let updatedItems = cartBookStorageManager.fetchCartItems()
+        let updatedItems = coreDataManager.fetchCartItems()
         cartItems.onNext(updatedItems)
     }
     
     func removeAllCartItems() {
-        cartBookStorageManager.removeAllCartItems()
+        coreDataManager.removeAllCartItems()
         self.refreshCartItems()
     }
     
     func plusQuantity(cartItem: CartItem) {
-        cartBookStorageManager.plusQuantity(item: cartItem)
+        coreDataManager.plusQuantity(item: cartItem)
         self.refreshCartItems()
     }
     
     func minusQuantity(cartItem: CartItem) {
-        cartBookStorageManager.minusQuantity(item: cartItem)
+        coreDataManager.minusQuantity(item: cartItem)
         self.refreshCartItems()
     }
     
     func removeItem(cartItem: CartItem) {
-        cartBookStorageManager.removeItem(item: cartItem)
+        coreDataManager.removeItem(item: cartItem)
         self.refreshCartItems()
     }
 }

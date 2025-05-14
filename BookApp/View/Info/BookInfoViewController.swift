@@ -16,7 +16,7 @@ protocol BookInfoViewControllerDelegate: AnyObject {
 class BookInfoViewController: UIViewController {
     
     private var viewModel: BookInfoViewModel
-    weak var delegate: BookInfoViewControllerDelegate? 
+    weak var delegate: BookInfoViewControllerDelegate?
     
     // MARK: - UI Components
     private let bookInfoContentView = UIView()
@@ -116,6 +116,12 @@ class BookInfoViewController: UIViewController {
         
         configure()
         setUI()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(true)
+        
+        viewModel.manageRecentBook()
     }
 
     private func setUI() {
@@ -217,6 +223,10 @@ class BookInfoViewController: UIViewController {
         contentsLabel.text = (viewModel.contents ?? "") + "..."
         guard let imageURL = viewModel.thumbnailURL else { return }
         thumbnailView.kf.setImage(with: URL(string: imageURL))
-        
     }
 }
+
+// 프로토콜로 델리게이트 하나 만들기
+// 모달 화면에서 화면이 꺼지는 타이밍에 델리게이트에 있는 메서드 호출
+// 서치뷰에서 모달의 델리게이트를 self로(모달에서 델리게이트를 가지고 있어야 함)
+// 서치뷰컨에서 델리게이트 채택, 실제 구현부에서 리로드

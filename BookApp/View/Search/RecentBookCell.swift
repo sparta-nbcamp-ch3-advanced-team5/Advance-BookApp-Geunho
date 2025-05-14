@@ -13,7 +13,6 @@ class RecentBookCell: UICollectionViewCell {
     // MARK: - UI Components
     private lazy var bookImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(named: "bookImage")
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
         imageView.backgroundColor = .darkGray
@@ -26,7 +25,6 @@ class RecentBookCell: UICollectionViewCell {
         super.init(frame: frame)
 
         setUI()
-        configure()
     }
 
     required init?(coder: NSCoder) {
@@ -42,7 +40,7 @@ class RecentBookCell: UICollectionViewCell {
     }
 
     // MARK: - Internal Methods
-    func configure() {
-
+    func configure(with book: Book) {
+        bookImageView.kf.setImage(with: URL(string: book.thumbnail))
     }
 }
