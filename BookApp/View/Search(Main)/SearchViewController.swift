@@ -1,5 +1,5 @@
 //
-//  BookSearchViewController.swift
+//  SearchViewController.swift
 //  BookApp
 //
 //  Created by 정근호 on 5/8/25.
@@ -24,10 +24,13 @@ enum Section: Int, CaseIterable {
     }
 }
 
-class BookSearchViewController: UIViewController {
-    private let viewModel = BookSearchViewModel()
+class SearchViewController: UIViewController {
+    private let viewModel = SearchViewModel()
     private let disposeBag = DisposeBag()
     private var searchedBooks = [Book]()
+    private var recentBooks = [Book]()
+    
+    weak var bottomSheetDelegate: BottomSheetDelegate?
     
     // MARK: - UI Components
     private lazy var searchBar: UISearchBar = {
@@ -38,7 +41,7 @@ class BookSearchViewController: UIViewController {
         return searchBar
     }()
     
-    private lazy var searchCollectionView: UICollectionView = {
+    private lazy var searchViewCollectionView: UICollectionView = {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: createLayout())
         // 최근 본 책 Cell
         collectionView.register(RecentBookCell.self, forCellWithReuseIdentifier: RecentBookCell.id)
@@ -64,10 +67,17 @@ class BookSearchViewController: UIViewController {
         bindViewModel()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        viewModel.fetchRecentBooks()
+        self.searchViewCollectionView.reloadData()
+    }
+    
     private func setUI() {
         view.backgroundColor = .secondarySystemBackground
         
-        [searchBar, searchCollectionView].forEach {
+        [searchBar, searchViewCollectionView].forEach {
             view.addSubview($0)
         }
         
@@ -76,7 +86,7 @@ class BookSearchViewController: UIViewController {
             $0.horizontalEdges.equalTo(view.safeAreaLayoutGuide)
         }
         
-        searchCollectionView.snp.makeConstraints {
+        searchViewCollectionView.snp.makeConstraints {
             $0.top.equalTo(searchBar.snp.bottom)
             $0.horizontalEdges.equalTo(view.safeAreaLayoutGuide)
             $0.bottom.equalTo(view.safeAreaLayoutGuide)
@@ -110,7 +120,9 @@ class BookSearchViewController: UIViewController {
                 section.orthogonalScrollingBehavior = .continuous
                 section.interGroupSpacing = isLandscape ? 8 : 10
                 section.contentInsets = .init(top: 10, leading: 10, bottom: 20, trailing: 10)
-                section.boundarySupplementaryItems = [self.createSectionHeaderLayout()]
+                if !self.recentBooks.isEmpty {
+                    section.boundarySupplementaryItems = [self.createSectionHeaderLayout()]
+                }
                 
                 return section
                 
@@ -129,7 +141,9 @@ class BookSearchViewController: UIViewController {
                 let section = NSCollectionLayoutSection(group: group)
                 section.interGroupSpacing = 10
                 section.contentInsets = .init(top: 10, leading: 10, bottom: 20, trailing: 10)
-                section.boundarySupplementaryItems = [self.createSectionHeaderLayout()]
+                if !self.searchedBooks.isEmpty {
+                    section.boundarySupplementaryItems = [self.createSectionHeaderLayout()]
+                }
                 
                 return section
             default:
@@ -153,6 +167,7 @@ class BookSearchViewController: UIViewController {
         return header
     }
     
+    // MARK: - Binding
     private func bindViewModel() {
         viewModel.searchedBookSubject
             .observe(on: MainScheduler.instance)
@@ -160,33 +175,53 @@ class BookSearchViewController: UIViewController {
                 self?.searchedBooks = books
                 print("firstSearchedBook: \(books.first)")
                 print("searchedBooksCount: \(books.count)")
-                self?.searchCollectionView.reloadData()
+                self?.searchViewCollectionView.reloadData()
+            }, onError: { error in
+                print("에러 발생: \(error)")
+            }).disposed(by: disposeBag)
+        
+        viewModel.recentBookSubject
+            .observe(on: MainScheduler.instance)
+            .subscribe(onNext: { [weak self] books in
+                self?.recentBooks = books
+                print("recentBook: \(books.first)")
+                self?.searchViewCollectionView.reloadData()
             }, onError: { error in
                 print("에러 발생: \(error)")
             }).disposed(by: disposeBag)
     }
     
-    // MARK: - Private Methods
     func activateSearchBar() {
         searchBar.becomeFirstResponder()
     }
 }
 
 // MARK: - CollectionViewDelegate
-extension BookSearchViewController: UICollectionViewDelegate {
+extension SearchViewController: UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        navigateToBookInfoView(selectedBook: searchedBooks[indexPath.row])
+        
+        switch Section(rawValue: indexPath.section) {
+            
+        case .recentBook:
+            // 제일 나중에 추가된 요소가 맨 앞으로
+            navigateToBookInfoView(selectedBook: recentBooks[recentBooks.count - 1 - indexPath.row])
+        case .searchResult:
+            navigateToBookInfoView(selectedBook: searchedBooks[indexPath.row])
+        default:
+            return
+        }
+            
     }
 }
 
 // MARK: - CollectionViewDataSource
-extension BookSearchViewController: UICollectionViewDataSource {
+extension SearchViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         switch Section(rawValue: section) {
         case .recentBook:
-            return 10
+            return self.recentBooks.count
         case .searchResult:
             return self.searchedBooks.count
         default:
@@ -205,6 +240,8 @@ extension BookSearchViewController: UICollectionViewDataSource {
                 for: indexPath) as? RecentBookCell else {
                 return UICollectionViewCell()
             }
+            // 제일 나중에 추가된 요소가 맨 앞으로
+            cell.configure(with: recentBooks[recentBooks.count - 1 - indexPath.row])
             return cell
         case .searchResult:
             guard let cell = collectionView.dequeueReusableCell(
@@ -243,7 +280,7 @@ extension BookSearchViewController: UICollectionViewDataSource {
 }
 
 // MARK: - SearchBarDelegate
-extension BookSearchViewController: UISearchBarDelegate {
+extension SearchViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         guard let text = searchBar.text else { return }
         viewModel.searchingText = text
@@ -253,45 +290,14 @@ extension BookSearchViewController: UISearchBarDelegate {
 }
 
 // MARK: - BookInfoDelegate
-extension BookSearchViewController: BookInfoViewControllerDelegate {
+extension SearchViewController: BottomSheetDelegate {
     
-    func showToastAlert() {
-        if view.viewWithTag(999) != nil {
-            self.view.viewWithTag(999)?.removeFromSuperview()
-        }
-        
-        let toast = UILabel()
-        toast.text = "책 담기 완료!"
-        toast.tag = 999
-        toast.textColor = .systemBackground
-        toast.backgroundColor = UIColor.separator.withAlphaComponent(0.7)
-        toast.textAlignment = .center
-        toast.font = .systemFont(ofSize: 14, weight: .bold)
-        toast.alpha = 0
-        toast.clipsToBounds = true
-        toast.numberOfLines = 0
-        
-        let padding: CGFloat = 20
-        let maxWidth = (view.frame.width - padding * 2) / 2
-        let size = toast.sizeThatFits(CGSize(width: maxWidth, height: .greatestFiniteMagnitude))
-        toast.frame = CGRect(x: view.frame.width/2 - (maxWidth/2),
-                             y: view.frame.maxY - size.height - 130,
-                             width: maxWidth,
-                             height: size.height + 16)
-        
-        toast.layer.cornerRadius = toast.frame.height / 2
-        
-        view.addSubview(toast)
-        
-        UIView.animate(withDuration: 0.3, animations: {
-            toast.alpha = 1
-        }) { _ in
-            UIView.animate(withDuration: 0.3, delay: 1.5, options: [], animations: {
-                toast.alpha = 0
-            }) { _ in
-                toast.removeFromSuperview()
-            }
-        }
-        
+    func didAddToCart() {
+        showAlert()
+    }
+    
+    func bottomSheetDidDismiss() {
+        viewModel.fetchRecentBooks()
+        self.searchViewCollectionView.reloadData()
     }
 }

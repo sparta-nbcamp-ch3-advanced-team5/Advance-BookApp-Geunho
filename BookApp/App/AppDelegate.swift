@@ -21,8 +21,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         let window = UIWindow(frame: UIScreen.main.bounds)
         
-        let firstVC = UINavigationController(rootViewController: BookSearchViewController())
-        let secondVC = UINavigationController(rootViewController: BookCartViewController(viewModel: BookCartViewModel()))
+        let firstVC = UINavigationController(rootViewController: SearchViewController())
+        let secondVC = UINavigationController(rootViewController: CartViewController(viewModel: CartViewModel()))
         
         let tabBarVC = UITabBarController()
         tabBarVC.setViewControllers([firstVC, secondVC], animated: true)

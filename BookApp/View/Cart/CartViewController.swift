@@ -1,5 +1,5 @@
 //
-//  BookCartViewController.swift
+//  CartViewController.swift
 //  BookApp
 //
 //  Created by 정근호 on 5/8/25.
@@ -9,9 +9,9 @@ import UIKit
 import SnapKit
 import RxSwift
 
-class BookCartViewController: UIViewController {
+final class CartViewController: UIViewController {
     
-    private let viewModel: BookCartViewModel
+    private let viewModel: CartViewModel
     private let disposeBag = DisposeBag()
     
     private var cartItems: [CartItem] = []
@@ -38,7 +38,7 @@ class BookCartViewController: UIViewController {
     private lazy var addToCartBarButton = UIBarButtonItem(title: "추가", style: .plain, target: self, action: #selector(addToCartButtonTapped))
     
     // MARK: - Init & SetUp
-    init(viewModel: BookCartViewModel) {
+    init(viewModel: CartViewModel) {
         self.viewModel = viewModel
         
         super.init(nibName: nil, bundle: nil)
@@ -138,9 +138,9 @@ class BookCartViewController: UIViewController {
             // 탭바의 첫 번째 탭으로 이동
             tabBarController.selectedIndex = 0
             
-            // 탭바 컨트롤러의 첫번째 UINavigationController의 루트 ViewController -> BookSearchViewController
+            // 탭바 컨트롤러의 첫번째 UINavigationController의 루트 ViewController -> SearchViewController
             if let searchNav = tabBarController.viewControllers?[0] as? UINavigationController,
-               let searchVC = searchNav.viewControllers.first as? BookSearchViewController {
+               let searchVC = searchNav.viewControllers.first as? SearchViewController {
                 searchVC.activateSearchBar()
             }
         }
@@ -156,9 +156,9 @@ class BookCartViewController: UIViewController {
 }
 
 // MARK: - CollectionViewDelegate
-extension BookCartViewController: UICollectionViewDelegate {
+extension CartViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let selectedCartItem = cartItems[indexPath.row]
+        let selectedCartItem = cartItems[cartItems.count - 1 - indexPath.row]
         print("선택된 아이템: \(selectedCartItem.title)")
         let selectedBook = viewModel.findBookByCartItem(isbn: selectedCartItem.isbn)
         navigateToBookInfoView(selectedBook: selectedBook)
@@ -166,7 +166,7 @@ extension BookCartViewController: UICollectionViewDelegate {
 }
 
 // MARK: - CollectionViewDataSource
-extension BookCartViewController: UICollectionViewDataSource {
+extension CartViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return cartItems.count
     }
@@ -178,8 +178,9 @@ extension BookCartViewController: UICollectionViewDataSource {
             for: indexPath) as? CartItemCell else {
             return UICollectionViewCell()
         }
-        let cartItem = cartItems[indexPath.row]
+        let cartItem = cartItems[cartItems.count - 1 - indexPath.row]
         cell.configure(with: cartItem)
+        // CartItemCellDelegate BookCartViewController로 설정
         cell.delegate = self
         
         return cell
@@ -191,7 +192,7 @@ extension BookCartViewController: UICollectionViewDataSource {
 }
 
 // MARK: - CartItemCellDelegate
-extension BookCartViewController: CartItemCellDelegate {
+extension CartViewController: CartItemCellDelegate {
     
     func cartItemCellDidTapPlusButton(_ cell: CartItemCell) {
         guard let indexPath = cartCollectionView.indexPath(for: cell) else { return }
@@ -199,7 +200,7 @@ extension BookCartViewController: CartItemCellDelegate {
         // ViewModel의 cartItems 스트림에서 현재 값을 가져옵니다.
         // BehaviorSubject의 현재 값에 접근해야 합니다.
         do {
-            let cartItem = try viewModel.cartItems.value()[indexPath.row]
+            let cartItem = try viewModel.cartItems.value()[cartItems.count - 1 - indexPath.row]
             
             print("Plus tapped for item: \(cartItem.title)")
 
@@ -213,7 +214,7 @@ extension BookCartViewController: CartItemCellDelegate {
         guard let indexPath = cartCollectionView.indexPath(for: cell) else { return }
         
         do {
-            let cartItem = try viewModel.cartItems.value()[indexPath.row]
+            let cartItem = try viewModel.cartItems.value()[cartItems.count - 1 - indexPath.row]
             
             print("Minus tapped for item: \(cartItem.title)")
 
@@ -227,5 +228,16 @@ extension BookCartViewController: CartItemCellDelegate {
         } catch {
             print("Error accessing cart item from BehaviorSubject: \(error)")
         }
+    }
+}
+
+extension CartViewController: BottomSheetDelegate {
+    func didAddToCart() {
+        showAlert()
+    }
+    
+    func bottomSheetDidDismiss() {
+        self.viewModel.refreshCartItems()
+        self.cartCollectionView.reloadData()
     }
 }

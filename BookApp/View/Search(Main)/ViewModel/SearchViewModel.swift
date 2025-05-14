@@ -8,12 +8,19 @@
 import Foundation
 import RxSwift
 
-class BookSearchViewModel {
+final class SearchViewModel {
     var searchingText: String = ""
     let disposeBag = DisposeBag()
     let searchedBookSubject = BehaviorSubject(value: [Book]())
+    let recentBookSubject = BehaviorSubject(value: [Book]())
     /// 한 페이지에 보여질 문서 수, 1~50 사이의 값, 기본 값 10
     let size = 50
+    
+    private let coreDataManager: RecentBookStorageManager = CoreDataManager.shared
+    
+    init() {
+        fetchRecentBooks()
+    }
     
     func searchBooks() {
         guard let url = URL(string: "https://dapi.kakao.com/v3/search/book?query=\(searchingText)&size=\(size)")
@@ -25,5 +32,10 @@ class BookSearchViewModel {
             }, onFailure: { [weak self] error in
                 self?.searchedBookSubject.onError(error)
             }).disposed(by: disposeBag)
+    }
+    
+    func fetchRecentBooks() {
+        recentBookSubject.onNext(coreDataManager.fetchRecentBook())
+        print(recentBookSubject)
     }
 }

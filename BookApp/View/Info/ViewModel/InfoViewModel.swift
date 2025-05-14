@@ -7,11 +7,11 @@
 
 import Foundation
 
-class BookInfoViewModel {
+final class InfoViewModel {
     
     private var book: Book
-    private let bookStorageManager = BookStorageManager.shared
-        
+    private let coreDataManager = CoreDataManager.shared
+    
     var title: String?
     var author: String?
     var thumbnailURL: String?
@@ -32,6 +32,10 @@ class BookInfoViewModel {
     }
     
     func addBookToCart() {
-        self.bookStorageManager.saveBookToCart(book: book)
+        self.coreDataManager.saveOrUpdateBookToCart(book: book)
+    }
+    
+    func manageRecentBook() {
+        coreDataManager.configureRecentBook(book: book)
     }
 }

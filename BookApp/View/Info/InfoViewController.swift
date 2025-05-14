@@ -1,5 +1,5 @@
 //
-//  BookInfoViewController.swift
+//  InfoViewController.swift
 //  BookApp
 //
 //  Created by 정근호 on 5/9/25.
@@ -9,14 +9,17 @@ import UIKit
 import SnapKit
 import Kingfisher
 
-protocol BookInfoViewControllerDelegate: AnyObject {
-    func showToastAlert()
+protocol BottomSheetDelegate: AnyObject {
+    /// 장바구니에 책 추가 시
+    func didAddToCart()
+    /// 책 상세 바텀시트가 닫힐 시
+    func bottomSheetDidDismiss()
 }
 
-class BookInfoViewController: UIViewController {
+final class InfoViewController: UIViewController {
     
-    private var viewModel: BookInfoViewModel
-    weak var delegate: BookInfoViewControllerDelegate? 
+    private var viewModel: InfoViewModel
+    weak var bottomSheetDelegate: BottomSheetDelegate?
     
     // MARK: - UI Components
     private let bookInfoContentView = UIView()
@@ -102,7 +105,7 @@ class BookInfoViewController: UIViewController {
     }()
 
     // MARK: - Init & SetUp
-    init(viewModel: BookInfoViewModel) {
+    init(viewModel: InfoViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
@@ -116,6 +119,19 @@ class BookInfoViewController: UIViewController {
         
         configure()
         setUI()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        viewModel.manageRecentBook()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        // 창 닫힐 시 뷰 데이터 리로드
+        self.bottomSheetDelegate?.bottomSheetDidDismiss()
     }
 
     private func setUI() {
@@ -201,7 +217,7 @@ class BookInfoViewController: UIViewController {
     @objc private func addToCart() {
         viewModel.addBookToCart()
         self.dismiss(animated: true) {
-            self.delegate?.showToastAlert()
+            self.bottomSheetDelegate?.didAddToCart()
         }
     }
     
@@ -217,6 +233,5 @@ class BookInfoViewController: UIViewController {
         contentsLabel.text = (viewModel.contents ?? "") + "..."
         guard let imageURL = viewModel.thumbnailURL else { return }
         thumbnailView.kf.setImage(with: URL(string: imageURL))
-        
     }
 }
