@@ -158,7 +158,7 @@ final class CartViewController: UIViewController {
 // MARK: - CollectionViewDelegate
 extension CartViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let selectedCartItem = cartItems[indexPath.row]
+        let selectedCartItem = cartItems[cartItems.count - 1 - indexPath.row]
         print("선택된 아이템: \(selectedCartItem.title)")
         let selectedBook = viewModel.findBookByCartItem(isbn: selectedCartItem.isbn)
         navigateToBookInfoView(selectedBook: selectedBook)
@@ -178,7 +178,7 @@ extension CartViewController: UICollectionViewDataSource {
             for: indexPath) as? CartItemCell else {
             return UICollectionViewCell()
         }
-        let cartItem = cartItems[indexPath.row]
+        let cartItem = cartItems[cartItems.count - 1 - indexPath.row]
         cell.configure(with: cartItem)
         // CartItemCellDelegate BookCartViewController로 설정
         cell.delegate = self
@@ -200,7 +200,7 @@ extension CartViewController: CartItemCellDelegate {
         // ViewModel의 cartItems 스트림에서 현재 값을 가져옵니다.
         // BehaviorSubject의 현재 값에 접근해야 합니다.
         do {
-            let cartItem = try viewModel.cartItems.value()[indexPath.row]
+            let cartItem = try viewModel.cartItems.value()[cartItems.count - 1 - indexPath.row]
             
             print("Plus tapped for item: \(cartItem.title)")
 
@@ -214,7 +214,7 @@ extension CartViewController: CartItemCellDelegate {
         guard let indexPath = cartCollectionView.indexPath(for: cell) else { return }
         
         do {
-            let cartItem = try viewModel.cartItems.value()[indexPath.row]
+            let cartItem = try viewModel.cartItems.value()[cartItems.count - 1 - indexPath.row]
             
             print("Minus tapped for item: \(cartItem.title)")
 
