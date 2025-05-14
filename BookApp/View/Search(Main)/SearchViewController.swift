@@ -141,7 +141,9 @@ class SearchViewController: UIViewController {
                 let section = NSCollectionLayoutSection(group: group)
                 section.interGroupSpacing = 10
                 section.contentInsets = .init(top: 10, leading: 10, bottom: 20, trailing: 10)
-                section.boundarySupplementaryItems = [self.createSectionHeaderLayout()]
+                if !self.searchedBooks.isEmpty {
+                    section.boundarySupplementaryItems = [self.createSectionHeaderLayout()]
+                }
                 
                 return section
             default:
