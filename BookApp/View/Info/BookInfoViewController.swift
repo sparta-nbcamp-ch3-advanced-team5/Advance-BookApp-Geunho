@@ -128,7 +128,7 @@ class BookInfoViewController: UIViewController {
     }
     
     override func viewWillDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
+        super.viewWillDisappear(animated)
         
         // 창 닫힐 시 뷰 데이터 리로드
         self.bottomSheetDelegate?.bottomSheetDidDismiss()

@@ -67,6 +67,13 @@ class BookSearchViewController: UIViewController {
         bindViewModel()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        viewModel.fetchRecentBooks()
+        self.searchViewCollectionView.reloadData()
+    }
+    
     private func setUI() {
         view.backgroundColor = .secondarySystemBackground
         
@@ -113,7 +120,9 @@ class BookSearchViewController: UIViewController {
                 section.orthogonalScrollingBehavior = .continuous
                 section.interGroupSpacing = isLandscape ? 8 : 10
                 section.contentInsets = .init(top: 10, leading: 10, bottom: 20, trailing: 10)
-                section.boundarySupplementaryItems = [self.createSectionHeaderLayout()]
+                if !self.recentBooks.isEmpty {
+                    section.boundarySupplementaryItems = [self.createSectionHeaderLayout()]
+                }
                 
                 return section
                 
@@ -193,7 +202,8 @@ extension BookSearchViewController: UICollectionViewDelegate {
         switch Section(rawValue: indexPath.section) {
             
         case .recentBook:
-            navigateToBookInfoView(selectedBook: recentBooks[indexPath.row])
+            // 제일 나중에 추가된 요소가 맨 앞으로
+            navigateToBookInfoView(selectedBook: recentBooks[recentBooks.count - 1 - indexPath.row])
         case .searchResult:
             navigateToBookInfoView(selectedBook: searchedBooks[indexPath.row])
         default:
@@ -280,12 +290,12 @@ extension BookSearchViewController: UISearchBarDelegate {
 // MARK: - BookInfoDelegate
 extension BookSearchViewController: BottomSheetDelegate {
     
+    func didAddToCart() {
+        showAlert()
+    }
+    
     func bottomSheetDidDismiss() {
         viewModel.fetchRecentBooks()
         self.searchViewCollectionView.reloadData()
-    }
-    
-    func didAddToCart() {
-        showAlert()
     }
 }

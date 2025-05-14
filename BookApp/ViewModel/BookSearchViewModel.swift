@@ -36,5 +36,6 @@ class BookSearchViewModel {
     
     func fetchRecentBooks() {
         recentBookSubject.onNext(coreDataManager.fetchRecentBook())
+        print(recentBookSubject)
     }
 }
