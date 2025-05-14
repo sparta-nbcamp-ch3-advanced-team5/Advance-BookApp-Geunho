@@ -6,22 +6,28 @@
 //
 
 import CoreData
-import UIKit
+import Foundation
 
-final class CartBookStorageManager {
-    static let shared = CartBookStorageManager()
+final class CoreDataManager {
+    static let shared = CoreDataManager()
     private init() {}
     
-    private let context: NSManagedObjectContext? = {
-        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
-            print("AppDelegate가 초기화되지 않았습니다.")
-            return nil
-        }
-        return appDelegate.persistentContainer.viewContext
+    lazy var persistentContainer: NSPersistentContainer = {
+        let container = NSPersistentContainer(name: "BookApp")
+        container.loadPersistentStores(completionHandler: { (storeDescription, error) in
+            if let error = error as NSError? {
+                fatalError("Unresolved error \(error), \(error.userInfo)")
+            }
+        })
+        return container
     }()
     
+    var context: NSManagedObjectContext {
+        return persistentContainer.viewContext
+    }
+    
+    
     func saveBookToCart(book: Book, quantity: Int = 1) {
-        guard let context = context else { return }
         
         // BookEntity를 찾기
         let bookFetchRequest: NSFetchRequest<BookEntity> = BookEntity.fetchRequest()
@@ -79,7 +85,6 @@ final class CartBookStorageManager {
     }
     
     func fetchCartItems() -> [CartItem] {
-        guard let context = context else { return [] }
         
         let fetchRequest: NSFetchRequest<CartItemEntity> = CartItemEntity.fetchRequest()
         
@@ -112,7 +117,7 @@ final class CartBookStorageManager {
     }
     
     func removeAllCartItems() {
-        guard let context = context else { return }
+        
         let fetchRequest: NSFetchRequest<NSFetchRequestResult> = CartItemEntity.fetchRequest()
         let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
         batchDeleteRequest.resultType = .resultTypeCount // 삭제된 객체의 수를 결과로 받도록 설정 (선택 사항)
@@ -135,7 +140,6 @@ final class CartBookStorageManager {
     }
     
     func removeItem(item: CartItem) {
-        guard let context = context else { return }
 
         guard let cartItemEntityToDelete = findCartItemEntity(forBookISBN: item.isbn) else {
             print("삭제할 장바구니 아이템을 찾지 못했습니다 (ISBN: \(item.isbn)).")
@@ -154,7 +158,6 @@ final class CartBookStorageManager {
     }
     
     func plusQuantity(item: CartItem) {
-        guard let context = context else { return }
 
         guard let cartItemEntity = findCartItemEntity(forBookISBN: item.isbn) else {
             print("수량 증가 대상 장바구니 아이템을 찾지 못했습니다 (ISBN: \(item.isbn)).")
@@ -173,7 +176,6 @@ final class CartBookStorageManager {
     }
     
     func minusQuantity(item: CartItem) {
-        guard let context = context else { return }
         
         guard let cartItemEntity = findCartItemEntity(forBookISBN: item.isbn) else {
             print("수량 증가 대상 장바구니 아이템을 찾지 못했습니다 (ISBN: \(item.isbn)).")
@@ -190,12 +192,9 @@ final class CartBookStorageManager {
             print("장바구니 아이템 (ISBN: \(item.isbn)) 수량 감소 실패. 현재 수량: \(cartItemEntity.quantity)")
         }
     }
-}
-
-extension CartBookStorageManager {
+    
     func findCartItemEntity(forBookISBN isbn: String) -> CartItemEntity? {
-        guard let context = context else { return nil }
-
+        
         // 1. ISBN으로 BookEntity 찾기
         let bookFetchRequest: NSFetchRequest<BookEntity> = BookEntity.fetchRequest()
         bookFetchRequest.predicate = NSPredicate(format: "isbn == %@", isbn)
@@ -226,6 +225,12 @@ extension CartBookStorageManager {
             return nil
         }
         
-        return cartItems.first 
+        return cartItems.first
     }
+}
+
+// MARK: - RecentBookEntity 관련
+extension CoreDataManager {
+    
+    
 }

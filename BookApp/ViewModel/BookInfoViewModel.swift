@@ -10,7 +10,7 @@ import Foundation
 class BookInfoViewModel {
     
     private var book: Book
-    private let cartBookStorageManager = CartBookStorageManager.shared
+    private let cartBookStorageManager = CoreDataManager.shared
         
     var title: String?
     var author: String?
