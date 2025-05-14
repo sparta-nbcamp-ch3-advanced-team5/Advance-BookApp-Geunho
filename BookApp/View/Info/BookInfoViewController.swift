@@ -10,7 +10,9 @@ import SnapKit
 import Kingfisher
 
 protocol BottomSheetDelegate: AnyObject {
-    func showToastAlert()
+    /// 장바구니에 책 추가 시
+    func didAddToCart()
+    /// 책 상세 바텀시트가 닫힐 시
     func bottomSheetDidDismiss()
 }
 
@@ -128,6 +130,7 @@ class BookInfoViewController: UIViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         
+        // 창 닫힐 시 뷰 데이터 리로드
         self.bottomSheetDelegate?.bottomSheetDidDismiss()
     }
 
@@ -214,7 +217,7 @@ class BookInfoViewController: UIViewController {
     @objc private func addToCart() {
         viewModel.addBookToCart()
         self.dismiss(animated: true) {
-            self.bottomSheetDelegate?.showToastAlert()
+            self.bottomSheetDelegate?.didAddToCart()
         }
     }
     

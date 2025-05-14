@@ -229,3 +229,14 @@ extension BookCartViewController: CartItemCellDelegate {
         }
     }
 }
+
+extension BookCartViewController: BottomSheetDelegate {
+    func didAddToCart() {
+        showAlert()
+    }
+    
+    func bottomSheetDidDismiss() {
+        self.viewModel.refreshCartItems()
+        self.cartCollectionView.reloadData()
+    }
+}
