@@ -10,7 +10,7 @@ import Foundation
 class BookInfoViewModel {
     
     private var book: Book
-    private let bookStorageManager = BookStorageManager.shared
+    private let cartBookStorageManager = CartBookStorageManager.shared
         
     var title: String?
     var author: String?
@@ -32,6 +32,6 @@ class BookInfoViewModel {
     }
     
     func addBookToCart() {
-        self.bookStorageManager.saveBookToCart(book: book)
+        self.cartBookStorageManager.saveBookToCart(book: book)
     }
 }

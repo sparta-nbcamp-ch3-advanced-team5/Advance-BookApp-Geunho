@@ -15,12 +15,12 @@ class BookCartViewModel {
     /// 장바구니가 비었는지 여부를 나타내는 스트림
     let isCartEmpty: Observable<Bool>
     
-    private let bookStorageManager = BookStorageManager.shared
+    private let cartBookStorageManager = CartBookStorageManager.shared
     private let disposeBag = DisposeBag()
     
     init() {
         // 초기 장바구니 아이템 로드
-        let initialItems = self.bookStorageManager.fetchCartItems()
+        let initialItems = self.cartBookStorageManager.fetchCartItems()
         self.cartItems = BehaviorSubject(value: initialItems)
         
         // isCartEmpty는 cartDisplayItems 스트림을 변환하여 생성
@@ -31,10 +31,10 @@ class BookCartViewModel {
     }
     
     func findBookByCartItem(isbn: String) -> Book {
-        let cartItem = bookStorageManager.findCartItemEntity(forBookISBN: isbn)
+        let cartItem = cartBookStorageManager.findCartItemEntity(forBookISBN: isbn)
         
         return Book(
-            authors: cartItem?.book?.authors ?? [],
+            authors: (cartItem?.book?.authors ?? []) as! [String],
             contents: cartItem?.book?.contents ?? "",
             price: Int(cartItem?.book?.price ?? 0),
             title: cartItem?.book?.title ?? "",
@@ -45,27 +45,27 @@ class BookCartViewModel {
     
     // MARK: - Actions
     func refreshCartItems() {
-        let updatedItems = bookStorageManager.fetchCartItems()
+        let updatedItems = cartBookStorageManager.fetchCartItems()
         cartItems.onNext(updatedItems)
     }
     
     func removeAllCartItems() {
-        bookStorageManager.removeAllCartItems()
+        cartBookStorageManager.removeAllCartItems()
         self.refreshCartItems()
     }
     
     func plusQuantity(cartItem: CartItem) {
-        bookStorageManager.plusQuantity(item: cartItem)
+        cartBookStorageManager.plusQuantity(item: cartItem)
         self.refreshCartItems()
     }
     
     func minusQuantity(cartItem: CartItem) {
-        bookStorageManager.minusQuantity(item: cartItem)
+        cartBookStorageManager.minusQuantity(item: cartItem)
         self.refreshCartItems()
     }
     
     func removeItem(cartItem: CartItem) {
-        bookStorageManager.removeItem(item: cartItem)
+        cartBookStorageManager.removeItem(item: cartItem)
         self.refreshCartItems()
     }
 }

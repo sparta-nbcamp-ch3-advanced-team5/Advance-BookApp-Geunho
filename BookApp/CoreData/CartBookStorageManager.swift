@@ -8,8 +8,8 @@
 import CoreData
 import UIKit
 
-final class BookStorageManager {
-    static let shared = BookStorageManager()
+final class CartBookStorageManager {
+    static let shared = CartBookStorageManager()
     private init() {}
     
     private let context: NSManagedObjectContext? = {
@@ -39,7 +39,7 @@ final class BookStorageManager {
                 let newBook = BookEntity(context: context)
                 newBook.isbn = book.isbn
                 newBook.title = book.title
-                newBook.authors = book.authors
+                newBook.authors = book.authors as NSArray
                 newBook.contents = book.contents
                 newBook.price = Int32(book.price)
                 newBook.thumbnailURL = book.thumbnail
@@ -96,7 +96,7 @@ final class BookStorageManager {
                 return CartItem(
                     isbn: bookEntity.isbn ?? "",
                     title: bookEntity.title ?? "",
-                    authors: bookEntity.authors ?? [],
+                    authors: (bookEntity.authors ?? []) as! [String],
                     contents: bookEntity.contents ?? "",
                     price: Int(bookEntity.price),
                     thumbnailURL: bookEntity.thumbnailURL ?? "",
@@ -192,7 +192,7 @@ final class BookStorageManager {
     }
 }
 
-extension BookStorageManager {
+extension CartBookStorageManager {
     func findCartItemEntity(forBookISBN isbn: String) -> CartItemEntity? {
         guard let context = context else { return nil }
 
