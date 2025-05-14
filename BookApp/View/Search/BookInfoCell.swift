@@ -7,7 +7,7 @@
 
 import UIKit
 
-class BookInfoCell: UICollectionViewCell {
+final class BookInfoCell: UICollectionViewCell {
     static let id = String(describing: BookInfoCell.self)
 
     // MARK: - UI Components

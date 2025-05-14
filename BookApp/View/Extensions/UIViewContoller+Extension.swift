@@ -7,16 +7,15 @@
 
 import UIKit
 
-// MARK: UIViewController
 extension UIViewController {
     
     /// 영화 상세 뷰 모달 띄우기
     /// BookSearchView, BookCartView 두 곳에서 사용됨
     func navigateToBookInfoView(selectedBook book: Book) {
         
-        let bottomSheetVC = BookInfoViewController(viewModel: BookInfoViewModel(book: book))
+        let bottomSheetVC = InfoViewController(viewModel: InfoViewModel(book: book))
         // Delegate 설정
-        // self: BookSearchViewController 또는 BookCartViewController
+        // self: SearchViewController 또는 CartViewController
         bottomSheetVC.bottomSheetDelegate = self as? BottomSheetDelegate
         if let sheet = bottomSheetVC.sheetPresentationController {
             sheet.detents = [.custom(resolver: { context in
@@ -84,19 +83,5 @@ extension UIViewController {
             }
         }
         
-    }
-}
-
-// MARK: - String
-extension String {
-    
-    func formatToWon() -> String {
-        if let self = Int(self) {
-            let numberFormatter = NumberFormatter()
-            numberFormatter.numberStyle = .decimal
-            return (numberFormatter.string(from: NSNumber(value: self))!) + "원"
-        } else {
-            return self
-        }
     }
 }

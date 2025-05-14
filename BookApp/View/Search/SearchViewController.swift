@@ -1,5 +1,5 @@
 //
-//  BookSearchViewController.swift
+//  SearchViewController.swift
 //  BookApp
 //
 //  Created by 정근호 on 5/8/25.
@@ -24,8 +24,8 @@ enum Section: Int, CaseIterable {
     }
 }
 
-class BookSearchViewController: UIViewController {
-    private let viewModel = BookSearchViewModel()
+class SearchViewController: UIViewController {
+    private let viewModel = SearchViewModel()
     private let disposeBag = DisposeBag()
     private var searchedBooks = [Book]()
     private var recentBooks = [Book]()
@@ -195,7 +195,7 @@ class BookSearchViewController: UIViewController {
 }
 
 // MARK: - CollectionViewDelegate
-extension BookSearchViewController: UICollectionViewDelegate {
+extension SearchViewController: UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
@@ -214,7 +214,7 @@ extension BookSearchViewController: UICollectionViewDelegate {
 }
 
 // MARK: - CollectionViewDataSource
-extension BookSearchViewController: UICollectionViewDataSource {
+extension SearchViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         switch Section(rawValue: section) {
@@ -278,7 +278,7 @@ extension BookSearchViewController: UICollectionViewDataSource {
 }
 
 // MARK: - SearchBarDelegate
-extension BookSearchViewController: UISearchBarDelegate {
+extension SearchViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         guard let text = searchBar.text else { return }
         viewModel.searchingText = text
@@ -288,7 +288,7 @@ extension BookSearchViewController: UISearchBarDelegate {
 }
 
 // MARK: - BookInfoDelegate
-extension BookSearchViewController: BottomSheetDelegate {
+extension SearchViewController: BottomSheetDelegate {
     
     func didAddToCart() {
         showAlert()

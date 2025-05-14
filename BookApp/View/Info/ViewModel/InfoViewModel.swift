@@ -7,7 +7,7 @@
 
 import Foundation
 
-class BookInfoViewModel {
+final class InfoViewModel {
     
     private var book: Book
     private let coreDataManager = CoreDataManager.shared

@@ -7,7 +7,7 @@
 
 import UIKit
 
-class RecentBookCell: UICollectionViewCell {
+final class RecentBookCell: UICollectionViewCell {
     static let id = String(describing: RecentBookCell.self)
 
     // MARK: - UI Components

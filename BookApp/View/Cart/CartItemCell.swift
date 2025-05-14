@@ -12,7 +12,7 @@ protocol CartItemCellDelegate: AnyObject {
     func cartItemCellDidTapMinusButton(_ cell: CartItemCell)
 }
 
-class CartItemCell: UICollectionViewCell {
+final class CartItemCell: UICollectionViewCell {
     static let id = String(describing: CartItemCell.self)
     
     weak var delegate: CartItemCellDelegate?

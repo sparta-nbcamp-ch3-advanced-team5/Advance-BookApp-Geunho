@@ -8,7 +8,7 @@
 import Foundation
 import RxSwift
 
-class BookCartViewModel {
+final class CartViewModel {
 
     /// 장바구니 아이템 목록 스트림
     let cartItems: BehaviorSubject<[CartItem]>

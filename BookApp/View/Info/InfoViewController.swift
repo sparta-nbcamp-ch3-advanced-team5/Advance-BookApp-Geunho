@@ -1,5 +1,5 @@
 //
-//  BookInfoViewController.swift
+//  InfoViewController.swift
 //  BookApp
 //
 //  Created by 정근호 on 5/9/25.
@@ -16,9 +16,9 @@ protocol BottomSheetDelegate: AnyObject {
     func bottomSheetDidDismiss()
 }
 
-class BookInfoViewController: UIViewController {
+final class InfoViewController: UIViewController {
     
-    private var viewModel: BookInfoViewModel
+    private var viewModel: InfoViewModel
     weak var bottomSheetDelegate: BottomSheetDelegate?
     
     // MARK: - UI Components
@@ -105,7 +105,7 @@ class BookInfoViewController: UIViewController {
     }()
 
     // MARK: - Init & SetUp
-    init(viewModel: BookInfoViewModel) {
+    init(viewModel: InfoViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
@@ -235,8 +235,3 @@ class BookInfoViewController: UIViewController {
         thumbnailView.kf.setImage(with: URL(string: imageURL))
     }
 }
-
-// 프로토콜로 델리게이트 하나 만들기
-// 모달 화면에서 화면이 꺼지는 타이밍에 델리게이트에 있는 메서드 호출
-// 서치뷰에서 모달의 델리게이트를 self로(모달에서 델리게이트를 가지고 있어야 함)
-// 서치뷰컨에서 델리게이트 채택, 실제 구현부에서 리로드

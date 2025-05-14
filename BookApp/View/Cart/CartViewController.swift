@@ -1,5 +1,5 @@
 //
-//  BookCartViewController.swift
+//  CartViewController.swift
 //  BookApp
 //
 //  Created by 정근호 on 5/8/25.
@@ -9,9 +9,9 @@ import UIKit
 import SnapKit
 import RxSwift
 
-class BookCartViewController: UIViewController {
+final class CartViewController: UIViewController {
     
-    private let viewModel: BookCartViewModel
+    private let viewModel: CartViewModel
     private let disposeBag = DisposeBag()
     
     private var cartItems: [CartItem] = []
@@ -38,7 +38,7 @@ class BookCartViewController: UIViewController {
     private lazy var addToCartBarButton = UIBarButtonItem(title: "추가", style: .plain, target: self, action: #selector(addToCartButtonTapped))
     
     // MARK: - Init & SetUp
-    init(viewModel: BookCartViewModel) {
+    init(viewModel: CartViewModel) {
         self.viewModel = viewModel
         
         super.init(nibName: nil, bundle: nil)
@@ -138,9 +138,9 @@ class BookCartViewController: UIViewController {
             // 탭바의 첫 번째 탭으로 이동
             tabBarController.selectedIndex = 0
             
-            // 탭바 컨트롤러의 첫번째 UINavigationController의 루트 ViewController -> BookSearchViewController
+            // 탭바 컨트롤러의 첫번째 UINavigationController의 루트 ViewController -> SearchViewController
             if let searchNav = tabBarController.viewControllers?[0] as? UINavigationController,
-               let searchVC = searchNav.viewControllers.first as? BookSearchViewController {
+               let searchVC = searchNav.viewControllers.first as? SearchViewController {
                 searchVC.activateSearchBar()
             }
         }
@@ -156,7 +156,7 @@ class BookCartViewController: UIViewController {
 }
 
 // MARK: - CollectionViewDelegate
-extension BookCartViewController: UICollectionViewDelegate {
+extension CartViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let selectedCartItem = cartItems[indexPath.row]
         print("선택된 아이템: \(selectedCartItem.title)")
@@ -166,7 +166,7 @@ extension BookCartViewController: UICollectionViewDelegate {
 }
 
 // MARK: - CollectionViewDataSource
-extension BookCartViewController: UICollectionViewDataSource {
+extension CartViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return cartItems.count
     }
@@ -180,6 +180,7 @@ extension BookCartViewController: UICollectionViewDataSource {
         }
         let cartItem = cartItems[indexPath.row]
         cell.configure(with: cartItem)
+        // CartItemCellDelegate BookCartViewController로 설정
         cell.delegate = self
         
         return cell
@@ -191,7 +192,7 @@ extension BookCartViewController: UICollectionViewDataSource {
 }
 
 // MARK: - CartItemCellDelegate
-extension BookCartViewController: CartItemCellDelegate {
+extension CartViewController: CartItemCellDelegate {
     
     func cartItemCellDidTapPlusButton(_ cell: CartItemCell) {
         guard let indexPath = cartCollectionView.indexPath(for: cell) else { return }
@@ -230,7 +231,7 @@ extension BookCartViewController: CartItemCellDelegate {
     }
 }
 
-extension BookCartViewController: BottomSheetDelegate {
+extension CartViewController: BottomSheetDelegate {
     func didAddToCart() {
         showAlert()
     }

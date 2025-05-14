@@ -8,7 +8,7 @@
 import Foundation
 import RxSwift
 
-class BookSearchViewModel {
+final class SearchViewModel {
     var searchingText: String = ""
     let disposeBag = DisposeBag()
     let searchedBookSubject = BehaviorSubject(value: [Book]())
