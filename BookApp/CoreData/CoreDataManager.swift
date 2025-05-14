@@ -26,6 +26,10 @@ final class CoreDataManager {
         return persistentContainer.viewContext
     }
     
+}
+
+// MARK: - CartStorageManager
+extension CoreDataManager: CartStorageManager {
     // MARK: - Create
     /// BookEntity가 있으면 바로 CartItemEntity에 저장
     /// 없으면 새로 생성 후 CartItemEntity에 저장
@@ -240,8 +244,8 @@ final class CoreDataManager {
     }
 }
 
-// MARK: - RecentBookEntity 관련
-extension CoreDataManager {
+// MARK: - RecentBookStorageManager
+extension CoreDataManager: RecentBookStorageManager {
     
     // MARK: - Read
     /// 최근 본 책 정보들 Book으로 변환하여 불러옴
@@ -345,5 +349,4 @@ extension CoreDataManager {
             print("중복 삭제 실패: \(error)")
         }
     }
-    
 }

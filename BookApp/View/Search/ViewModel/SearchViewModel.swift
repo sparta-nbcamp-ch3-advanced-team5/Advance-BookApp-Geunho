@@ -16,7 +16,7 @@ final class SearchViewModel {
     /// 한 페이지에 보여질 문서 수, 1~50 사이의 값, 기본 값 10
     let size = 50
     
-    private let coreDataManager = CoreDataManager.shared
+    private let coreDataManager: RecentBookStorageManager = CoreDataManager.shared
     
     init() {
         fetchRecentBooks()

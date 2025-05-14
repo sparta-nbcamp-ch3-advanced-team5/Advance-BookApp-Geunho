@@ -15,7 +15,7 @@ final class CartViewModel {
     /// 장바구니가 비었는지 여부를 나타내는 스트림
     let isCartEmpty: Observable<Bool>
     
-    private let coreDataManager = CoreDataManager.shared
+    private let coreDataManager: CartStorageManager = CoreDataManager.shared
     private let disposeBag = DisposeBag()
     
     init() {

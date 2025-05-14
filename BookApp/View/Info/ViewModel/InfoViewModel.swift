@@ -32,7 +32,7 @@ final class InfoViewModel {
     }
     
     func addBookToCart() {
-        self.coreDataManager.saveBookToCart(book: book)
+        self.coreDataManager.saveOrUpdateBookToCart(book: book)
     }
     
     func manageRecentBook() {
