@@ -232,6 +232,7 @@ final class CoreDataManager {
 // MARK: - RecentBookEntity 관련
 extension CoreDataManager {
     
+    /// 최근 본 책 정보 [Book]으로 불러옴
     func fetchRecentBook() -> [Book] {
         
         let fetchRequest: NSFetchRequest<RecentBookEntity> = RecentBookEntity.fetchRequest()
@@ -255,11 +256,7 @@ extension CoreDataManager {
         }
     }
     
-    private func recentBookSize() -> Int {
-        let recentBookSize = fetchRecentBook().count
-        return recentBookSize
-    }
-    
+    /// 최근 본 책 설정(추가), 10개 일 시 가장 먼저 추가됐던 책 제거
     func configureRecentBook(book: Book) {
         
         if recentBookSize() < 10 {
@@ -271,10 +268,19 @@ extension CoreDataManager {
         
     }
     
+    // 최근 본 책 개수
+    private func recentBookSize() -> Int {
+        let recentBookSize = fetchRecentBook().count
+        return recentBookSize
+    }
+    
+    // 최근 본 책 추가
     private func addRecentBook(book: Book) {
         guard let recentBookEntity = NSEntityDescription.entity(forEntityName: "RecentBookEntity", in: persistentContainer.viewContext) else {
             return
         }
+        
+        deleteDuplicatedRecentBook(isbn: book.isbn)
         
         do {
 
@@ -292,6 +298,7 @@ extension CoreDataManager {
         }
     }
     
+    // 가장 먼저 추가됐던 최근 본 책 제거
     private func deleteFirstRecentBook() {
         let fetchRequest: NSFetchRequest<RecentBookEntity> = RecentBookEntity.fetchRequest()
 
@@ -305,6 +312,22 @@ extension CoreDataManager {
             try context.save()
         } catch {
             print("첫번째 삭제 실패: \(error)")
+        }
+    }
+        
+    private func deleteDuplicatedRecentBook(isbn: String) {
+        let fetchRequest: NSFetchRequest<RecentBookEntity> = RecentBookEntity.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "isbn == %@", isbn)
+        
+        do {
+            let results = try context.fetch(fetchRequest)
+            if !results.isEmpty {
+                for objectToDelete in results {
+                    context.delete(objectToDelete)
+                }
+            }
+        } catch {
+            print("중복 삭제 실패: \(error)")
         }
     }
     
