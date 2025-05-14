@@ -26,8 +26,10 @@ final class CoreDataManager {
         return persistentContainer.viewContext
     }
     
-    
-    func saveBookToCart(book: Book, quantity: Int = 1) {
+    // MARK: - Create
+    /// BookEntity가 있으면 바로 CartItemEntity에 저장
+    /// 없으면 새로 생성 후 CartItemEntity에 저장
+    func saveOrUpdateBookToCart(book: Book, quantity: Int = 1) {
         
         // BookEntity를 찾기
         let bookFetchRequest: NSFetchRequest<BookEntity> = BookEntity.fetchRequest()
@@ -41,7 +43,7 @@ final class CoreDataManager {
             if let existingBook = results.first {
                 bookEntityToAddToCart = existingBook
             } else {
-                // BookEntity가 없으면 새로 생성 (실제로는 saveOrUpdateBook 호출이 더 적절할 수 있음)
+                // BookEntity가 없으면 새로 생성
                 let newBook = BookEntity(context: context)
                 newBook.isbn = book.isbn
                 newBook.title = book.title
@@ -84,6 +86,8 @@ final class CoreDataManager {
         }
     }
     
+    // MARK: - Read
+    /// CartItem 가져옴
     func fetchCartItems() -> [CartItem] {
         
         let fetchRequest: NSFetchRequest<CartItemEntity> = CartItemEntity.fetchRequest()
@@ -116,6 +120,8 @@ final class CoreDataManager {
         }
     }
     
+    // MARK: - Delete
+    /// 장바구니 비우기
     func removeAllCartItems() {
         
         let fetchRequest: NSFetchRequest<NSFetchRequestResult> = CartItemEntity.fetchRequest()
@@ -139,6 +145,7 @@ final class CoreDataManager {
         }
     }
     
+    /// 해당 CartItem 장바구니에서 제거
     func removeItem(item: CartItem) {
 
         guard let cartItemEntityToDelete = findCartItemEntity(forBookISBN: item.isbn) else {
@@ -157,6 +164,8 @@ final class CoreDataManager {
         }
     }
     
+    // MARK: - Update
+    /// 해당 CartItem 수량 +1
     func plusQuantity(item: CartItem) {
 
         guard let cartItemEntity = findCartItemEntity(forBookISBN: item.isbn) else {
@@ -175,6 +184,7 @@ final class CoreDataManager {
         }
     }
     
+    /// 해당 CartItem 수량 -1(CartViewController에서 수량 1일 경우 삭제시 removeItem)
     func minusQuantity(item: CartItem) {
         
         guard let cartItemEntity = findCartItemEntity(forBookISBN: item.isbn) else {
@@ -193,6 +203,7 @@ final class CoreDataManager {
         }
     }
     
+    /// isbn에 맞는 CartItem 찾기
     func findCartItemEntity(forBookISBN isbn: String) -> CartItemEntity? {
         
         // 1. ISBN으로 BookEntity 찾기
@@ -232,7 +243,8 @@ final class CoreDataManager {
 // MARK: - RecentBookEntity 관련
 extension CoreDataManager {
     
-    /// 최근 본 책 정보 [Book]으로 불러옴
+    // MARK: - Read
+    /// 최근 본 책 정보들 Book으로 변환하여 불러옴
     func fetchRecentBook() -> [Book] {
         
         let fetchRequest: NSFetchRequest<RecentBookEntity> = RecentBookEntity.fetchRequest()
@@ -256,6 +268,7 @@ extension CoreDataManager {
         }
     }
     
+    // MARK: - Update
     /// 최근 본 책 설정(추가), 10개 일 시 가장 먼저 추가됐던 책 제거
     func configureRecentBook(book: Book) {
         
@@ -274,6 +287,7 @@ extension CoreDataManager {
         return recentBookSize
     }
     
+    // MARK: - Create
     // 최근 본 책 추가
     private func addRecentBook(book: Book) {
         guard let recentBookEntity = NSEntityDescription.entity(forEntityName: "RecentBookEntity", in: persistentContainer.viewContext) else {
@@ -298,6 +312,7 @@ extension CoreDataManager {
         }
     }
     
+    // MARK: - Delete
     // 가장 먼저 추가됐던 최근 본 책 제거
     private func deleteFirstRecentBook() {
         let fetchRequest: NSFetchRequest<RecentBookEntity> = RecentBookEntity.fetchRequest()
