@@ -232,5 +232,80 @@ final class CoreDataManager {
 // MARK: - RecentBookEntity 관련
 extension CoreDataManager {
     
+    func fetchRecentBook() -> [Book] {
+        
+        let fetchRequest: NSFetchRequest<RecentBookEntity> = RecentBookEntity.fetchRequest()
+        
+        do {
+            let recentBookEntities = try context.fetch(fetchRequest)
+            
+            return recentBookEntities.map { recentBookEntity -> Book in
+                
+                return Book(
+                    authors: recentBookEntity.authors as! [String],
+                    contents: recentBookEntity.contents ?? "",
+                    price: Int(recentBookEntity.price),
+                    title: recentBookEntity.title ?? "",
+                    thumbnail: recentBookEntity.thumbnail ?? "",
+                    isbn: recentBookEntity.isbn ?? "")
+            }
+        } catch {
+            print("장바구니 아이템 가져오기 실패: \(error)")
+            return []
+        }
+    }
+    
+    private func recentBookSize() -> Int {
+        let recentBookSize = fetchRecentBook().count
+        return recentBookSize
+    }
+    
+    func configureRecentBook(book: Book) {
+        
+        if recentBookSize() < 10 {
+            addRecentBook(book: book)
+        } else {
+            deleteFirstRecentBook()
+            addRecentBook(book: book)
+        }
+        
+    }
+    
+    private func addRecentBook(book: Book) {
+        guard let recentBookEntity = NSEntityDescription.entity(forEntityName: "RecentBookEntity", in: persistentContainer.viewContext) else {
+            return
+        }
+        
+        do {
+
+            let managedObject = NSManagedObject(entity: recentBookEntity, insertInto: context)
+            managedObject.setValue(book.title, forKey: "title")
+            managedObject.setValue(book.thumbnail, forKey: "thumbnail")
+            managedObject.setValue(book.price, forKey: "price")
+            managedObject.setValue(book.authors, forKey: "authors")
+            managedObject.setValue(book.isbn, forKey: "isbn")
+            managedObject.setValue(book.contents, forKey: "contents")
+        
+            try context.save()
+        } catch {
+            print("최근 책 추가 실패: \(error)")
+        }
+    }
+    
+    private func deleteFirstRecentBook() {
+        let fetchRequest: NSFetchRequest<RecentBookEntity> = RecentBookEntity.fetchRequest()
+
+        do {
+            let recentBookEntities = try context.fetch(fetchRequest)
+            
+            let firstRecentBookEntity = recentBookEntities.first!
+            
+            context.delete(firstRecentBookEntity)
+            
+            try context.save()
+        } catch {
+            print("첫번째 삭제 실패: \(error)")
+        }
+    }
     
 }
