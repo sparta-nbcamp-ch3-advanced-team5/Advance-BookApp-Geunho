@@ -29,6 +29,8 @@ class SearchViewController: UIViewController {
     private let disposeBag = DisposeBag()
     private var searchedBooks = [Book]()
     private var recentBooks = [Book]()
+    private var metaData = MetaData(isEnd: true, pageableCount: 0, totalCount: 0)
+    private var page = 1
     
     weak var bottomSheetDelegate: BottomSheetDelegate?
     
@@ -55,7 +57,7 @@ class SearchViewController: UIViewController {
         collectionView.delegate = self
         collectionView.dataSource = self
         collectionView.backgroundColor = .secondarySystemBackground
-        collectionView.showsVerticalScrollIndicator = false
+        collectionView.showsVerticalScrollIndicator = true
         return collectionView
     }()
     
@@ -173,7 +175,6 @@ class SearchViewController: UIViewController {
             .observe(on: MainScheduler.instance)
             .subscribe(onNext: { [weak self] books in
                 self?.searchedBooks = books
-                print("firstSearchedBook: \(books.first)")
                 print("searchedBooksCount: \(books.count)")
                 self?.searchViewCollectionView.reloadData()
             }, onError: { error in
@@ -184,8 +185,16 @@ class SearchViewController: UIViewController {
             .observe(on: MainScheduler.instance)
             .subscribe(onNext: { [weak self] books in
                 self?.recentBooks = books
-                print("recentBook: \(books.first)")
                 self?.searchViewCollectionView.reloadData()
+            }, onError: { error in
+                print("에러 발생: \(error)")
+            }).disposed(by: disposeBag)
+        
+        viewModel.metaData
+            .observe(on: MainScheduler.instance)
+            .subscribe(onNext: { [weak self] data in
+                self?.metaData = data
+                print("metaData: \(data.totalCount), \(data.pageableCount), \(data.isEnd) ")
             }, onError: { error in
                 print("에러 발생: \(error)")
             }).disposed(by: disposeBag)
@@ -211,7 +220,25 @@ extension SearchViewController: UICollectionViewDelegate {
         default:
             return
         }
-            
+    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        if !viewModel.isLoading {
+            if self.searchViewCollectionView.contentOffset.y > searchViewCollectionView.contentSize.height - searchViewCollectionView.bounds.size.height {
+                viewModel.endScroll = true
+            }
+        }
+    }
+    
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        print(viewModel.endScroll)
+        if viewModel.endScroll && !metaData.isEnd {
+            viewModel.page+=1
+            self.viewModel.searchBooks()
+            if !viewModel.isLoading {
+                viewModel.endScroll = false
+            }
+        }
     }
 }
 
