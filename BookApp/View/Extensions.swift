@@ -12,7 +12,7 @@ extension UIViewController {
     func navigateToBookInfoView(selectedBook book: Book) {
      
         let bottomSheetVC = BookInfoViewController(viewModel: BookInfoViewModel(book: book))
-        bottomSheetVC.delegate = self as? BookInfoViewControllerDelegate
+        bottomSheetVC.bottomSheetDelegate = self as? BottomSheetDelegate
         if let sheet = bottomSheetVC.sheetPresentationController {
             sheet.detents = [.custom(resolver: { context in
                 return context.maximumDetentValue * 0.9 })]

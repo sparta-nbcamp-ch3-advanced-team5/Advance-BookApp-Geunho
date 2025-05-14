@@ -30,6 +30,8 @@ class BookSearchViewController: UIViewController {
     private var searchedBooks = [Book]()
     private var recentBooks = [Book]()
     
+    weak var bottomSheetDelegate: BottomSheetDelegate?
+    
     // MARK: - UI Components
     private lazy var searchBar: UISearchBar = {
         let searchBar = UISearchBar()
@@ -63,15 +65,6 @@ class BookSearchViewController: UIViewController {
         
         setUI()
         bindViewModel()
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(true)
-        
-        viewModel.fetchRecentBooks()
-        DispatchQueue.main.async {
-            self.searchViewCollectionView.reloadData()
-        }
     }
     
     private func setUI() {
@@ -285,7 +278,12 @@ extension BookSearchViewController: UISearchBarDelegate {
 }
 
 // MARK: - BookInfoDelegate
-extension BookSearchViewController: BookInfoViewControllerDelegate {
+extension BookSearchViewController: BottomSheetDelegate {
+    
+    func bottomSheetDidDismiss() {
+        viewModel.fetchRecentBooks()
+        self.searchViewCollectionView.reloadData()
+    }
     
     func showToastAlert() {
         if view.viewWithTag(999) != nil {

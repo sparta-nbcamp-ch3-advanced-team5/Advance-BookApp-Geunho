@@ -9,14 +9,15 @@ import UIKit
 import SnapKit
 import Kingfisher
 
-protocol BookInfoViewControllerDelegate: AnyObject {
+protocol BottomSheetDelegate: AnyObject {
     func showToastAlert()
+    func bottomSheetDidDismiss()
 }
 
 class BookInfoViewController: UIViewController {
     
     private var viewModel: BookInfoViewModel
-    weak var delegate: BookInfoViewControllerDelegate?
+    weak var bottomSheetDelegate: BottomSheetDelegate?
     
     // MARK: - UI Components
     private let bookInfoContentView = UIView()
@@ -119,9 +120,15 @@ class BookInfoViewController: UIViewController {
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(true)
+        super.viewDidAppear(animated)
         
         viewModel.manageRecentBook()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        
+        self.bottomSheetDelegate?.bottomSheetDidDismiss()
     }
 
     private func setUI() {
@@ -207,7 +214,7 @@ class BookInfoViewController: UIViewController {
     @objc private func addToCart() {
         viewModel.addBookToCart()
         self.dismiss(animated: true) {
-            self.delegate?.showToastAlert()
+            self.bottomSheetDelegate?.showToastAlert()
         }
     }
     
