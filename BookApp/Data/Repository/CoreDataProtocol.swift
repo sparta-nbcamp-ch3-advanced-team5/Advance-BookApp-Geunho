@@ -21,4 +21,3 @@ protocol RecentBookStorageManager {
     func fetchRecentBook() -> [Book]
     func configureRecentBook(book: Book)
 }
-
