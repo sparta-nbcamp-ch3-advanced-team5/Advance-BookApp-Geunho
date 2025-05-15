@@ -15,8 +15,8 @@ enum NetworkError: Error {
     case apiKeyLoadingFail
 }
 
-class NetworkManager {
-    static let shared = NetworkManager()
+class BookResponseRepository {
+    static let shared = BookResponseRepository()
     private init() {}
     
     // 네트워크 로직을 수행하고, 결과를 Single 로 리턴
@@ -65,7 +65,7 @@ class NetworkManager {
         }
     }
     
-    func getAPIKey(named keyname: String) -> String? {
+    private func getAPIKey(named keyname: String) -> String? {
         guard let filePath = Bundle.main.path(forResource: "APIKeys", ofType: "plist") else {
             print("오류: APIKeys.plist 파일을 찾을 수 없습니다.")
             return nil

@@ -24,7 +24,6 @@ final class SearchViewModel {
     /// 검색 값
     var searchingText: String = ""
 
-    
     private let coreDataManager: RecentBookStorageManager = CoreDataManager.shared
     
     init() {
@@ -44,18 +43,22 @@ final class SearchViewModel {
               let url = URL(string: "https://dapi.kakao.com/v3/search/book?query=\(encodedQuery)&size=\(size)&page=\(page)")
         else { return }
         
-        NetworkManager.shared.fetch(url: url)
+        BookResponseRepository.shared.fetch(url: url)
             .subscribe(onSuccess: { [weak self] (bookResponse: BookResponse) in
                 guard let self = self else { return }
-                self.metaData.onNext(bookResponse.meta)
+                
+                self.metaData.onNext(MetaDataTranslator.translate(from: bookResponse.meta))
+
                 print(bookResponse.meta)
                 do {
                     // 새로 검색 값을 추가
                     let currentBooks = try self.searchedBookSubject.value()
-                    self.searchedBookSubject.onNext(currentBooks + bookResponse.documents)
+                    let newBooks = BookTranslator.translateList(from: bookResponse.documents)
+                    self.searchedBookSubject.onNext(currentBooks + newBooks)
                 } catch {
                     print("현재 searchedBookSubject 가져오기 실패: \(error)")
-                    self.searchedBookSubject.onNext(bookResponse.documents)
+                    let newBooks = BookTranslator.translateList(from: bookResponse.documents)
+                    self.searchedBookSubject.onNext(newBooks)
                 }
                 self.isLoading = false
             }, onFailure: { [weak self] error in

@@ -1,13 +1,13 @@
 //
-//  Book.swift
+//  BookDTO.swift
 //  BookApp
 //
-//  Created by 정근호 on 5/10/25.
+//  Created by 정근호 on 5/15/25.
 //
 
 import Foundation
 
-struct Book: Codable {
+struct BookDTO: Codable {
     let authors: [String]
     let contents: String
     let price: Int

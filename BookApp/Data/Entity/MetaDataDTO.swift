@@ -1,13 +1,13 @@
 //
-//  MetaData.swift
+//  MetaDataDTO.swift
 //  BookApp
 //
-//  Created by 정근호 on 5/10/25.
+//  Created by 정근호 on 5/15/25.
 //
 
 import Foundation
 
-struct MetaData: Codable {
+struct MetaDataDTO: Codable {
     let isEnd: Bool
     let pageableCount: Int
     let totalCount: Int

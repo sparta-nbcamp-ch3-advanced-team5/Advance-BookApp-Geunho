@@ -2,7 +2,7 @@
 //  CartItem.swift
 //  BookApp
 //
-//  Created by 정근호 on 5/12/25.
+//  Created by 정근호 on 5/15/25.
 //
 
 import Foundation
@@ -15,5 +15,5 @@ struct CartItem {
     let price: Int
     let thumbnailURL: String
     let quantity: Int
-    let addedData: Date
+    let addedDate: Date
 }

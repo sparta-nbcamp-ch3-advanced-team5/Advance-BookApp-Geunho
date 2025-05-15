@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct BookResponse: Codable{
-    let meta: MetaData
-    let documents: [Book]
+struct BookResponse: Codable {
+    let meta: MetaDataDTO
+    let documents: [BookDTO]
 }

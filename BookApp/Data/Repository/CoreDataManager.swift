@@ -114,7 +114,7 @@ extension CoreDataManager: CartStorageManager {
                     price: Int(bookEntity.price),
                     thumbnailURL: bookEntity.thumbnailURL ?? "",
                     quantity: Int(cartItemEntity.quantity),
-                    addedData: cartItemEntity.addedDate ?? Date()
+                    addedDate: cartItemEntity.addedDate ?? Date()
                 )
                 
             }
