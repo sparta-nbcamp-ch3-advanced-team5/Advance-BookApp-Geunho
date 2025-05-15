@@ -229,7 +229,7 @@ extension SearchViewController: UICollectionViewDelegate {
         // 현재 스크롤 위치 + 화면 높이 / 2 > 콘텐츠 전체 높이 - 보이는 높이
         if self.mainCollectionView.contentOffset.y + view.frame.height / 2 > mainCollectionView.contentSize.height - mainCollectionView.bounds.size.height {
             
-            // metaData.isEnd값이 false 일 때 페이지 추가 및 추가 로드
+            // metaData.isEnd값이 false이고 데이터 loading중이 아닐 때 페이지 추가 및 추가 로드
             if !metaData.isEnd && !viewModel.isLoading {
                 viewModel.page+=1
                 self.viewModel.searchBooks()
@@ -310,9 +310,8 @@ extension SearchViewController: UISearchBarDelegate {
         viewModel.searchingText = text
         print("searchingText: \(text)")
         
-        // 스크롤 최상단으로 이동
-        // 스크롤 이동 중지
-        mainCollectionView.setContentOffset(mainCollectionView.contentOffset, animated: false)
+        // contentOffset 재설정(스크롤 초기화)
+        mainCollectionView.setContentOffset(mainCollectionView.contentOffset, animated: true)
         // 페이지 초기화
         self.viewModel.page = 1
         // 이전 검색 결과 초기화
