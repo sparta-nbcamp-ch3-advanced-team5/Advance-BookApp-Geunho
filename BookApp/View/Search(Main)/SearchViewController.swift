@@ -43,7 +43,7 @@ class SearchViewController: UIViewController {
         return searchBar
     }()
     
-    private lazy var searchViewCollectionView: UICollectionView = {
+    private lazy var mainCollectionView: UICollectionView = {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: createLayout())
         // 최근 본 책 Cell
         collectionView.register(RecentBookCell.self, forCellWithReuseIdentifier: RecentBookCell.id)
@@ -73,13 +73,13 @@ class SearchViewController: UIViewController {
         super.viewWillAppear(animated)
         
         viewModel.fetchRecentBooks()
-        self.searchViewCollectionView.reloadData()
+        self.mainCollectionView.reloadData()
     }
     
     private func setUI() {
         view.backgroundColor = .secondarySystemBackground
         
-        [searchBar, searchViewCollectionView].forEach {
+        [searchBar, mainCollectionView].forEach {
             view.addSubview($0)
         }
         
@@ -88,7 +88,7 @@ class SearchViewController: UIViewController {
             $0.horizontalEdges.equalTo(view.safeAreaLayoutGuide)
         }
         
-        searchViewCollectionView.snp.makeConstraints {
+        mainCollectionView.snp.makeConstraints {
             $0.top.equalTo(searchBar.snp.bottom)
             $0.horizontalEdges.equalTo(view.safeAreaLayoutGuide)
             $0.bottom.equalTo(view.safeAreaLayoutGuide)
@@ -176,7 +176,8 @@ class SearchViewController: UIViewController {
             .subscribe(onNext: { [weak self] books in
                 self?.searchedBooks = books
                 print("searchedBooksCount: \(books.count)")
-                self?.searchViewCollectionView.reloadData()
+                // 검색 값 변경 시 리로드
+                self?.mainCollectionView.reloadData()
             }, onError: { error in
                 print("에러 발생: \(error)")
             }).disposed(by: disposeBag)
@@ -185,7 +186,8 @@ class SearchViewController: UIViewController {
             .observe(on: MainScheduler.instance)
             .subscribe(onNext: { [weak self] books in
                 self?.recentBooks = books
-                self?.searchViewCollectionView.reloadData()
+                // 최근 본 책 값 변경 시 리로드
+                self?.mainCollectionView.reloadData()
             }, onError: { error in
                 print("에러 발생: \(error)")
             }).disposed(by: disposeBag)
@@ -223,20 +225,14 @@ extension SearchViewController: UICollectionViewDelegate {
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        if !viewModel.isLoading {
-            if self.searchViewCollectionView.contentOffset.y > searchViewCollectionView.contentSize.height - searchViewCollectionView.bounds.size.height {
-                viewModel.endScroll = true
-            }
-        }
-    }
-    
-    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-        print(viewModel.endScroll)
-        if viewModel.endScroll && !metaData.isEnd {
-            viewModel.page+=1
-            self.viewModel.searchBooks()
-            if !viewModel.isLoading {
-                viewModel.endScroll = false
+        
+        // 현재 스크롤 위치 + 화면 높이 / 2 > 콘텐츠 전체 높이 - 보이는 높이
+        if self.mainCollectionView.contentOffset.y + view.frame.height / 2 > mainCollectionView.contentSize.height - mainCollectionView.bounds.size.height {
+            
+            // metaData.isEnd값이 false 일 때 페이지 추가 및 추가 로드
+            if !metaData.isEnd {
+                viewModel.page+=1
+                self.viewModel.searchBooks()
             }
         }
     }
@@ -309,10 +305,20 @@ extension SearchViewController: UICollectionViewDataSource {
 // MARK: - SearchBarDelegate
 extension SearchViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        
         guard let text = searchBar.text else { return }
         viewModel.searchingText = text
         print("searchingText: \(text)")
-        viewModel.searchBooks()
+        
+        // 스크롤 최상단으로 이동
+        // 스크롤 이동 중지
+        mainCollectionView.setContentOffset(mainCollectionView.contentOffset, animated: false)
+        // 페이지 초기화
+        self.viewModel.page = 1
+        // 이전 검색 결과 초기화
+        self.viewModel.searchedBookSubject.onNext([])
+        // 새로 검색 요청
+        self.viewModel.searchBooks()
     }
 }
 
@@ -325,6 +331,6 @@ extension SearchViewController: BottomSheetDelegate {
     
     func bottomSheetDidDismiss() {
         viewModel.fetchRecentBooks()
-        self.searchViewCollectionView.reloadData()
+        self.mainCollectionView.reloadData()
     }
 }
