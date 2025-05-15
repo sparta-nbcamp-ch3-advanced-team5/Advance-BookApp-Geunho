@@ -33,6 +33,10 @@ final class SearchViewModel {
     
     func searchBooks() {
         
+        // 중복 검색 방지
+        guard !isLoading else { return }
+        isLoading = true
+        
         print("searchingPage: \(page)")
         
         // 문자열을 URL-safe하게 변환 후 URL 설정
@@ -55,8 +59,9 @@ final class SearchViewModel {
                 }
                 self.isLoading = false
             }, onFailure: { [weak self] error in
-                self?.searchedBookSubject.onError(error)
-                self?.isLoading = false
+                guard let self = self else { return }
+                self.searchedBookSubject.onError(error)
+                self.isLoading = false
             }).disposed(by: disposeBag)
     }
     

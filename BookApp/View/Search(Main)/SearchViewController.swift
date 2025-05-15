@@ -230,7 +230,7 @@ extension SearchViewController: UICollectionViewDelegate {
         if self.mainCollectionView.contentOffset.y + view.frame.height / 2 > mainCollectionView.contentSize.height - mainCollectionView.bounds.size.height {
             
             // metaData.isEnd값이 false 일 때 페이지 추가 및 추가 로드
-            if !metaData.isEnd {
+            if !metaData.isEnd && !viewModel.isLoading {
                 viewModel.page+=1
                 self.viewModel.searchBooks()
             }
