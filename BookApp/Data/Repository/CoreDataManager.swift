@@ -31,8 +31,8 @@ final class CoreDataManager {
 // MARK: - CartStorageManager
 extension CoreDataManager: CartStorageManager {
     // MARK: - Create
-    /// BookEntity가 있으면 바로 CartItemEntity에 저장
-    /// 없으면 새로 생성 후 CartItemEntity에 저장
+    /// BookEntity가 있으면 바로 CartInfoEntity에 저장
+    /// 없으면 새로 생성 후 CartInfoEntity에 저장
     func saveOrUpdateBookToCart(book: Book, quantity: Int = 1) {
                 
         // BookEntity를 찾기
@@ -63,22 +63,22 @@ extension CoreDataManager: CartStorageManager {
             context.rollback()
         }
         
-        // CartItemEntity 로직
-        let cartFetchRequest: NSFetchRequest<CartItemEntity> = CartItemEntity.fetchRequest()
+        // CartInfoEntity 로직
+        let cartFetchRequest: NSFetchRequest<CartInfoEntity> = CartInfoEntity.fetchRequest()
         cartFetchRequest.predicate = NSPredicate(format: "book == %@", bookEntityToAddToCart)
         
         do {
             let results = try context.fetch(cartFetchRequest)
-            let cartItemEntity: CartItemEntity
+            let cartInfoEntity: CartInfoEntity
             
             if let existingCartItem = results.first {
                 existingCartItem.quantity += Int16(quantity)
-                cartItemEntity = existingCartItem
+                cartInfoEntity = existingCartItem
             } else {
-                cartItemEntity = CartItemEntity(context: context)
-                cartItemEntity.book = bookEntityToAddToCart
-                cartItemEntity.quantity = Int16(quantity)
-                cartItemEntity.addedDate = Date()
+                cartInfoEntity = CartInfoEntity(context: context)
+                cartInfoEntity.book = bookEntityToAddToCart
+                cartInfoEntity.quantity = Int16(quantity)
+                cartInfoEntity.addedDate = Date()
             }
             
             try context.save()
@@ -94,12 +94,12 @@ extension CoreDataManager: CartStorageManager {
     /// CartItem 가져옴
     func fetchCartItems() -> [CartItem] {
         
-        let fetchRequest: NSFetchRequest<CartItemEntity> = CartItemEntity.fetchRequest()
+        let fetchRequest: NSFetchRequest<CartInfoEntity> = CartInfoEntity.fetchRequest()
         
         do {
-            let cartItemEntities = try context.fetch(fetchRequest)
+            let cartInfoEntities = try context.fetch(fetchRequest)
             
-            return cartItemEntities.map { cartItemEntity -> CartItem in
+            return cartInfoEntities.map { cartItemEntity -> CartItem in
                 
                 // CartItemEntity에 연결되어있는 BookEntity 가져옴
                 guard let bookEntity = cartItemEntity.book else {
@@ -131,7 +131,7 @@ extension CoreDataManager: CartStorageManager {
     /// 장바구니 비우기
     func removeAllCartItems() {
         
-        let fetchRequest: NSFetchRequest<NSFetchRequestResult> = CartItemEntity.fetchRequest()
+        let fetchRequest: NSFetchRequest<NSFetchRequestResult> = CartInfoEntity.fetchRequest()
         let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
         batchDeleteRequest.resultType = .resultTypeCount // 삭제된 객체의 수를 결과로 받도록 설정 (선택 사항)
         
@@ -155,12 +155,12 @@ extension CoreDataManager: CartStorageManager {
     /// 해당 CartItem 장바구니에서 제거
     func removeItem(item: CartItem) {
 
-        guard let cartItemEntityToDelete = findCartItemEntity(forBookISBN: item.isbn) else {
+        guard let cartItemEntityToDelete = findCartInfoEntity(forBookISBN: item.isbn) else {
             print("삭제할 장바구니 아이템을 찾지 못했습니다 (ISBN: \(item.isbn)).")
             return
         }
         
-        context.delete(cartItemEntityToDelete) // CartItemEntity 삭제
+        context.delete(cartItemEntityToDelete) // CartInfoEntity 삭제
         
         do {
             try context.save()
@@ -175,7 +175,7 @@ extension CoreDataManager: CartStorageManager {
     /// 해당 CartItem 수량 +1
     func plusQuantity(item: CartItem) {
 
-        guard let cartItemEntity = findCartItemEntity(forBookISBN: item.isbn) else {
+        guard let cartItemEntity = findCartInfoEntity(forBookISBN: item.isbn) else {
             print("수량 증가 대상 장바구니 아이템을 찾지 못했습니다 (ISBN: \(item.isbn)).")
             return
         }
@@ -194,24 +194,24 @@ extension CoreDataManager: CartStorageManager {
     /// 해당 CartItem 수량 -1(CartViewController에서 수량 1일 경우 삭제시 removeItem)
     func minusQuantity(item: CartItem) {
         
-        guard let cartItemEntity = findCartItemEntity(forBookISBN: item.isbn) else {
+        guard let cartInfoEntity = findCartInfoEntity(forBookISBN: item.isbn) else {
             print("수량 증가 대상 장바구니 아이템을 찾지 못했습니다 (ISBN: \(item.isbn)).")
             return
         }
         
-        cartItemEntity.quantity -= 1
+        cartInfoEntity.quantity -= 1
         
         do {
             try context.save()
-            print("장바구니 아이템 (ISBN: \(item.isbn)) 수량 감소 성공. 현재 수량: \(cartItemEntity.quantity)")
+            print("장바구니 아이템 (ISBN: \(item.isbn)) 수량 감소 성공. 현재 수량: \(cartInfoEntity.quantity)")
         } catch {
             context.rollback()
-            print("장바구니 아이템 (ISBN: \(item.isbn)) 수량 감소 실패. 현재 수량: \(cartItemEntity.quantity)")
+            print("장바구니 아이템 (ISBN: \(item.isbn)) 수량 감소 실패. 현재 수량: \(cartInfoEntity.quantity)")
         }
     }
     
-    /// isbn에 맞는 CartItem 찾기
-    func findCartItemEntity(forBookISBN isbn: String) -> CartItemEntity? {
+    /// isbn에 맞는 CartInfoEntity 찾기
+    func findCartInfoEntity(forBookISBN isbn: String) -> CartInfoEntity? {
         
         // 1. ISBN으로 BookEntity 찾기
         let bookFetchRequest: NSFetchRequest<BookEntity> = BookEntity.fetchRequest()
@@ -232,18 +232,18 @@ extension CoreDataManager: CartStorageManager {
         }
         
         // 2. 찾은 BookEntity로 CartItemEntity 찾기
-        let cartItemFetchRequest: NSFetchRequest<CartItemEntity> = CartItemEntity.fetchRequest()
-        cartItemFetchRequest.predicate = NSPredicate(format: "book == %@", foundBookEntity)
+        let cartInfoFetchRequest: NSFetchRequest<CartInfoEntity> = CartInfoEntity.fetchRequest()
+        cartInfoFetchRequest.predicate = NSPredicate(format: "book == %@", foundBookEntity)
         
-        let cartItems: [CartItemEntity]
+        let cartInfoList: [CartInfoEntity]
         do {
-            cartItems = try context.fetch(cartItemFetchRequest)
+            cartInfoList = try context.fetch(cartInfoFetchRequest)
         } catch {
             print("CartItemEntity 찾기 실패")
             return nil
         }
         
-        return cartItems.first
+        return cartInfoList.first
     }
 }
 

@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// BookEntity + CartInfoEntity의 DTO
 struct CartItemDTO {
     let isbn: String
     let title: String

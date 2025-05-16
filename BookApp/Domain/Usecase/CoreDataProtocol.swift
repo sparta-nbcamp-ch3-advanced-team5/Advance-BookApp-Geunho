@@ -14,7 +14,7 @@ protocol CartStorageManager {
     func removeItem(item: CartItem)
     func plusQuantity(item: CartItem)
     func minusQuantity(item: CartItem)
-    func findCartItemEntity(forBookISBN isbn: String) -> CartItemEntity?
+    func findCartInfoEntity(forBookISBN isbn: String) -> CartInfoEntity?
 }
 
 protocol RecentBookStorageManager {

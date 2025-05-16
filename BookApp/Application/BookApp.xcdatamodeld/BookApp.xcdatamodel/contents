@@ -7,9 +7,9 @@
         <attribute name="price" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="thumbnailURL" optional="YES" attributeType="String"/>
         <attribute name="title" optional="YES" attributeType="String"/>
-        <relationship name="cartItems" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CartItemEntity" inverseName="book" inverseEntity="CartItemEntity"/>
+        <relationship name="cartItems" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CartInfoEntity" inverseName="book" inverseEntity="CartInfoEntity"/>
     </entity>
-    <entity name="CartItemEntity" representedClassName=".CartItemEntity" syncable="YES" codeGenerationType="class">
+    <entity name="CartInfoEntity" representedClassName=".CartInfoEntity" syncable="YES" codeGenerationType="class">
         <attribute name="addedDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="quantity" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <relationship name="book" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="BookEntity" inverseName="cartItems" inverseEntity="BookEntity"/>

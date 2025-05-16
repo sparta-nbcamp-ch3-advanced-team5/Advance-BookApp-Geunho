@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// BookEntity + CartInfoEntity
 struct CartItem {
     let isbn: String
     let title: String
