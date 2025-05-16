@@ -34,7 +34,7 @@ final class CartViewModel {
         let cartItem = coreDataManager.findCartItemEntity(forBookISBN: isbn)
         
         return Book(
-            authors: (cartItem?.book?.authors ?? []) as! [String],
+            authors: cartItem?.book?.authors?.components(separatedBy: ", ") ?? [],
             contents: cartItem?.book?.contents ?? "",
             price: Int(cartItem?.book?.price ?? 0),
             title: cartItem?.book?.title ?? "",

@@ -49,13 +49,13 @@ final class SearchViewModel {
             .subscribe(onSuccess: { [weak self] (bookResponse: BookResponse) in
                 guard let self = self else { return }
                 
-                self.metaData.onNext(MetaDataTranslator.translate(from: bookResponse.meta))
+                self.metaData.onNext(MetaDataTranslator.toDomain(from: bookResponse.meta))
 
                 print(bookResponse.meta)
                 do {
                     // 새로 검색 값을 추가
                     let currentBooks = try self.searchedBookSubject.value()
-                    let newBooks = BookTranslator.translateList(from: bookResponse.documents)
+                    let newBooks = BookTranslator.toDomainInList(from: bookResponse.documents)
                     self.searchedBookSubject.onNext(currentBooks + newBooks)
                     // 값 추가 후 page 증가
                     self.page += 1
@@ -64,7 +64,7 @@ final class SearchViewModel {
                     self.onLoadingEndAction = nil
                 } catch {
                     print("현재 searchedBookSubject 가져오기 실패: \(error)")
-                    let newBooks = BookTranslator.translateList(from: bookResponse.documents)
+                    let newBooks = BookTranslator.toDomainInList(from: bookResponse.documents)
                     self.searchedBookSubject.onNext(newBooks)
                 }
                 self.isLoading = false

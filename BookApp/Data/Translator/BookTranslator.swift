@@ -8,7 +8,7 @@
 import Foundation
 
 struct BookTranslator {
-    static func translate(from dto: BookDTO) -> Book {
+    static func toDomain(from dto: BookDTO) -> Book {
         return Book(
             authors: dto.authors,
             contents: dto.contents,
@@ -19,7 +19,7 @@ struct BookTranslator {
         )
     }
     
-    static func translateList(from dto: [BookDTO]) -> [Book] {
-        return dto.map(translate)
+    static func toDomainInList(from dto: [BookDTO]) -> [Book] {
+        return dto.map(toDomain)
     }
 }

@@ -8,7 +8,7 @@
 import Foundation
 
 struct MetaDataTranslator {
-    static func translate(from dto: MetaDataDTO) -> MetaData {
+    static func toDomain(from dto: MetaDataDTO) -> MetaData {
         return MetaData(
             isEnd: dto.isEnd,
             pageableCount: dto.pageableCount,

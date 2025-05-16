@@ -34,7 +34,7 @@ extension CoreDataManager: CartStorageManager {
     /// BookEntity가 있으면 바로 CartItemEntity에 저장
     /// 없으면 새로 생성 후 CartItemEntity에 저장
     func saveOrUpdateBookToCart(book: Book, quantity: Int = 1) {
-        
+                
         // BookEntity를 찾기
         let bookFetchRequest: NSFetchRequest<BookEntity> = BookEntity.fetchRequest()
         bookFetchRequest.predicate = NSPredicate(format: "isbn == %@", book.isbn)
@@ -51,7 +51,7 @@ extension CoreDataManager: CartStorageManager {
                 let newBook = BookEntity(context: context)
                 newBook.isbn = book.isbn
                 newBook.title = book.title
-                newBook.authors = book.authors as NSArray
+                newBook.authors = book.authors.joined(separator: ", ")
                 newBook.contents = book.contents
                 newBook.price = Int32(book.price)
                 newBook.thumbnailURL = book.thumbnail
@@ -106,17 +106,20 @@ extension CoreDataManager: CartStorageManager {
                     fatalError("Cart item has no associated book entity!")
                 }
                 
-                return CartItem(
+                let cartItemDTO = CartItemDTO(
                     isbn: bookEntity.isbn ?? "",
                     title: bookEntity.title ?? "",
-                    authors: (bookEntity.authors ?? []) as! [String],
+                    authors: bookEntity.authors ?? "",
                     contents: bookEntity.contents ?? "",
                     price: Int(bookEntity.price),
                     thumbnailURL: bookEntity.thumbnailURL ?? "",
                     quantity: Int(cartItemEntity.quantity),
                     addedDate: cartItemEntity.addedDate ?? Date()
-                )
+                    )
                 
+                let cartItem = CartItemTranslator.toDomain(dto: cartItemDTO)
+                
+                return cartItem
             }
         } catch {
             print("장바구니 아이템 가져오기 실패: \(error)")
