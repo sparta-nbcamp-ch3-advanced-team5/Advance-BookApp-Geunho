@@ -10,15 +10,22 @@ import Foundation
 final class InfoViewModel {
     
     private var book: Book
-    private let coreDataManager = CoreDataManager.shared
-    
+    private let cartCoreDataRepository: CartCoreDataRepository
+    private let recentBookCoreDataRepository: RecentBookCoreDataRepository
+
     var title: String?
     var author: String?
     var thumbnailURL: String?
     var price: String?
     var contents: String?
     
-    init(book: Book) {
+    init(
+        book: Book,
+        cartCoreDataRepository: CartCoreDataRepository,
+        recentBookCoreDataRepository: RecentBookCoreDataRepository
+    ) {
+        self.cartCoreDataRepository = cartCoreDataRepository
+        self.recentBookCoreDataRepository = recentBookCoreDataRepository
         self.book = book
         self.updateBookData()
     }
@@ -32,10 +39,10 @@ final class InfoViewModel {
     }
     
     func addBookToCart() {
-        self.coreDataManager.saveOrUpdateBookToCart(book: book)
+        self.cartCoreDataRepository.saveOrUpdateBookToCart(book: book)
     }
     
     func manageRecentBook() {
-        coreDataManager.configureRecentBook(book: book)
+        recentBookCoreDataRepository.configureRecentBook(book: book)
     }
 }

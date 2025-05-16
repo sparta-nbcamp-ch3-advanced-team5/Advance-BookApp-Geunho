@@ -10,7 +10,7 @@ import RxSwift
 
 final class SearchViewModel {
         
-    private let coreDataManager: RecentBookStorageManager = CoreDataManager.shared
+    private let recentBookCoreDataRepository: RecentBookCoreDataRepository
     private let disposeBag = DisposeBag()
     /// 한 페이지에 보여질 문서 수, 1~50 사이의 값, 기본 값 10
     private let size = 10
@@ -28,7 +28,8 @@ final class SearchViewModel {
     /// 로딩 종료 시 실행
     var onLoadingEndAction: (() -> Void)?
     
-    init() {
+    init(recentBookCoreDataRepository: RecentBookCoreDataRepository) {
+        self.recentBookCoreDataRepository = recentBookCoreDataRepository
         fetchRecentBooks()
     }
     
@@ -45,7 +46,7 @@ final class SearchViewModel {
               let url = URL(string: "https://dapi.kakao.com/v3/search/book?query=\(encodedQuery)&size=\(size)&page=\(page)")
         else { return }
         
-        BookResponseRepository.shared.fetch(url: url)
+        BookResponseRepository.shared.fetchBookResponse(url: url)
             .subscribe(onSuccess: { [weak self] (bookResponse: BookResponse) in
                 guard let self = self else { return }
                 
@@ -76,7 +77,7 @@ final class SearchViewModel {
     }
     
     func fetchRecentBooks() {
-        recentBookSubject.onNext(coreDataManager.fetchRecentBook())
+        recentBookSubject.onNext(recentBookCoreDataRepository.fetchRecentBook())
         print(recentBookSubject)
     }
     

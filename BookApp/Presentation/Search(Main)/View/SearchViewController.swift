@@ -25,7 +25,8 @@ enum Section: Int, CaseIterable {
 }
 
 class SearchViewController: UIViewController {
-    private let viewModel = SearchViewModel()
+    private let viewModel: SearchViewModel
+    
     private let disposeBag = DisposeBag()
     private var searchedBooks = [Book]()
     private var recentBooks = [Book]()
@@ -62,6 +63,16 @@ class SearchViewController: UIViewController {
     }()
     
     // MARK: - Init & SetUp
+    init(viewModel: SearchViewModel) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         

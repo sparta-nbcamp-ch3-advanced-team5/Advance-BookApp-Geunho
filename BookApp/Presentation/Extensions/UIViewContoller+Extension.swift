@@ -13,7 +13,9 @@ extension UIViewController {
     /// BookSearchView, BookCartView 두 곳에서 사용됨
     func navigateToBookInfoView(selectedBook book: Book) {
         
-        let bottomSheetVC = InfoViewController(viewModel: InfoViewModel(book: book))
+        let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+
+        let bottomSheetVC = InfoViewController(viewModel: InfoViewModel(book: book, cartCoreDataRepository: CartCoreDataRepository(context: context), recentBookCoreDataRepository: RecentBookCoreDataRepository(context: context)))
         // Delegate 설정
         // self: SearchViewController 또는 CartViewController
         bottomSheetVC.bottomSheetDelegate = self as? BottomSheetDelegate

@@ -15,12 +15,14 @@ final class CartViewModel {
     /// 장바구니가 비었는지 여부를 나타내는 스트림
     let isCartEmpty: Observable<Bool>
     
-    private let coreDataManager: CartStorageManager = CoreDataManager.shared
+    private let cartCoreDataRepository: CartCoreDataRepository
     private let disposeBag = DisposeBag()
     
-    init() {
+    init(cartCoreDataRepository: CartCoreDataRepository) {
+        
+        self.cartCoreDataRepository = cartCoreDataRepository
         // 초기 장바구니 아이템 로드
-        let initialItems = self.coreDataManager.fetchCartItems()
+        let initialItems = self.cartCoreDataRepository.fetchCartItems()
         self.cartItems = BehaviorSubject(value: initialItems)
         
         // isCartEmpty는 cartDisplayItems 스트림을 변환하여 생성
@@ -31,7 +33,7 @@ final class CartViewModel {
     }
     
     func findBookByCartItem(isbn: String) -> Book {
-        let cartItem = coreDataManager.findCartInfoEntity(forBookISBN: isbn)
+        let cartItem = cartCoreDataRepository.findCartInfoEntity(forBookISBN: isbn)
         
         return Book(
             authors: cartItem?.book?.authors?.components(separatedBy: ", ") ?? [],
@@ -45,27 +47,27 @@ final class CartViewModel {
     
     // MARK: - Actions
     func refreshCartItems() {
-        let updatedItems = coreDataManager.fetchCartItems()
+        let updatedItems = cartCoreDataRepository.fetchCartItems()
         cartItems.onNext(updatedItems)
     }
     
     func removeAllCartItems() {
-        coreDataManager.removeAllCartItems()
+        cartCoreDataRepository.removeAllCartItems()
         self.refreshCartItems()
     }
     
     func plusQuantity(cartItem: CartItem) {
-        coreDataManager.plusQuantity(item: cartItem)
+        cartCoreDataRepository.plusQuantity(item: cartItem)
         self.refreshCartItems()
     }
     
     func minusQuantity(cartItem: CartItem) {
-        coreDataManager.minusQuantity(item: cartItem)
+        cartCoreDataRepository.minusQuantity(item: cartItem)
         self.refreshCartItems()
     }
     
     func removeItem(cartItem: CartItem) {
-        coreDataManager.removeItem(item: cartItem)
+        cartCoreDataRepository.removeItem(item: cartItem)
         self.refreshCartItems()
     }
 }

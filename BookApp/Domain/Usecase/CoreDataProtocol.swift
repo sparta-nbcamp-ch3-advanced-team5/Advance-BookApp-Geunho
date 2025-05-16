@@ -17,7 +17,7 @@ protocol CartStorageManager {
     func findCartInfoEntity(forBookISBN isbn: String) -> CartInfoEntity?
 }
 
-protocol RecentBookStorageManager {
+protocol RecentBookCoreDataManager {
     func fetchRecentBook() -> [Book]
     func configureRecentBook(book: Book)
 }

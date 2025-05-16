@@ -20,7 +20,7 @@ class BookResponseRepository {
     private init() {}
     
     // 네트워크 로직을 수행하고, 결과를 Single 로 리턴
-    func fetch<T: Decodable>(url: URL) -> Single<T> {
+    func fetchBookResponse<T: Decodable>(url: URL) -> Single<T> {
         return Single.create { observer in
             let session = URLSession(configuration: .default)
             var request = URLRequest(url: url)

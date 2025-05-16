@@ -21,8 +21,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         let window = UIWindow(frame: UIScreen.main.bounds)
         
-        let firstVC = UINavigationController(rootViewController: SearchViewController())
-        let secondVC = UINavigationController(rootViewController: CartViewController(viewModel: CartViewModel()))
+        let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+        
+        let firstVC = UINavigationController(rootViewController: SearchViewController(viewModel: SearchViewModel(recentBookCoreDataRepository: RecentBookCoreDataRepository(context: context))))
+        let secondVC = UINavigationController(rootViewController: CartViewController(viewModel: CartViewModel(cartCoreDataRepository: CartCoreDataRepository(context: context))))
         
         let tabBarVC = UITabBarController()
         tabBarVC.setViewControllers([firstVC, secondVC], animated: true)
