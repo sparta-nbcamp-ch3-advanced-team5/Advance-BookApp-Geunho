@@ -10,21 +10,23 @@ import RxSwift
 
 final class SearchViewModel {
         
-    let disposeBag = DisposeBag()
+    private let coreDataManager: RecentBookStorageManager = CoreDataManager.shared
+    private let disposeBag = DisposeBag()
+    /// 한 페이지에 보여질 문서 수, 1~50 사이의 값, 기본 값 10
+    private let size = 10
+    
     let searchedBookSubject = BehaviorSubject(value: [Book]())
     let recentBookSubject = BehaviorSubject(value: [Book]())
     let metaData = BehaviorSubject(value: MetaData(isEnd: true, pageableCount: 0, totalCount: 0))
     
-    /// 한 페이지에 보여질 문서 수, 1~50 사이의 값, 기본 값 10
-    let size = 10
     /// 현재 데이터를 받아오는 중인지 (searchBooks() 실행 시 true, 종료 전 false)
     var isLoading = false
     /// 현재 페이지
     var page = 1
     /// 검색 값
     var searchingText: String = ""
-
-    private let coreDataManager: RecentBookStorageManager = CoreDataManager.shared
+    /// 로딩 종료 시 실행
+    var onLoadingEndAction: (() -> Void)?
     
     init() {
         fetchRecentBooks()
@@ -55,6 +57,11 @@ final class SearchViewModel {
                     let currentBooks = try self.searchedBookSubject.value()
                     let newBooks = BookTranslator.translateList(from: bookResponse.documents)
                     self.searchedBookSubject.onNext(currentBooks + newBooks)
+                    // 값 추가 후 page 증가
+                    self.page += 1
+                    // 로딩 완료 후 검색, 초기화 실행, nil로 중복 방지
+                    self.onLoadingEndAction?()
+                    self.onLoadingEndAction = nil
                 } catch {
                     print("현재 searchedBookSubject 가져오기 실패: \(error)")
                     let newBooks = BookTranslator.translateList(from: bookResponse.documents)
@@ -71,5 +78,11 @@ final class SearchViewModel {
     func fetchRecentBooks() {
         recentBookSubject.onNext(coreDataManager.fetchRecentBook())
         print(recentBookSubject)
+    }
+    
+    /// 페이지 초기화, 이전 검색 결과 초기화
+    func resetSearchData() {
+        self.page = 1
+        self.searchedBookSubject.onNext([])
     }
 }

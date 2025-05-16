@@ -231,7 +231,6 @@ extension SearchViewController: UICollectionViewDelegate {
             
             // metaData.isEnd값이 false이고 데이터 loading중이 아닐 때 페이지 추가 및 추가 로드
             if !metaData.isEnd && !viewModel.isLoading {
-                viewModel.page+=1
                 self.viewModel.searchBooks()
             }
         }
@@ -312,12 +311,22 @@ extension SearchViewController: UISearchBarDelegate {
         
         // contentOffset 재설정(스크롤 초기화)
         mainCollectionView.setContentOffset(mainCollectionView.contentOffset, animated: true)
-        // 페이지 초기화
-        self.viewModel.page = 1
-        // 이전 검색 결과 초기화
-        self.viewModel.searchedBookSubject.onNext([])
-        // 새로 검색 요청
-        self.viewModel.searchBooks()
+        
+        if viewModel.isLoading {
+            // 로딩 중일 때 검색 시, 로딩이 끝난 후 초기화 실행되도록
+            viewModel.onLoadingEndAction = { [weak self] in
+                guard let self = self else { return }
+                // 초기화
+                self.viewModel.resetSearchData()
+                // 새로 검색 요청
+                self.viewModel.searchBooks()
+            }
+        } else {
+            // 초기화
+            self.viewModel.resetSearchData()
+            // 새로 검색 요청
+            self.viewModel.searchBooks()
+        }
     }
 }
 
