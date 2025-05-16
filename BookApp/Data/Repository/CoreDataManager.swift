@@ -262,7 +262,7 @@ extension CoreDataManager: RecentBookStorageManager {
             return recentBookEntities.map { recentBookEntity -> Book in
                 
                 return Book(
-                    authors: recentBookEntity.authors as! [String],
+                    authors: recentBookEntity.authors?.components(separatedBy: ", ") ?? [],
                     contents: recentBookEntity.contents ?? "",
                     price: Int(recentBookEntity.price),
                     title: recentBookEntity.title ?? "",
@@ -302,14 +302,14 @@ extension CoreDataManager: RecentBookStorageManager {
         }
         
         deleteDuplicatedRecentBook(isbn: book.isbn)
-        
+                
         do {
 
             let managedObject = NSManagedObject(entity: recentBookEntity, insertInto: context)
             managedObject.setValue(book.title, forKey: "title")
             managedObject.setValue(book.thumbnail, forKey: "thumbnail")
             managedObject.setValue(book.price, forKey: "price")
-            managedObject.setValue(book.authors, forKey: "authors")
+            managedObject.setValue(book.authors.joined(separator: ", "), forKey: "authors")
             managedObject.setValue(book.isbn, forKey: "isbn")
             managedObject.setValue(book.contents, forKey: "contents")
         
