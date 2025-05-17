@@ -15,10 +15,10 @@ import UIKit
 struct DIContainer {
     
     // API
-    let bookResponseRepository: BookResponseRepositoryProtocol
+    let bookResponseRepository: DomainLayer.BookResponseRepositoryProtocol
     // CoreData
-    let cartCoreDataRepository: CartCoreDataRepositoryProtocol
-    let recentBookCoreDataRepository: RecentBookCoreDataRepositoryProtocol
+    let cartCoreDataRepository: DomainLayer.CartCoreDataRepositoryProtocol
+    let recentBookCoreDataRepository: DomainLayer.RecentBookCoreDataRepositoryProtocol
 
     init(context: NSManagedObjectContext) {
         self.bookResponseRepository = BookResponseRepository()
@@ -50,5 +50,7 @@ struct DIContainer {
             cartCoreDataRepository: cartCoreDataRepository,
             recentBookCoreDataRepository: recentBookCoreDataRepository
         )
+        
+        return InfoViewController(viewModel: viewModel)
     }
 }
