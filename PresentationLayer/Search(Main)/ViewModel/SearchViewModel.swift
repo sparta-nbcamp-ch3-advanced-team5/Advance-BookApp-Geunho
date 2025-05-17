@@ -6,11 +6,13 @@
 //
 
 import Foundation
-import RxSwift
+internal import RxSwift
+import DomainLayer
 
-final class SearchViewModel {
+public final class SearchViewModel {
         
-    private let recentBookCoreDataRepository: RecentBookCoreDataRepository
+    private let bookReponseRepository: BookResponseRepositoryProtocol
+    private let recentBookCoreDataRepository: RecentBookCoreDataRepositoryProtocol
     private let disposeBag = DisposeBag()
     /// 한 페이지에 보여질 문서 수, 1~50 사이의 값, 기본 값 10
     private let size = 10
@@ -28,7 +30,8 @@ final class SearchViewModel {
     /// 로딩 종료 시 실행
     var onLoadingEndAction: (() -> Void)?
     
-    init(recentBookCoreDataRepository: RecentBookCoreDataRepository) {
+    public init(bookReponseRepository: BookResponseRepositoryProtocol, recentBookCoreDataRepository: RecentBookCoreDataRepositoryProtocol) {
+        self.bookReponseRepository = bookReponseRepository
         self.recentBookCoreDataRepository = recentBookCoreDataRepository
         fetchRecentBooks()
     }
@@ -46,17 +49,17 @@ final class SearchViewModel {
               let url = URL(string: "https://dapi.kakao.com/v3/search/book?query=\(encodedQuery)&size=\(size)&page=\(page)")
         else { return }
         
-        BookResponseRepository.shared.fetchBookResponse(url: url)
+        bookReponseRepository.fetchBookResponse(url: url)
             .subscribe(onSuccess: { [weak self] (bookResponse: BookResponse) in
                 guard let self = self else { return }
                 
-                self.metaData.onNext(MetaDataTranslator.toDomain(from: bookResponse.meta))
+                self.metaData.onNext(bookResponse.meta)
 
                 print(bookResponse.meta)
                 do {
                     // 새로 검색 값을 추가
                     let currentBooks = try self.searchedBookSubject.value()
-                    let newBooks = BookTranslator.toDomainInList(from: bookResponse.documents)
+                    let newBooks = bookResponse.documents
                     self.searchedBookSubject.onNext(currentBooks + newBooks)
                     // 값 추가 후 page 증가
                     self.page += 1
@@ -65,7 +68,7 @@ final class SearchViewModel {
                     self.onLoadingEndAction = nil
                 } catch {
                     print("현재 searchedBookSubject 가져오기 실패: \(error)")
-                    let newBooks = BookTranslator.toDomainInList(from: bookResponse.documents)
+                    let newBooks = bookResponse.documents
                     self.searchedBookSubject.onNext(newBooks)
                 }
                 self.isLoading = false

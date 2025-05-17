@@ -6,8 +6,8 @@
 //
 
 import UIKit
-import SnapKit
-import Kingfisher
+internal import SnapKit
+internal import Kingfisher
 
 protocol BottomSheetDelegate: AnyObject {
     /// 장바구니에 책 추가 시
@@ -16,7 +16,7 @@ protocol BottomSheetDelegate: AnyObject {
     func bottomSheetDidDismiss()
 }
 
-final class InfoViewController: UIViewController {
+public final class InfoViewController: UIViewController {
     
     private var viewModel: InfoViewModel
     weak var bottomSheetDelegate: BottomSheetDelegate?
@@ -105,7 +105,7 @@ final class InfoViewController: UIViewController {
     }()
 
     // MARK: - Init & SetUp
-    init(viewModel: InfoViewModel) {
+    public init(viewModel: InfoViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
@@ -114,20 +114,20 @@ final class InfoViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
         
         configure()
         setUI()
     }
     
-    override func viewDidAppear(_ animated: Bool) {
+    public override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
         viewModel.manageRecentBook()
     }
     
-    override func viewWillDisappear(_ animated: Bool) {
+    public override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
         // 창 닫힐 시 뷰 데이터 리로드

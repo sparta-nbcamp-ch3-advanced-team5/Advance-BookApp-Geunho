@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import DomainLayer
 
 protocol CartItemCellDelegate: AnyObject {
     func cartItemCellDidTapPlusButton(_ cell: CartItemCell)

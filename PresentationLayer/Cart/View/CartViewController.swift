@@ -6,10 +6,11 @@
 //
 
 import UIKit
-import SnapKit
-import RxSwift
+internal import SnapKit
+internal import RxSwift
+import DomainLayer
 
-final class CartViewController: UIViewController {
+public final class CartViewController: UIViewController {
     
     private let viewModel: CartViewModel
     private let disposeBag = DisposeBag()
@@ -38,7 +39,7 @@ final class CartViewController: UIViewController {
     private lazy var addToCartBarButton = UIBarButtonItem(title: "추가", style: .plain, target: self, action: #selector(addToCartButtonTapped))
     
     // MARK: - Init & SetUp
-    init(viewModel: CartViewModel) {
+    public init(viewModel: CartViewModel) {
         self.viewModel = viewModel
         
         super.init(nibName: nil, bundle: nil)
@@ -48,7 +49,7 @@ final class CartViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
         
         setupNavigation()
@@ -56,7 +57,7 @@ final class CartViewController: UIViewController {
         bindViewModel()
     }
     
-    override func viewWillAppear(_ animated: Bool) {
+    public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         // 카트뷰 새로고침
@@ -157,21 +158,21 @@ final class CartViewController: UIViewController {
 
 // MARK: - CollectionViewDelegate
 extension CartViewController: UICollectionViewDelegate {
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+    public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let selectedCartItem = cartItems[cartItems.count - 1 - indexPath.row]
         print("선택된 아이템: \(selectedCartItem.title)")
-        let selectedBook = viewModel.findBookByCartItem(isbn: selectedCartItem.isbn)
+        let selectedBook = viewModel.findCartItem(isbn: selectedCartItem.isbn)
         navigateToBookInfoView(selectedBook: selectedBook)
     }
 }
 
 // MARK: - CollectionViewDataSource
 extension CartViewController: UICollectionViewDataSource {
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return cartItems.count
     }
     
-    func collectionView(_ collectionView: UICollectionView,
+    public func collectionView(_ collectionView: UICollectionView,
                         cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(
             withReuseIdentifier: CartItemCell.id,
@@ -186,7 +187,7 @@ extension CartViewController: UICollectionViewDataSource {
         return cell
     }
     
-    func numberOfSections(in collectionView: UICollectionView) -> Int {
+    public func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1
     }
 }

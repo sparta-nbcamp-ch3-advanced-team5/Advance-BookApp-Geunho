@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import DomainLayer
 
 final class RecentBookCell: UICollectionViewCell {
     static let id = String(describing: RecentBookCell.self)

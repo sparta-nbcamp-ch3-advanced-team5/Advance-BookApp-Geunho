@@ -6,8 +6,9 @@
 //
 
 import UIKit
-import SnapKit
-import RxSwift
+internal import SnapKit
+internal import RxSwift
+import DomainLayer
 
 /// 섹션 종류: 최근 본 책, 검색 결과
 enum Section: Int, CaseIterable {
@@ -24,7 +25,7 @@ enum Section: Int, CaseIterable {
     }
 }
 
-class SearchViewController: UIViewController {
+public class SearchViewController: UIViewController {
     private let viewModel: SearchViewModel
     
     private let disposeBag = DisposeBag()
@@ -63,7 +64,7 @@ class SearchViewController: UIViewController {
     }()
     
     // MARK: - Init & SetUp
-    init(viewModel: SearchViewModel) {
+    public init(viewModel: SearchViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
@@ -73,14 +74,14 @@ class SearchViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
         
         setUI()
         bindViewModel()
     }
     
-    override func viewWillAppear(_ animated: Bool) {
+    public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         viewModel.fetchRecentBooks()
@@ -221,21 +222,31 @@ class SearchViewController: UIViewController {
 // MARK: - CollectionViewDelegate
 extension SearchViewController: UICollectionViewDelegate {
     
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+    
+    public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
         switch Section(rawValue: indexPath.section) {
             
         case .recentBook:
             // 제일 나중에 추가된 요소가 맨 앞으로
-            navigateToBookInfoView(selectedBook: recentBooks[recentBooks.count - 1 - indexPath.row])
+            navigateToBookInfoView(
+                selectedBook: recentBooks[recentBooks.count - 1 - indexPath.row],
+                cartRepository: CartCoreDataRepository(context: context),
+                recentBookRepository: RecentBookCoreDataRepository(context: context)
+            )
         case .searchResult:
-            navigateToBookInfoView(selectedBook: searchedBooks[indexPath.row])
+            navigateToBookInfoView(
+                selectedBook: searchedBooks[indexPath.row],
+                cartRepository: CartCoreDataRepository(context: context),
+                recentBookRepository: RecentBookCoreDataRepository(context: context)
+            )
         default:
             return
         }
     }
     
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+    public func scrollViewDidScroll(_ scrollView: UIScrollView) {
         
         // 현재 스크롤 위치 + 화면 높이 / 2 > 콘텐츠 전체 높이 - 보이는 높이
         if self.mainCollectionView.contentOffset.y + view.frame.height / 2 > mainCollectionView.contentSize.height - mainCollectionView.bounds.size.height {
@@ -251,7 +262,7 @@ extension SearchViewController: UICollectionViewDelegate {
 // MARK: - CollectionViewDataSource
 extension SearchViewController: UICollectionViewDataSource {
     
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         switch Section(rawValue: section) {
         case .recentBook:
             return self.recentBooks.count
@@ -262,7 +273,7 @@ extension SearchViewController: UICollectionViewDataSource {
         }
     }
     
-    func collectionView(_ collectionView: UICollectionView,
+    public func collectionView(_ collectionView: UICollectionView,
                         cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
         // 섹션별로 나눠서 처리
@@ -289,7 +300,7 @@ extension SearchViewController: UICollectionViewDataSource {
         }
     }
     
-    func collectionView(_ collectionView: UICollectionView,
+    public func collectionView(_ collectionView: UICollectionView,
                         viewForSupplementaryElementOfKind kind: String,
                         at indexPath: IndexPath) -> UICollectionReusableView {
         
@@ -307,14 +318,14 @@ extension SearchViewController: UICollectionViewDataSource {
         return headerView
     }
     
-    func numberOfSections(in collectionView: UICollectionView) -> Int {
+    public func numberOfSections(in collectionView: UICollectionView) -> Int {
         return Section.allCases.count
     }
 }
 
 // MARK: - SearchBarDelegate
 extension SearchViewController: UISearchBarDelegate {
-    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+    public func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         
         guard let text = searchBar.text else { return }
         viewModel.searchingText = text

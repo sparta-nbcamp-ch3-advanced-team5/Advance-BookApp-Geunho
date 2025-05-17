@@ -6,12 +6,13 @@
 //
 
 import Foundation
+import DomainLayer
 
-final class InfoViewModel {
+public final class InfoViewModel {
     
     private var book: Book
-    private let cartCoreDataRepository: CartCoreDataRepository
-    private let recentBookCoreDataRepository: RecentBookCoreDataRepository
+    private let cartCoreDataRepository: CartCoreDataRepositoryProtocol
+    private let recentBookCoreDataRepository: RecentBookCoreDataRepositoryProtocol
 
     var title: String?
     var author: String?
@@ -19,10 +20,10 @@ final class InfoViewModel {
     var price: String?
     var contents: String?
     
-    init(
+    public init(
         book: Book,
-        cartCoreDataRepository: CartCoreDataRepository,
-        recentBookCoreDataRepository: RecentBookCoreDataRepository
+        cartCoreDataRepository: CartCoreDataRepositoryProtocol,
+        recentBookCoreDataRepository: RecentBookCoreDataRepositoryProtocol
     ) {
         self.cartCoreDataRepository = cartCoreDataRepository
         self.recentBookCoreDataRepository = recentBookCoreDataRepository
