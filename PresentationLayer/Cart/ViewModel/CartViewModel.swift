@@ -6,19 +6,20 @@
 //
 
 import Foundation
-import RxSwift
+internal import RxSwift
+import DomainLayer
 
-final class CartViewModel {
+public final class CartViewModel {
 
     /// 장바구니 아이템 목록 스트림
     let cartItems: BehaviorSubject<[CartItem]>
     /// 장바구니가 비었는지 여부를 나타내는 스트림
     let isCartEmpty: Observable<Bool>
     
-    private let cartCoreDataRepository: CartCoreDataRepository
+    private let cartCoreDataRepository: CartCoreDataRepositoryProtocol
     private let disposeBag = DisposeBag()
     
-    init(cartCoreDataRepository: CartCoreDataRepository) {
+    public init(cartCoreDataRepository: CartCoreDataRepositoryProtocol) {
         
         self.cartCoreDataRepository = cartCoreDataRepository
         // 초기 장바구니 아이템 로드
@@ -32,16 +33,16 @@ final class CartViewModel {
             .share(replay: 1, scope: .whileConnected) // 구독자가 생길 때 최신값 공유
     }
     
-    func findBookByCartItem(isbn: String) -> Book {
-        let cartItem = cartCoreDataRepository.findCartInfoEntity(forBookISBN: isbn)
+    func findCartItem(isbn: String) -> Book {
+        let cartItem = cartCoreDataRepository.findCartItem(isbn: isbn)
         
         return Book(
-            authors: cartItem?.book?.authors?.components(separatedBy: ", ") ?? [],
-            contents: cartItem?.book?.contents ?? "",
-            price: Int(cartItem?.book?.price ?? 0),
-            title: cartItem?.book?.title ?? "",
-            thumbnail: cartItem?.book?.thumbnailURL ?? "",
-            isbn: cartItem?.book?.isbn ?? ""
+            authors: cartItem?.authors ?? [],
+            contents: cartItem?.contents ?? "",
+            price: Int(cartItem?.price ?? 0),
+            title: cartItem?.title ?? "",
+            thumbnail: cartItem?.thumbnailURL ?? "",
+            isbn: cartItem?.isbn ?? ""
         )
     }
     
