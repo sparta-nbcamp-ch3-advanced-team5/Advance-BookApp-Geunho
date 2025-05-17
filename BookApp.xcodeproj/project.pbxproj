@@ -120,6 +120,23 @@
 			);
 			target = 660016922DCCAC100096C8F1 /* BookApp */;
 		};
+		66D5D9DD2DD7385000A5B26A /* Exceptions for "BookApp" folder in "DataLayer" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Application/BookApp.xcdatamodeld,
+			);
+			target = 66E08A772DD5DEEA00D561D2 /* DataLayer */;
+		};
+		66D5D9DE2DD738A000A5B26A /* Exceptions for "DomainLayer" folder in "BookApp" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Model/MetaData.swift,
+				Protocol/BookResponseRepositoryProtocol.swift,
+				Protocol/CartCoreDataRepositoryProtocol.swift,
+				Protocol/RecentBookCoreDataRepositoryProtocol.swift,
+			);
+			target = 660016922DCCAC100096C8F1 /* BookApp */;
+		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -127,6 +144,7 @@
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				6688651F2DCCCD5E008FA66E /* Exceptions for "BookApp" folder in "BookApp" target */,
+				66D5D9DD2DD7385000A5B26A /* Exceptions for "BookApp" folder in "DataLayer" target */,
 			);
 			path = BookApp;
 			sourceTree = "<group>";
@@ -138,6 +156,9 @@
 		};
 		66E08A8C2DD5DEF200D561D2 /* DomainLayer */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				66D5D9DE2DD738A000A5B26A /* Exceptions for "DomainLayer" folder in "BookApp" target */,
+			);
 			path = DomainLayer;
 			sourceTree = "<group>";
 		};
