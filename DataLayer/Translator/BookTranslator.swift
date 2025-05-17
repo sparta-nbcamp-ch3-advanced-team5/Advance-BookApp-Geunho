@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import DomainLayer
 
 struct BookTranslator {
     static func toDomain(from dto: BookDTO) -> Book {

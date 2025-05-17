@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import DomainLayer
 
 struct CartItemTranslator {
     static func toDomain(dto: CartItemDTO) -> CartItem {

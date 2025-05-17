@@ -7,17 +7,18 @@
 
 import Foundation
 import CoreData
+import DomainLayer
 
-final class RecentBookCoreDataRepository {
+public final class RecentBookCoreDataRepository: RecentBookCoreDataRepositoryProtocol {
     private let context: NSManagedObjectContext
     
-    init(context: NSManagedObjectContext) {
+    public init(context: NSManagedObjectContext) {
         self.context = context
     }
     
     // MARK: - Read
     /// 최근 본 책 정보들 Book으로 변환하여 불러옴
-    func fetchRecentBook() -> [Book] {
+    public func fetchRecentBook() -> [Book] {
         
         let fetchRequest: NSFetchRequest<RecentBookEntity> = RecentBookEntity.fetchRequest()
         
@@ -42,7 +43,7 @@ final class RecentBookCoreDataRepository {
     
     // MARK: - Update
     /// 최근 본 책 설정(추가), 10개 일 시 가장 먼저 추가됐던 책 제거
-    func configureRecentBook(book: Book) {
+    public func configureRecentBook(book: Book) {
         
         if recentBookSize() < 10 {
             addRecentBook(book: book)

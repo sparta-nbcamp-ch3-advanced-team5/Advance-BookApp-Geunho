@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import DomainLayer
 
 struct MetaDataTranslator {
     static func toDomain(from dto: MetaDataDTO) -> MetaData {

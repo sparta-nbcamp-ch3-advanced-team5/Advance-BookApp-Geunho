@@ -7,18 +7,20 @@
 
 import Foundation
 import CoreData
+import DomainLayer
 
-final class CartCoreDataRepository {
+public final class CartCoreDataRepository: CartCoreDataRepositoryProtocol {
+   
     private let context: NSManagedObjectContext
     
-    init(context: NSManagedObjectContext) {
+    public init(context: NSManagedObjectContext) {
         self.context = context
     }
     
     // MARK: - Create
     /// BookEntity가 있으면 바로 CartInfoEntity에 저장
     /// 없으면 새로 생성 후 CartInfoEntity에 저장
-    func saveOrUpdateBookToCart(book: Book, quantity: Int = 1) {
+    public func saveOrUpdateBookToCart(book: Book) {
         
         // BookEntity를 찾기
         let bookFetchRequest: NSFetchRequest<BookEntity> = BookEntity.fetchRequest()
@@ -57,12 +59,12 @@ final class CartCoreDataRepository {
             let cartInfoEntity: CartInfoEntity
             
             if let existingCartItem = results.first {
-                existingCartItem.quantity += Int16(quantity)
+                existingCartItem.quantity += 1
                 cartInfoEntity = existingCartItem
             } else {
                 cartInfoEntity = CartInfoEntity(context: context)
                 cartInfoEntity.book = bookEntityToAddToCart
-                cartInfoEntity.quantity = Int16(quantity)
+                cartInfoEntity.quantity = 1
                 cartInfoEntity.addedDate = Date()
             }
             
@@ -77,7 +79,7 @@ final class CartCoreDataRepository {
     
     // MARK: - Read
     /// CartItem 가져옴
-    func fetchCartItems() -> [CartItem] {
+    public func fetchCartItems() -> [CartItem] {
         
         let fetchRequest: NSFetchRequest<CartInfoEntity> = CartInfoEntity.fetchRequest()
         
@@ -114,7 +116,7 @@ final class CartCoreDataRepository {
     
     // MARK: - Delete
     /// 장바구니 비우기
-    func removeAllCartItems() {
+    public func removeAllCartItems() {
         
         let fetchRequest: NSFetchRequest<NSFetchRequestResult> = CartInfoEntity.fetchRequest()
         let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
@@ -138,7 +140,7 @@ final class CartCoreDataRepository {
     }
     
     /// 해당 CartItem 장바구니에서 제거
-    func removeItem(item: CartItem) {
+    public func removeItem(item: CartItem) {
         
         guard let cartItemEntityToDelete = findCartInfoEntity(forBookISBN: item.isbn) else {
             print("삭제할 장바구니 아이템을 찾지 못했습니다 (ISBN: \(item.isbn)).")
@@ -158,7 +160,7 @@ final class CartCoreDataRepository {
     
     // MARK: - Update
     /// 해당 CartItem 수량 +1
-    func plusQuantity(item: CartItem) {
+    public func plusQuantity(item: CartItem) {
         
         guard let cartItemEntity = findCartInfoEntity(forBookISBN: item.isbn) else {
             print("수량 증가 대상 장바구니 아이템을 찾지 못했습니다 (ISBN: \(item.isbn)).")
@@ -177,7 +179,7 @@ final class CartCoreDataRepository {
     }
     
     /// 해당 CartItem 수량 -1(CartViewController에서 수량 1일 경우 삭제시 removeItem)
-    func minusQuantity(item: CartItem) {
+    public func minusQuantity(item: CartItem) {
         
         guard let cartInfoEntity = findCartInfoEntity(forBookISBN: item.isbn) else {
             print("수량 증가 대상 장바구니 아이템을 찾지 못했습니다 (ISBN: \(item.isbn)).")
@@ -195,8 +197,30 @@ final class CartCoreDataRepository {
         }
     }
     
+    /// isbn으로 CartItem을 찾음
+    /// 안에서 findCartInfoEntity를 사용
+    public func findCartItem(isbn: String) -> CartItem? {
+        guard let cartEntity = findCartInfoEntity(forBookISBN: isbn),
+              let bookEntity = cartEntity.book else {
+            return nil
+        }
+        
+        let cartItemDTO = CartItemDTO(
+            isbn: bookEntity.isbn ?? "",
+            title: bookEntity.title ?? "",
+            authors: bookEntity.authors ?? "",
+            contents: bookEntity.contents ?? "",
+            price: Int(bookEntity.price),
+            thumbnailURL: bookEntity.thumbnailURL ?? "",
+            quantity: Int(cartEntity.quantity),
+            addedDate: cartEntity.addedDate ?? Date()
+        )
+        
+        return CartItemTranslator.toDomain(dto: cartItemDTO)
+    }
+    
     /// isbn에 맞는 CartInfoEntity 찾기
-    func findCartInfoEntity(forBookISBN isbn: String) -> CartInfoEntity? {
+    private func findCartInfoEntity(forBookISBN isbn: String) -> CartInfoEntity? {
         
         // 1. ISBN으로 BookEntity 찾기
         let bookFetchRequest: NSFetchRequest<BookEntity> = BookEntity.fetchRequest()
