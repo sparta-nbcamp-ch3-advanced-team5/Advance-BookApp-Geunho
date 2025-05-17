@@ -7,8 +7,8 @@
 
 import Foundation
 
-// init을 public으로 일일이 수정해ㅇ 함
-public struct Book {
+// init을 public으로 일일이 수정해야 함
+public struct Book: Decodable {
     public let authors: [String]
     public let contents: String
     public let price: Int

@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct MetaData {
+public struct MetaData: Decodable{
     public let isEnd: Bool
     public let pageableCount: Int
     public let totalCount: Int
