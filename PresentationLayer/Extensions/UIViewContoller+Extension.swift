@@ -6,16 +6,21 @@
 //
 
 import UIKit
+import DomainLayer
 
 extension UIViewController {
     
     /// 영화 상세 뷰 모달 띄우기
     /// BookSearchView, BookCartView 두 곳에서 사용됨
-    func navigateToBookInfoView(selectedBook book: Book) {
+    func navigateToBookInfoView(selectedBook book: Book, cartRepository: CartCoreDataRepositoryProtocol, recentBookRepository: RecentBookCoreDataRepositoryProtocol) {
         
-        let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-
-        let bottomSheetVC = InfoViewController(viewModel: InfoViewModel(book: book, cartCoreDataRepository: CartCoreDataRepository(context: context), recentBookCoreDataRepository: RecentBookCoreDataRepository(context: context)))
+        let bottomSheetVC = InfoViewController(
+            viewModel: InfoViewModel(
+                book: book,
+                cartCoreDataRepository: cartRepository,
+                recentBookCoreDataRepository: recentBookRepository
+            )
+        )
         // Delegate 설정
         // self: SearchViewController 또는 CartViewController
         bottomSheetVC.bottomSheetDelegate = self as? BottomSheetDelegate
