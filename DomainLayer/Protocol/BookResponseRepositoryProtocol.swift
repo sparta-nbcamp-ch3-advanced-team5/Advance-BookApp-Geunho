@@ -6,7 +6,8 @@
 //
 
 import Foundation
+import RxSwift
 
 public protocol BookResponseRepositoryProtocol {
-    func fetchBookResponse<T: Decodable>(url: URL, completion: @escaping (Result<T, Error>) -> Void)
+    func fetchBookResponse<T: Decodable>(url: URL) -> Single<T>
 }
