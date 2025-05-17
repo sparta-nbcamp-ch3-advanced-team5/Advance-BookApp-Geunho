@@ -7,6 +7,9 @@
 
 import UIKit
 import CoreData
+import DomainLayer
+import DataLayer
+import PresentationLayer
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -23,7 +26,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
         
-        let firstVC = UINavigationController(rootViewController: SearchViewController(viewModel: SearchViewModel(recentBookCoreDataRepository: RecentBookCoreDataRepository(context: context))))
+        let firstVC = UINavigationController(rootViewController: SearchViewController(viewModel: SearchViewModel(bookReponseRepository: BookResponseRepository(), recentBookCoreDataRepository: RecentBookCoreDataRepository(context: context))))
         let secondVC = UINavigationController(rootViewController: CartViewController(viewModel: CartViewModel(cartCoreDataRepository: CartCoreDataRepository(context: context))))
         
         let tabBarVC = UITabBarController()
