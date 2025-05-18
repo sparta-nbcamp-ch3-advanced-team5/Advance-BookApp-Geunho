@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import DomainLayer
 
 public protocol CartCoreDataRepositoryProtocol {
     func saveOrUpdateBookToCart(book: Book)

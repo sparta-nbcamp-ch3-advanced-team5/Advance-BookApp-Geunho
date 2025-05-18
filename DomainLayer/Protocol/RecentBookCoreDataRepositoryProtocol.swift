@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import DomainLayer
 
 public protocol RecentBookCoreDataRepositoryProtocol {
     func fetchRecentBook() -> [Book]
