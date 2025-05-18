@@ -35,6 +35,7 @@ public class SearchViewController: UIViewController {
     private var page = 1
     
     weak var bottomSheetDelegate: BottomSheetDelegate?
+    weak var delegate: ViewControllerDelegate?
     
     // MARK: - UI Components
     private lazy var searchBar: UISearchBar = {
@@ -222,25 +223,17 @@ public class SearchViewController: UIViewController {
 // MARK: - CollectionViewDelegate
 extension SearchViewController: UICollectionViewDelegate {
     
-    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-    
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
         switch Section(rawValue: indexPath.section) {
             
         case .recentBook:
             // 제일 나중에 추가된 요소가 맨 앞으로
-            navigateToBookInfoView(
-                selectedBook: recentBooks[recentBooks.count - 1 - indexPath.row],
-                cartRepository: CartCoreDataRepository(context: context),
-                recentBookRepository: RecentBookCoreDataRepository(context: context)
-            )
+            let book = recentBooks[recentBooks.count - 1 - indexPath.row]
+            delegate?.didSelectBook(book)
         case .searchResult:
-            navigateToBookInfoView(
-                selectedBook: searchedBooks[indexPath.row],
-                cartRepository: CartCoreDataRepository(context: context),
-                recentBookRepository: RecentBookCoreDataRepository(context: context)
-            )
+            let book = searchedBooks[indexPath.row]
+            delegate?.didSelectBook(book)
         default:
             return
         }

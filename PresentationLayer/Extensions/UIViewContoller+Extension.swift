@@ -8,30 +8,34 @@
 import UIKit
 import DomainLayer
 
+public protocol ViewControllerDelegate: AnyObject {
+    func didSelectBook(_ book: Book)
+}
+
 extension UIViewController {
     
     /// 영화 상세 뷰 모달 띄우기
     /// BookSearchView, BookCartView 두 곳에서 사용됨
-    func navigateToBookInfoView(selectedBook book: Book, cartRepository: CartCoreDataRepositoryProtocol, recentBookRepository: RecentBookCoreDataRepositoryProtocol) {
-        
-        let bottomSheetVC = InfoViewController(
-            viewModel: InfoViewModel(
-                book: book,
-                cartCoreDataRepository: cartRepository,
-                recentBookCoreDataRepository: recentBookRepository
-            )
-        )
-        // Delegate 설정
-        // self: SearchViewController 또는 CartViewController
-        bottomSheetVC.bottomSheetDelegate = self as? BottomSheetDelegate
-        if let sheet = bottomSheetVC.sheetPresentationController {
-            sheet.detents = [.custom(resolver: { context in
-                return context.maximumDetentValue * 0.9 })]
-            sheet.preferredCornerRadius = 20
-        }
-        bottomSheetVC.modalPresentationStyle = .pageSheet
-        present(bottomSheetVC, animated: true, completion: nil)
-    }
+//    public func navigateToBookInfoView(selectedBook book: Book, cartRepository: CartCoreDataRepositoryProtocol, recentBookRepository: RecentBookCoreDataRepositoryProtocol) {
+//        
+//        let bottomSheetVC = InfoViewController(
+//            viewModel: InfoViewModel(
+//                book: book,
+//                cartCoreDataRepository: cartRepository,
+//                recentBookCoreDataRepository: recentBookRepository
+//            )
+//        )
+//        // Delegate 설정
+//        // self: SearchViewController 또는 CartViewController
+//        bottomSheetVC.bottomSheetDelegate = self as? BottomSheetDelegate
+//        if let sheet = bottomSheetVC.sheetPresentationController {
+//            sheet.detents = [.custom(resolver: { context in
+//                return context.maximumDetentValue * 0.9 })]
+//            sheet.preferredCornerRadius = 20
+//        }
+//        bottomSheetVC.modalPresentationStyle = .pageSheet
+//        present(bottomSheetVC, animated: true, completion: nil)
+//    }
     
     /// 알림 창 띄우기 (취소/삭제)
     func showDeletingAlert(title: String,

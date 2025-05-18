@@ -25,28 +25,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let window = UIWindow(frame: UIScreen.main.bounds)
         
         let context = persistentContainer.viewContext
+        
         let diContainer = DIContainer(context: context)
         
-        let firstVC = UINavigationController(rootViewController: diContainer.makeSearchViewController())
-        let secondVC = UINavigationController(rootViewController: diContainer.makecartViewController())
+        let navigationController = UINavigationController()
         
-        
-        let tabBarVC = UITabBarController()
-        tabBarVC.setViewControllers([firstVC, secondVC], animated: true)
-        tabBarVC.tabBar.backgroundColor = .systemBackground
-        tabBarVC.tabBar.tintColor = .label
-        
-        if let items = tabBarVC.tabBar.items {
-            items[0].selectedImage = UIImage(systemName: "book.fill")
-            items[0].image = UIImage(systemName: "book")
-            items[0].title = "책 검색"
-            
-            items[1].selectedImage = UIImage(systemName: "cart.fill")
-            items[1].image = UIImage(systemName: "cart")
-            items[1].title = "장바구니"
-        }
-        
-        window.rootViewController = tabBarVC
+        let coordinator = Coordinator(navigationController: navigationController, diContainer: diContainer)
+    
+        window.rootViewController = coordinator.start()
         window.makeKeyAndVisible()
         self.window = window
         

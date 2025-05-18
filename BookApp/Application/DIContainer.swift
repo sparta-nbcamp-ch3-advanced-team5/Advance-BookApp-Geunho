@@ -7,10 +7,14 @@
 
 import Foundation
 import DataLayer
-import DomainLayer
 import PresentationLayer
+import DomainLayer
 import CoreData
 import UIKit
+
+// BookApp → PresentationLayer → DomainLayer
+// 동시에 BookApp → DomainLayer 직접 import
+// -> DomainLayer 두 번 import 될 수 있음.
 
 struct DIContainer {
     
@@ -26,13 +30,15 @@ struct DIContainer {
         self.recentBookCoreDataRepository = RecentBookCoreDataRepository(context: context)
     }
 
-    func makeSearchViewController() -> SearchViewController {
-    
+    func makeSearchViewController(delegate: ViewControllerDelegate?) -> SearchViewController {
+        
         let viewModel = SearchViewModel(
             bookReponseRepository: bookResponseRepository,
             recentBookCoreDataRepository: recentBookCoreDataRepository
         )
-        return SearchViewController(viewModel: viewModel)
+        let vc = SearchViewController(viewModel: viewModel)
+        vc.delegate = delegate
+        return vc
     }
     
     func makecartViewController() -> CartViewController {
