@@ -7,12 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		660016B62DCCAD100096C8F1 /* RxCocoa in Frameworks */ = {isa = PBXBuildFile; productRef = 660016B52DCCAD100096C8F1 /* RxCocoa */; };
-		660016B82DCCAD100096C8F1 /* RxSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 660016B72DCCAD100096C8F1 /* RxSwift */; };
-		660016BB2DCCAD220096C8F1 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 660016BA2DCCAD220096C8F1 /* SnapKit */; };
 		6667F76C2DD88A9300D365AC /* RxSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 6667F76B2DD88A9300D365AC /* RxSwift */; };
 		6688647B2DCCB3C5008FA66E /* .swiftlint.yml in Resources */ = {isa = PBXBuildFile; fileRef = 6688647A2DCCB3C5008FA66E /* .swiftlint.yml */; };
-		669480832DD1904300D2DBE3 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 669480822DD1904300D2DBE3 /* Kingfisher */; };
 		66E08A802DD5DEEA00D561D2 /* DataLayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66E08A782DD5DEEA00D561D2 /* DataLayer.framework */; };
 		66E08A812DD5DEEA00D561D2 /* DataLayer.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 66E08A782DD5DEEA00D561D2 /* DataLayer.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		66E08A932DD5DEF200D561D2 /* DomainLayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66E08A8B2DD5DEF200D561D2 /* DomainLayer.framework */; };
@@ -176,12 +172,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				66E08A932DD5DEF200D561D2 /* DomainLayer.framework in Frameworks */,
-				669480832DD1904300D2DBE3 /* Kingfisher in Frameworks */,
 				66E08A802DD5DEEA00D561D2 /* DataLayer.framework in Frameworks */,
 				66E08AA52DD5DF0700D561D2 /* PresentationLayer.framework in Frameworks */,
-				660016BB2DCCAD220096C8F1 /* SnapKit in Frameworks */,
-				660016B82DCCAD100096C8F1 /* RxSwift in Frameworks */,
-				660016B62DCCAD100096C8F1 /* RxCocoa in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -296,10 +288,6 @@
 			);
 			name = BookApp;
 			packageProductDependencies = (
-				660016B52DCCAD100096C8F1 /* RxCocoa */,
-				660016B72DCCAD100096C8F1 /* RxSwift */,
-				660016BA2DCCAD220096C8F1 /* SnapKit */,
-				669480822DD1904300D2DBE3 /* Kingfisher */,
 			);
 			productName = BookApp;
 			productReference = 660016932DCCAC100096C8F1 /* BookApp.app */;
@@ -1028,30 +1016,10 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		660016B52DCCAD100096C8F1 /* RxCocoa */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 660016B42DCCAD100096C8F1 /* XCRemoteSwiftPackageReference "RxSwift" */;
-			productName = RxCocoa;
-		};
-		660016B72DCCAD100096C8F1 /* RxSwift */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 660016B42DCCAD100096C8F1 /* XCRemoteSwiftPackageReference "RxSwift" */;
-			productName = RxSwift;
-		};
-		660016BA2DCCAD220096C8F1 /* SnapKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 660016B92DCCAD220096C8F1 /* XCRemoteSwiftPackageReference "SnapKit" */;
-			productName = SnapKit;
-		};
 		6667F76B2DD88A9300D365AC /* RxSwift */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 660016B42DCCAD100096C8F1 /* XCRemoteSwiftPackageReference "RxSwift" */;
 			productName = RxSwift;
-		};
-		669480822DD1904300D2DBE3 /* Kingfisher */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 669480812DD1904300D2DBE3 /* XCRemoteSwiftPackageReference "Kingfisher" */;
-			productName = Kingfisher;
 		};
 		66E08AB52DD5DF6A00D561D2 /* SnapKit */ = {
 			isa = XCSwiftPackageProductDependency;
