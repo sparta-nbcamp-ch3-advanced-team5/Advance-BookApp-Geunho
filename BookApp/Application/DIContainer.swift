@@ -31,27 +31,36 @@ struct DIContainer {
     }
     
     func makeSearchViewController(delegate: ViewControllerDelegate?) -> SearchViewController {
+    
+        let bookResponseUsecase = BookResponseUsecase(bookResponseRepository: bookResponseRepository)
+        let recentBookUsecase = RecentBookUsecase(recentBookCoreDataRespository: recentBookCoreDataRepository)
         
         let viewModel = SearchViewModel(
-            bookResponseRepository: bookResponseRepository,
-            recentBookCoreDataRepository: recentBookCoreDataRepository
+            bookResponseUsecase: bookResponseUsecase,
+            recentBookUsecase: recentBookUsecase
         )
         return SearchViewController(viewModel: viewModel, delegate: delegate)
     }
     
     func makeCartViewController(delegate: ViewControllerDelegate?) -> CartViewController {
         
+        let cartUsecase = CartUsecase(cartCoreDataRepository: cartCoreDataRepository)
+        
         let viewModel = CartViewModel(
-            cartCoreDataRepository: cartCoreDataRepository
+            cartUsecase: cartUsecase
         )
         return CartViewController(viewModel: viewModel, delegate: delegate)
     }
     
     func makeInfoViewController(book: Book) -> InfoViewController {
+        
+        let cartUsecase = CartUsecase(cartCoreDataRepository: cartCoreDataRepository)
+        let recentBookUsecase = RecentBookUsecase(recentBookCoreDataRespository: recentBookCoreDataRepository)
+
         let viewModel = InfoViewModel(
             book: book,
-            cartCoreDataRepository: cartCoreDataRepository,
-            recentBookCoreDataRepository: recentBookCoreDataRepository
+            cartUsecase: cartUsecase,
+            recentBookUsecase: recentBookUsecase
         )
         
         return InfoViewController(viewModel: viewModel)

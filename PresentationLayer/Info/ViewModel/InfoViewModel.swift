@@ -11,8 +11,8 @@ import DomainLayer
 public final class InfoViewModel {
     
     private var book: Book
-    private let cartCoreDataRepository: CartCoreDataRepositoryProtocol
-    private let recentBookCoreDataRepository: RecentBookCoreDataRepositoryProtocol
+    private let cartUsecase: CartUsecaseProtocol
+    private let recentBookUsecase: RecentBookUsecaseProtocol
 
     var title: String?
     var author: String?
@@ -22,11 +22,11 @@ public final class InfoViewModel {
     
     public init(
         book: Book,
-        cartCoreDataRepository: CartCoreDataRepositoryProtocol,
-        recentBookCoreDataRepository: RecentBookCoreDataRepositoryProtocol
+        cartUsecase: CartUsecaseProtocol,
+        recentBookUsecase: RecentBookUsecaseProtocol
     ) {
-        self.cartCoreDataRepository = cartCoreDataRepository
-        self.recentBookCoreDataRepository = recentBookCoreDataRepository
+        self.cartUsecase = cartUsecase
+        self.recentBookUsecase = recentBookUsecase
         self.book = book
         self.updateBookData()
     }
@@ -40,10 +40,10 @@ public final class InfoViewModel {
     }
     
     func addBookToCart() {
-        self.cartCoreDataRepository.saveOrUpdateBookToCart(book: book)
+        self.cartUsecase.saveOrUpdateBookToCart(book: book)
     }
     
     func manageRecentBook() {
-        recentBookCoreDataRepository.configureRecentBook(book: book)
+        recentBookUsecase.configureRecentBook(book: book)
     }
 }

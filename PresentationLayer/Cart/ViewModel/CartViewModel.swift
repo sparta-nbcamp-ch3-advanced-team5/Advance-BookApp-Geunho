@@ -16,14 +16,14 @@ public final class CartViewModel {
     /// 장바구니가 비었는지 여부를 나타내는 스트림
     let isCartEmpty: Observable<Bool>
     
-    private let cartCoreDataRepository: CartCoreDataRepositoryProtocol
+    private let cartUsecase: CartUsecaseProtocol
     private let disposeBag = DisposeBag()
     
-    public init(cartCoreDataRepository: CartCoreDataRepositoryProtocol) {
+    public init(cartUsecase: CartUsecaseProtocol) {
         
-        self.cartCoreDataRepository = cartCoreDataRepository
+        self.cartUsecase = cartUsecase
         // 초기 장바구니 아이템 로드
-        let initialItems = self.cartCoreDataRepository.fetchCartItems()
+        let initialItems = self.cartUsecase.fetchCartItems()
         self.cartItems = BehaviorSubject(value: initialItems)
         
         // isCartEmpty는 cartDisplayItems 스트림을 변환하여 생성
@@ -34,7 +34,7 @@ public final class CartViewModel {
     }
     
     func findCartItem(isbn: String) -> Book {
-        let cartItem = cartCoreDataRepository.findCartItem(isbn: isbn)
+        let cartItem = cartUsecase.findCartItem(isbn: isbn)
         
         return Book(
             authors: cartItem?.authors ?? [],
@@ -48,27 +48,27 @@ public final class CartViewModel {
     
     // MARK: - Actions
     func refreshCartItems() {
-        let updatedItems = cartCoreDataRepository.fetchCartItems()
+        let updatedItems = cartUsecase.fetchCartItems()
         cartItems.onNext(updatedItems)
     }
     
     func removeAllCartItems() {
-        cartCoreDataRepository.removeAllCartItems()
+        cartUsecase.removeAllCartItems()
         self.refreshCartItems()
     }
     
     func plusQuantity(cartItem: CartItem) {
-        cartCoreDataRepository.plusQuantity(item: cartItem)
+        cartUsecase.plusQuantity(item: cartItem)
         self.refreshCartItems()
     }
     
     func minusQuantity(cartItem: CartItem) {
-        cartCoreDataRepository.minusQuantity(item: cartItem)
+        cartUsecase.minusQuantity(item: cartItem)
         self.refreshCartItems()
     }
     
     func removeItem(cartItem: CartItem) {
-        cartCoreDataRepository.removeItem(item: cartItem)
+        cartUsecase.removeItem(item: cartItem)
         self.refreshCartItems()
     }
 }

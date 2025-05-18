@@ -11,8 +11,8 @@ import DomainLayer
 
 public final class SearchViewModel {
         
-    private let bookResponseRepository: BookResponseRepositoryProtocol
-    private let recentBookCoreDataRepository: RecentBookCoreDataRepositoryProtocol
+    private let bookResponseUsecase: BookResponseUsecaseProtocol
+    private let recentBookUsecase: RecentBookUsecaseProtocol
     private let disposeBag = DisposeBag()
     /// 한 페이지에 보여질 문서 수, 1~50 사이의 값, 기본 값 10
     private let size = 10
@@ -30,9 +30,9 @@ public final class SearchViewModel {
     /// 로딩 종료 시 실행
     var onLoadingEndAction: (() -> Void)?
     
-    public init(bookResponseRepository: BookResponseRepositoryProtocol, recentBookCoreDataRepository: RecentBookCoreDataRepositoryProtocol) {
-        self.bookResponseRepository = bookResponseRepository
-        self.recentBookCoreDataRepository = recentBookCoreDataRepository
+    public init(bookResponseUsecase: BookResponseUsecaseProtocol, recentBookUsecase: RecentBookUsecaseProtocol) {
+        self.bookResponseUsecase = bookResponseUsecase
+        self.recentBookUsecase = recentBookUsecase
         fetchRecentBooks()
     }
     
@@ -49,7 +49,7 @@ public final class SearchViewModel {
               let url = URL(string: "https://dapi.kakao.com/v3/search/book?query=\(encodedQuery)&size=\(size)&page=\(page)")
         else { return }
         
-        bookResponseRepository.fetchBookResponse(url: url)
+        bookResponseUsecase.fetchBookResponse(url: url)
             .subscribe(onSuccess: { [weak self] (bookResponse: BookResponse) in
                 guard let self = self else { return }
                 
@@ -80,7 +80,7 @@ public final class SearchViewModel {
     }
     
     func fetchRecentBooks() {
-        recentBookSubject.onNext(recentBookCoreDataRepository.fetchRecentBook())
+        recentBookSubject.onNext(recentBookUsecase.fetchRecentBook())
         print(recentBookSubject)
     }
     
