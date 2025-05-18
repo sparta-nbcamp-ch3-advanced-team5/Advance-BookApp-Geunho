@@ -17,10 +17,6 @@ final class Coordinator {
     private let diContainer: DIContainer
     private let navigationController: UINavigationController
     
-    private var searchVC: SearchViewController!
-    private var cartVC: CartViewController!
-    private var infoVC: InfoViewController!
-    
     init(navigationController: UINavigationController, diContainer: DIContainer) {
         self.navigationController = navigationController
         self.diContainer = diContainer
@@ -29,8 +25,8 @@ final class Coordinator {
     
     func start() -> UITabBarController {
         
-        self.searchVC = diContainer.makeSearchViewController(delegate: self)
-        self.cartVC = diContainer.makeCartViewController(delegate: self)
+        let searchVC = diContainer.makeSearchViewController(delegate: self)
+        let cartVC = diContainer.makeCartViewController(delegate: self)
         let firstNav = UINavigationController(rootViewController: searchVC)
         let secondNav = UINavigationController(rootViewController: cartVC)
         
@@ -53,7 +49,7 @@ final class Coordinator {
     
     func navigateToBookInfoView(selectedBook book: Book) {
         
-        self.infoVC = diContainer.makeInfoViewController(book: book)
+        let infoVC = diContainer.makeInfoViewController(book: book)
         
         if let sheet = infoVC.sheetPresentationController {
             sheet.detents = [.custom(resolver: { context in
@@ -62,11 +58,13 @@ final class Coordinator {
         }
         infoVC.modalPresentationStyle = .pageSheet
         
-        // ✅ 현재 화면에 표시된 VC에서 present 해야 함
-        if let topVC = tabBarController.selectedViewController {
-            topVC.present(infoVC, animated: true, completion: nil)
+        // 현재 화면에 표시된 VC에서 present 해야 함
+        if let nav = tabBarController.selectedViewController as? UINavigationController,
+           let visibleVC = nav.visibleViewController as? BottomSheetDelegate {
+            infoVC.bottomSheetDelegate = visibleVC
+            nav.present(infoVC, animated: true, completion: nil)
         } else {
-            print("❌ 현재 표시 중인 ViewController 없음")
+            print("❌ delegate 설정 실패: BottomSheetDelegate 채택한 VC를 찾을 수 없음")
         }
     }
 }

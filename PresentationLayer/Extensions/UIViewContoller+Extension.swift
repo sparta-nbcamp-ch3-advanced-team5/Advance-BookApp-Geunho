@@ -8,10 +8,6 @@
 import UIKit
 import DomainLayer
 
-public protocol ViewControllerDelegate: AnyObject {
-    func didSelectBook(_ book: Book)
-}
-
 extension UIViewController {
 
     /// 알림 창 띄우기 (취소/삭제)

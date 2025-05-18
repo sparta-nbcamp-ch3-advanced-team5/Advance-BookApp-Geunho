@@ -353,11 +353,11 @@ extension SearchViewController: UISearchBarDelegate {
 // MARK: - BookInfoDelegate
 extension SearchViewController: BottomSheetDelegate {
     
-    func didAddToCart() {
+    public func didAddToCart() {
         showAlert()
     }
     
-    func bottomSheetDidDismiss() {
+    public func bottomSheetDidDismiss() {
         viewModel.fetchRecentBooks()
         self.mainCollectionView.reloadData()
     }

@@ -9,17 +9,10 @@ import UIKit
 internal import SnapKit
 internal import Kingfisher
 
-protocol BottomSheetDelegate: AnyObject {
-    /// 장바구니에 책 추가 시
-    func didAddToCart()
-    /// 책 상세 바텀시트가 닫힐 시
-    func bottomSheetDidDismiss()
-}
-
 public final class InfoViewController: UIViewController {
     
     private var viewModel: InfoViewModel
-    weak var bottomSheetDelegate: BottomSheetDelegate?
+    public weak var bottomSheetDelegate: BottomSheetDelegate?
     
     // MARK: - UI Components
     private let bookInfoContentView = UIView()

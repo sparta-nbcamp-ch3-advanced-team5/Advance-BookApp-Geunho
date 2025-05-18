@@ -236,11 +236,11 @@ extension CartViewController: CartItemCellDelegate {
 }
 
 extension CartViewController: BottomSheetDelegate {
-    func didAddToCart() {
+    public func didAddToCart() {
         showAlert()
     }
     
-    func bottomSheetDidDismiss() {
+    public func bottomSheetDidDismiss() {
         self.viewModel.refreshCartItems()
         self.cartCollectionView.reloadData()
     }
