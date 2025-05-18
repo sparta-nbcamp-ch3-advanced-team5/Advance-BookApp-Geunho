@@ -110,19 +110,19 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		667273322DDA2F920018BD3C /* Exceptions for "BookApp" folder in "DataLayer" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Application/BookApp.xcdatamodeld,
+			);
+			target = 66E08A772DD5DEEA00D561D2 /* DataLayer */;
+		};
 		6688651F2DCCCD5E008FA66E /* Exceptions for "BookApp" folder in "BookApp" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Resources/Info.plist,
 			);
 			target = 660016922DCCAC100096C8F1 /* BookApp */;
-		};
-		66D5D9DD2DD7385000A5B26A /* Exceptions for "BookApp" folder in "DataLayer" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Application/BookApp.xcdatamodeld,
-			);
-			target = 66E08A772DD5DEEA00D561D2 /* DataLayer */;
 		};
 		66D5D9DE2DD738A000A5B26A /* Exceptions for "DomainLayer" folder in "BookApp" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
@@ -141,7 +141,7 @@
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				6688651F2DCCCD5E008FA66E /* Exceptions for "BookApp" folder in "BookApp" target */,
-				66D5D9DD2DD7385000A5B26A /* Exceptions for "BookApp" folder in "DataLayer" target */,
+				667273322DDA2F920018BD3C /* Exceptions for "BookApp" folder in "DataLayer" target */,
 			);
 			path = BookApp;
 			sourceTree = "<group>";
