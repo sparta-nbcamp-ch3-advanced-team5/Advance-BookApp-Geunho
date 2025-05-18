@@ -128,9 +128,9 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Model/MetaData.swift,
-				Protocol/BookResponseRepositoryProtocol.swift,
-				Protocol/CartCoreDataRepositoryProtocol.swift,
-				Protocol/RecentBookCoreDataRepositoryProtocol.swift,
+				Protocol/Repository/BookResponseRepositoryProtocol.swift,
+				Protocol/Repository/CartCoreDataRepositoryProtocol.swift,
+				Protocol/Repository/RecentBookCoreDataRepositoryProtocol.swift,
 			);
 			target = 660016922DCCAC100096C8F1 /* BookApp */;
 		};
