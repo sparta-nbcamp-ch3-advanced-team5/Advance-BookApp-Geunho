@@ -17,7 +17,7 @@ public final class CartViewController: UIViewController {
     
     private var cartItems: [CartItem] = []
     
-    public weak var delegate: ViewControllerDelegate?
+    private let delegate: ViewControllerDelegate?
     
     // MARK: - UI Components
     private lazy var cartCollectionView: UICollectionView = {
@@ -41,8 +41,9 @@ public final class CartViewController: UIViewController {
     private lazy var addToCartBarButton = UIBarButtonItem(title: "추가", style: .plain, target: self, action: #selector(addToCartButtonTapped))
     
     // MARK: - Init & SetUp
-    public init(viewModel: CartViewModel) {
+    public init(viewModel: CartViewModel, delegate: ViewControllerDelegate?) {
         self.viewModel = viewModel
+        self.delegate = delegate
         
         super.init(nibName: nil, bundle: nil)
     }

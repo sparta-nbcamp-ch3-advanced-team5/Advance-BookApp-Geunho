@@ -36,19 +36,15 @@ struct DIContainer {
             bookResponseRepository: bookResponseRepository,
             recentBookCoreDataRepository: recentBookCoreDataRepository
         )
-        let vc = SearchViewController(viewModel: viewModel)
-        vc.delegate = delegate
-        return vc
+        return SearchViewController(viewModel: viewModel, delegate: delegate)
     }
     
-    func makecartViewController(delegate: ViewControllerDelegate?) -> CartViewController {
+    func makeCartViewController(delegate: ViewControllerDelegate?) -> CartViewController {
         
         let viewModel = CartViewModel(
             cartCoreDataRepository: cartCoreDataRepository
         )
-        let vc = CartViewController(viewModel: viewModel)
-        vc.delegate = delegate
-        return vc
+        return CartViewController(viewModel: viewModel, delegate: delegate)
     }
     
     func makeInfoViewController(book: Book) -> InfoViewController {

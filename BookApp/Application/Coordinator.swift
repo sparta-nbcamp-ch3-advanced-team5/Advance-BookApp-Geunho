@@ -17,6 +17,9 @@ final class Coordinator {
     private let diContainer: DIContainer
     private let navigationController: UINavigationController
     
+    private var searchVC: SearchViewController!
+    private var cartVC: CartViewController!
+    private var infoVC: InfoViewController!
     
     init(navigationController: UINavigationController, diContainer: DIContainer) {
         self.navigationController = navigationController
@@ -26,10 +29,12 @@ final class Coordinator {
     
     func start() -> UITabBarController {
         
-        let firstVC = UINavigationController(rootViewController: diContainer.makeSearchViewController(delegate: self))
-        let secondVC = UINavigationController(rootViewController: diContainer.makecartViewController(delegate: self))
+        self.searchVC = diContainer.makeSearchViewController(delegate: self)
+        self.cartVC = diContainer.makeCartViewController(delegate: self)
+        let firstNav = UINavigationController(rootViewController: searchVC)
+        let secondNav = UINavigationController(rootViewController: cartVC)
         
-        tabBarController.setViewControllers([firstVC, secondVC], animated: true)
+        tabBarController.setViewControllers([firstNav, secondNav], animated: true)
         tabBarController.tabBar.backgroundColor = .systemBackground
         tabBarController.tabBar.tintColor = .label
         
@@ -48,30 +53,26 @@ final class Coordinator {
     
     func navigateToBookInfoView(selectedBook book: Book) {
         
-        let bottomSheetVC = InfoViewController(
-            viewModel: InfoViewModel(
-                book: book,
-                cartCoreDataRepository: diContainer.cartCoreDataRepository,
-                recentBookCoreDataRepository: diContainer.recentBookCoreDataRepository
-            )
-        )
-//        // Delegate 설정
-//        // self: SearchViewController 또는 CartViewController
-//        bottomSheetVC.bottomSheetDelegate = self as? BottomSheetDelegate
-        if let sheet = bottomSheetVC.sheetPresentationController {
+        self.infoVC = diContainer.makeInfoViewController(book: book)
+        
+        if let sheet = infoVC.sheetPresentationController {
             sheet.detents = [.custom(resolver: { context in
                 return context.maximumDetentValue * 0.9 })]
             sheet.preferredCornerRadius = 20
         }
-        bottomSheetVC.modalPresentationStyle = .pageSheet
-        navigationController.present(bottomSheetVC, animated: true, completion: nil)
+        infoVC.modalPresentationStyle = .pageSheet
+        
+        // ✅ 현재 화면에 표시된 VC에서 present 해야 함
+        if let topVC = tabBarController.selectedViewController {
+            topVC.present(infoVC, animated: true, completion: nil)
+        } else {
+            print("❌ 현재 표시 중인 ViewController 없음")
+        }
     }
 }
 
-extension Coordinator: PresentationLayer.ViewControllerDelegate {
+extension Coordinator: ViewControllerDelegate {
     func didSelectBook(_ book: DomainLayer.Book) {
         navigateToBookInfoView(selectedBook: book)
     }
 }
-
-

@@ -36,8 +36,8 @@ public class SearchViewController: UIViewController {
     
     weak var bottomSheetDelegate: BottomSheetDelegate?
     
-    public weak var delegate: ViewControllerDelegate?
-    
+    private let delegate: ViewControllerDelegate?
+
     // MARK: - UI Components
     private lazy var searchBar: UISearchBar = {
         let searchBar = UISearchBar()
@@ -66,19 +66,22 @@ public class SearchViewController: UIViewController {
     }()
     
     // MARK: - Init & SetUp
-    public init(viewModel: SearchViewModel) {
+    public init(viewModel: SearchViewModel, delegate: ViewControllerDelegate?) {
         self.viewModel = viewModel
+        self.delegate = delegate
+        
         super.init(nibName: nil, bundle: nil)
     }
-    
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
     public override func viewDidLoad() {
         super.viewDidLoad()
-        
+        print("delegate 연결 여부: \(delegate != nil)")
+        print("🔍 SearchViewController 할당된 delegate:", delegate as Any)
+        print("🔍 SearchViewController 메모리 주소:", ObjectIdentifier(self))
         setUI()
         bindViewModel()
     }
@@ -230,10 +233,11 @@ extension SearchViewController: UICollectionViewDelegate {
             
         case .recentBook:
             // 제일 나중에 추가된 요소가 맨 앞으로
-            let book = recentBooks[recentBooks.count - 1 - indexPath.row]
+            let book: DomainLayer.Book = recentBooks[recentBooks.count - 1 - indexPath.row]
             delegate?.didSelectBook(book)
         case .searchResult:
-            let book = searchedBooks[indexPath.row]
+            let book: DomainLayer.Book = searchedBooks[indexPath.row]
+            print("DELEGATE: \(String(describing: delegate))")
             delegate?.didSelectBook(book)
         default:
             return
