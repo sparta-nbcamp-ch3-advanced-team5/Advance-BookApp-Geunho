@@ -27,7 +27,7 @@ final class Coordinator {
     func start() -> UITabBarController {
         
         let firstVC = UINavigationController(rootViewController: diContainer.makeSearchViewController(delegate: self))
-        let secondVC = UINavigationController(rootViewController: diContainer.makecartViewController())
+        let secondVC = UINavigationController(rootViewController: diContainer.makecartViewController(delegate: self))
         
         tabBarController.setViewControllers([firstVC, secondVC], animated: true)
         tabBarController.tabBar.backgroundColor = .systemBackground

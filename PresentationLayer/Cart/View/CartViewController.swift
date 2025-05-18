@@ -17,7 +17,7 @@ public final class CartViewController: UIViewController {
     
     private var cartItems: [CartItem] = []
     
-    weak var delegate: ViewControllerDelegate?
+    public weak var delegate: ViewControllerDelegate?
     
     // MARK: - UI Components
     private lazy var cartCollectionView: UICollectionView = {

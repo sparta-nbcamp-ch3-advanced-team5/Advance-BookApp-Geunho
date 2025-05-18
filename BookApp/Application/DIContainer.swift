@@ -23,17 +23,17 @@ struct DIContainer {
     // CoreData
     let cartCoreDataRepository: DomainLayer.CartCoreDataRepositoryProtocol
     let recentBookCoreDataRepository: DomainLayer.RecentBookCoreDataRepositoryProtocol
-
+    
     init(context: NSManagedObjectContext) {
         self.bookResponseRepository = BookResponseRepository()
         self.cartCoreDataRepository = CartCoreDataRepository(context: context)
         self.recentBookCoreDataRepository = RecentBookCoreDataRepository(context: context)
     }
-
+    
     func makeSearchViewController(delegate: ViewControllerDelegate?) -> SearchViewController {
         
         let viewModel = SearchViewModel(
-            bookReponseRepository: bookResponseRepository,
+            bookResponseRepository: bookResponseRepository,
             recentBookCoreDataRepository: recentBookCoreDataRepository
         )
         let vc = SearchViewController(viewModel: viewModel)
@@ -41,13 +41,14 @@ struct DIContainer {
         return vc
     }
     
-    func makecartViewController() -> CartViewController {
+    func makecartViewController(delegate: ViewControllerDelegate?) -> CartViewController {
         
         let viewModel = CartViewModel(
             cartCoreDataRepository: cartCoreDataRepository
         )
-        
-        return CartViewController(viewModel: viewModel)
+        let vc = CartViewController(viewModel: viewModel)
+        vc.delegate = delegate
+        return vc
     }
     
     func makeInfoViewController(book: Book) -> InfoViewController {

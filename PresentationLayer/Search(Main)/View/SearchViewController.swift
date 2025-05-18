@@ -35,7 +35,8 @@ public class SearchViewController: UIViewController {
     private var page = 1
     
     weak var bottomSheetDelegate: BottomSheetDelegate?
-    weak var delegate: ViewControllerDelegate?
+    
+    public weak var delegate: ViewControllerDelegate?
     
     // MARK: - UI Components
     private lazy var searchBar: UISearchBar = {
