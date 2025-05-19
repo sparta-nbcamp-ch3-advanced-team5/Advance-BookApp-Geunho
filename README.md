@@ -6,7 +6,18 @@
 2025.05.08 ~ 2025.05.19
 
 ## 📱 실행화면
+> 시연영상</br>
+
 ![Simulator Screen Recording - iPhone 16 Pro - 2025-05-19 at 11 00 53](https://github.com/user-attachments/assets/aaa3b261-9a31-4f89-974d-244f0c0043ee)
+</br>
+
+> 다크모드 화면</br>
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/610ccd87-e076-40f0-922e-439db3f4730a" width="30%" />
+  <img src="https://github.com/user-attachments/assets/ebde219a-80ca-4cbb-9f6b-fb9aba4065c3" width="30%" />
+  <img src="https://github.com/user-attachments/assets/dfe45229-558c-4fb8-afaf-976cb30e2e77" width="30%" />
+</p>
 
 ## ⚙️ 프로젝트 기능
 - 카카오 REST API를 활용한 책 검색 기능
@@ -45,6 +56,7 @@
 - Class _TtC7RxSwift9AtomicInt is implemented in both ... 오류 
 - navigateBookInfoVIew 관련 타입 오류
 - Coordinator 조기 메모리 해제 오류
+- 버튼 텍스트 설정 오류
 
 ## 🔍 메모리 누수 확인
 ![스크린샷 2025-05-19 09 07 49](https://github.com/user-attachments/assets/0a2d6175-9b03-4718-87bc-a1577af7a96e)
