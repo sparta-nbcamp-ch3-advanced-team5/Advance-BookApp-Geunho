@@ -21,7 +21,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
-        // CoreData 파일경로 확인 (SQLite로 직접 보기 위함)
+        // 파일경로 확인 (CoreData SQLite로 직접 보기 위함)
         if let documentsDirectoryURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).last {
             print("Documents Directory: \(documentsDirectoryURL)")
         }
