@@ -238,7 +238,7 @@ extension SearchViewController: UICollectionViewDelegate {
         if self.mainCollectionView.contentOffset.y + view.frame.height / 2 > mainCollectionView.contentSize.height - mainCollectionView.bounds.size.height {
             
             // metaData.isEnd값이 false이고 데이터 loading중이 아닐 때 페이지 추가 및 추가 로드
-            if !viewModel.metaData && !viewModel.isLoading {
+            if !viewModel.isEnd && !viewModel.isLoading {
                 self.viewModel.searchBooks()
             }
         }

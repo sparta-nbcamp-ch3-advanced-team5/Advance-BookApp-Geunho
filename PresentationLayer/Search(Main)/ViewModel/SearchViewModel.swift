@@ -20,7 +20,7 @@ public final class SearchViewModel {
     let searchedBookSubject = BehaviorSubject(value: [Book]())
     let recentBookSubject = BehaviorSubject(value: [Book]())
     
-    var metaData = true
+    var isEnd = true
     /// 현재 데이터를 받아오는 중인지 (searchBooks() 실행 시 true, 종료 전 false)
     var isLoading = false
     /// 현재 페이지
@@ -53,7 +53,7 @@ public final class SearchViewModel {
             .subscribe(onSuccess: { [weak self] (bookResponse: BookResponse) in
                 guard let self = self else { return }
                 
-                self.metaData = bookResponse.meta.isEnd
+                self.isEnd = bookResponse.meta.isEnd
                 print(bookResponse.meta)
                 do {
                     // 새로 검색 값을 추가
