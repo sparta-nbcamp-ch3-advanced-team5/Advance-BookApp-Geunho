@@ -46,7 +46,7 @@
 ## 🚨 Trouble Shooting
 [관련링크](https://feather-cotija-f8b.notion.site/BOOKAPP-Trouble-Shooting-1f86a15498a0804290a9f87546e026b0?pvs=4)</br>
 - Multiple commands produce '…Info.plist' 오류
-- autoLayout multipliedBy 관련 오류
+- autoLayout 관련 오류
 - 두 개의 섹션 중 첫번째 섹션만 보이는 오류
 - 최근 본 책 뷰 셀 크기 오류
 - 무한 스크롤 로직 오류
