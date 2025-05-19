@@ -60,7 +60,6 @@ public class SearchViewController: UIViewController {
         collectionView.delegate = self
         collectionView.dataSource = self
         collectionView.backgroundColor = .secondarySystemBackground
-        collectionView.showsVerticalScrollIndicator = true
         return collectionView
     }()
     
