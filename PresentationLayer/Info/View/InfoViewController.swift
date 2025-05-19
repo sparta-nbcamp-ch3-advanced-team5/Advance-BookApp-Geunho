@@ -45,7 +45,6 @@ public final class InfoViewController: UIViewController {
 
     private lazy var thumbnailView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(named: "bookImage")
         imageView.contentMode = .scaleAspectFit
         imageView.clipsToBounds = true
         imageView.layer.cornerRadius = 10
