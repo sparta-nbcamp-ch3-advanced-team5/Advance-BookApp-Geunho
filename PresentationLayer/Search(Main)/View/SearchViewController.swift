@@ -172,7 +172,7 @@ public class SearchViewController: UIViewController {
     }
     
     /// 헤더 레이아웃 추가
-    private func createSectionHeaderLayout() -> NSCollectionLayoutBoundarySupplementaryItem{
+    private func createSectionHeaderLayout() -> NSCollectionLayoutBoundarySupplementaryItem {
         let headerSize = NSCollectionLayoutSize(
             widthDimension: .fractionalWidth(1.0),
             heightDimension: .estimated(44)
