@@ -36,7 +36,7 @@ public class SearchViewController: UIViewController {
     
     weak var bottomSheetDelegate: BottomSheetDelegate?
     
-    public weak var delegate: ViewControllerDelegate?
+    public weak var viewControllerDelegate: ViewControllerDelegate?
 
     // MARK: - UI Components
     private lazy var searchBar: UISearchBar = {
@@ -78,8 +78,8 @@ public class SearchViewController: UIViewController {
     
     public override func viewDidLoad() {
         super.viewDidLoad()
-        print("delegate 연결 여부: \(delegate != nil)")
-        print("🔍 SearchViewController 할당된 delegate:", delegate as Any)
+        print("delegate 연결 여부: \(viewControllerDelegate != nil)")
+        print("🔍 SearchViewController 할당된 delegate:", viewControllerDelegate as Any)
         print("🔍 SearchViewController 메모리 주소:", ObjectIdentifier(self))
         setUI()
         bindViewModel()
@@ -233,11 +233,11 @@ extension SearchViewController: UICollectionViewDelegate {
         case .recentBook:
             // 제일 나중에 추가된 요소가 맨 앞으로
             let book: DomainLayer.Book = recentBooks[recentBooks.count - 1 - indexPath.row]
-            delegate?.didSelectBook(book)
+            viewControllerDelegate?.didSelectBook(book)
         case .searchResult:
             let book: DomainLayer.Book = searchedBooks[indexPath.row]
-            print("DELEGATE: \(String(describing: delegate))")
-            delegate?.didSelectBook(book)
+            print("DELEGATE: \(String(describing: viewControllerDelegate))")
+            viewControllerDelegate?.didSelectBook(book)
         default:
             return
         }

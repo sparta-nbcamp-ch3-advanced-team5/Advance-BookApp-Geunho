@@ -17,7 +17,7 @@ public final class CartViewController: UIViewController {
     
     private var cartItems: [CartItem] = []
     
-    public weak var delegate: ViewControllerDelegate?
+    public weak var viewControllerDelegate: ViewControllerDelegate?
     
     // MARK: - UI Components
     private lazy var cartCollectionView: UICollectionView = {
@@ -164,7 +164,7 @@ extension CartViewController: UICollectionViewDelegate {
         let selectedCartItem = cartItems[cartItems.count - 1 - indexPath.row]
         print("선택된 아이템: \(selectedCartItem.title)")
         let selectedBook = viewModel.findCartItem(isbn: selectedCartItem.isbn)
-        delegate?.didSelectBook(selectedBook)
+        viewControllerDelegate?.didSelectBook(selectedBook)
     }
 }
 

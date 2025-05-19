@@ -39,7 +39,7 @@ class DIContainer {
             recentBookUsecase: recentBookUsecase
         )
         let searchVC = SearchViewController(viewModel: viewModel)
-        searchVC.delegate = delegate
+        searchVC.viewControllerDelegate = delegate
         return searchVC
     }
     
@@ -50,7 +50,7 @@ class DIContainer {
             cartUsecase: cartUsecase
         )
         let cartVC = CartViewController(viewModel: viewModel)
-        cartVC.delegate = delegate
+        cartVC.viewControllerDelegate = delegate
         return cartVC
     }
     
