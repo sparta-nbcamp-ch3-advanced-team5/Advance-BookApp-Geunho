@@ -1,23 +1,17 @@
 ## 📖 BOOKAPP 
-카카오 책 검색하기 Rest API (https://developers.kakao.com/docs/latest/ko/daum-search/dev-guide#search-book) 를 이용한 심플한 책 검색 앱
-</br>
+카카오 책 검색하기 Rest API를 이용한 심플한 책 검색 앱</br>
+[API 주소](https://developers.kakao.com/docs/latest/ko/daum-search/dev-guide#search-book)
 
 ## 🗓️ 프로젝트 기간
 2025.05.08 ~ 2025.05.19
-</br>
 
 ## 📱 실행화면
-
-
-</br>
+![Simulator Screen Recording - iPhone 16 Pro - 2025-05-19 at 11 00 53](https://github.com/user-attachments/assets/aaa3b261-9a31-4f89-974d-244f0c0043ee)
 
 ## ⚙️ 프로젝트 기능
 - 카카오 REST API를 활용한 책 검색 기능
 - 책 장바구니 추가 기능
-- 무한 스크롤
-
-</br>
-
+- API의 meta를 이용하여 무한 스크롤
 
 ## 🛠️ 기술 스택
 
@@ -38,9 +32,8 @@
 - UIKit
 - AutoLayout
 
-</br>
-
 ## 🚨 Trouble Shooting
+[관련링크](https://feather-cotija-f8b.notion.site/BOOKAPP-Trouble-Shooting-1f86a15498a0804290a9f87546e026b0?pvs=4)</br>
 - Multiple commands produce '…Info.plist' 오류
 - autoLayout multipliedBy 관련 오류
 - 두 개의 섹션 중 첫번째 섹션만 보이는 오류
@@ -50,19 +43,13 @@
 - 스크롤 도중 검색 시 검색 데이터 섞임 오류
 - Cannot assign value of type 'BookResponseRepository' to type 'any BookResponseRepositoryProtocol 오류
 - Class _TtC7RxSwift9AtomicInt is implemented in both ... 오류 
-- BottomSheetDelegate 관련 오류
+- navigateBookInfoVIew 관련 타입 오류
 - Coordinator 조기 메모리 해제 오류
 
-
-</br>
-
 ## 🔍 메모리 누수 확인
-Leaks
-
-</br>
+![스크린샷 2025-05-19 09 07 49](https://github.com/user-attachments/assets/0a2d6175-9b03-4718-87bc-a1577af7a96e)
 
 ## 🗂️ 파일 구조
-
 ~~~
 |-- BookApp
 |   |-- Application
