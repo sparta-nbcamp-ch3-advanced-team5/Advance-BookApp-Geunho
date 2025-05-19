@@ -16,10 +16,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     var window: UIWindow?
     // Coordinator 조기 메모리 해제 해결
+    // AppDelegate가 Coordinator를 소유하도록 변경, 기존에는 소유하지 않아 start이후 메모리에서 삭제됐었음.
     var coordinator: Coordinator?
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
+        // CoreData 파일경로 확인 (SQLite로 직접 보기 위함)
         if let documentsDirectoryURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).last {
             print("Documents Directory: \(documentsDirectoryURL)")
         }
@@ -30,10 +32,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         let navigationController = UINavigationController()
         
+        // diContainer 생성
         let diContainer = DIContainer(context: context)
         
+        // Coordinator 조기 메모리 해제 해결
         coordinator = Coordinator(navigationController: navigationController, diContainer: diContainer)
-        
         guard let coordinator = coordinator else { return false }
         
         window.rootViewController = coordinator.start()
