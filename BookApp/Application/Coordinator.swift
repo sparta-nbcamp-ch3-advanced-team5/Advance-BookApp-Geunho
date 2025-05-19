@@ -23,6 +23,7 @@ final class Coordinator {
         self.tabBarController = UITabBarController()
     }
     
+    /// 초기 책 검색, 장바구니 화면 생성, 탭바에 적용
     func start() -> UITabBarController {
         
         let searchVC = diContainer.makeSearchViewController(delegate: self)
@@ -47,6 +48,7 @@ final class Coordinator {
         return tabBarController
     }
     
+    /// 책 상세 뷰로 이동
     func navigateToBookInfoView(selectedBook book: Book) {
         
         let infoVC = diContainer.makeInfoViewController(book: book)
@@ -59,7 +61,10 @@ final class Coordinator {
         infoVC.modalPresentationStyle = .pageSheet
         
         // 현재 화면에 표시된 VC에서 present 해야 함
+        // 위 start()에서 해당 뷰컨트롤러들을 UINavigationController()로 감쌌기에 selectedViewController의 type -> UINavigationController
+        // UINavigationController는 UIViewController의 자식이기에 as?로 형변환
         if let nav = tabBarController.selectedViewController as? UINavigationController,
+           // SearchView, CartView 둘다 BottomSheetDelegate를 채택하기에 형변환
            let visibleVC = nav.visibleViewController as? BottomSheetDelegate {
             infoVC.bottomSheetDelegate = visibleVC
             nav.present(infoVC, animated: true, completion: nil)

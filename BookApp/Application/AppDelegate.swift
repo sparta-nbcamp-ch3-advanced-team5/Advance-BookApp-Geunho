@@ -15,9 +15,13 @@ import PresentationLayer
 class AppDelegate: UIResponder, UIApplicationDelegate {
     
     var window: UIWindow?
+    // Coordinator 조기 메모리 해제 해결
+    // AppDelegate가 Coordinator를 소유하도록 변경, 기존에는 소유하지 않아 start이후 메모리에서 삭제됐었음.
+    var coordinator: Coordinator?
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
+        // CoreData 파일경로 확인 (SQLite로 직접 보기 위함)
         if let documentsDirectoryURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).last {
             print("Documents Directory: \(documentsDirectoryURL)")
         }
@@ -26,12 +30,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         let context = persistentContainer.viewContext
         
-        let diContainer = DIContainer(context: context)
-        
         let navigationController = UINavigationController()
         
-        let coordinator = Coordinator(navigationController: navigationController, diContainer: diContainer)
-    
+        // diContainer 생성
+        let diContainer = DIContainer(context: context)
+        
+        // Coordinator 조기 메모리 해제 해결
+        coordinator = Coordinator(navigationController: navigationController, diContainer: diContainer)
+        guard let coordinator = coordinator else { return false }
+        
         window.rootViewController = coordinator.start()
         window.makeKeyAndVisible()
         self.window = window
@@ -49,7 +56,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
          error conditions that could cause the creation of the store to fail.
          */
         let container = NSPersistentContainer(name: "BookApp")
-        container.loadPersistentStores(completionHandler: { (storeDescription, error) in
+        container.loadPersistentStores(completionHandler: { (_, error) in
             if let error = error as NSError? {
                 // Replace this implementation with code to handle the error appropriately.
                 // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
