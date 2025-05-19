@@ -31,7 +31,6 @@ public class SearchViewController: UIViewController {
     private let disposeBag = DisposeBag()
     private var searchedBooks = [Book]()
     private var recentBooks = [Book]()
-    private var metaData = MetaData(isEnd: true, pageableCount: 0, totalCount: 0)
     private var page = 1
     
     weak var bottomSheetDelegate: BottomSheetDelegate?
@@ -207,15 +206,6 @@ public class SearchViewController: UIViewController {
             }, onError: { error in
                 print("에러 발생: \(error)")
             }).disposed(by: disposeBag)
-        
-        viewModel.metaData
-            .observe(on: MainScheduler.instance)
-            .subscribe(onNext: { [weak self] data in
-                self?.metaData = data
-                print("metaData: \(data.totalCount), \(data.pageableCount), \(data.isEnd) ")
-            }, onError: { error in
-                print("에러 발생: \(error)")
-            }).disposed(by: disposeBag)
     }
     
     func activateSearchBar() {
@@ -249,7 +239,7 @@ extension SearchViewController: UICollectionViewDelegate {
         if self.mainCollectionView.contentOffset.y + view.frame.height / 2 > mainCollectionView.contentSize.height - mainCollectionView.bounds.size.height {
             
             // metaData.isEnd값이 false이고 데이터 loading중이 아닐 때 페이지 추가 및 추가 로드
-            if !metaData.isEnd && !viewModel.isLoading {
+            if !viewModel.metaData && !viewModel.isLoading {
                 self.viewModel.searchBooks()
             }
         }
