@@ -76,9 +76,7 @@ public class SearchViewController: UIViewController {
     
     public override func viewDidLoad() {
         super.viewDidLoad()
-        print("delegate 연결 여부: \(viewControllerDelegate != nil)")
-        print("🔍 SearchViewController 할당된 delegate:", viewControllerDelegate as Any)
-        print("🔍 SearchViewController 메모리 주소:", ObjectIdentifier(self))
+         
         setUI()
         bindViewModel()
     }
