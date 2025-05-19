@@ -36,7 +36,7 @@ public class SearchViewController: UIViewController {
     
     weak var bottomSheetDelegate: BottomSheetDelegate?
     
-    private let delegate: ViewControllerDelegate?
+    public weak var delegate: ViewControllerDelegate?
 
     // MARK: - UI Components
     private lazy var searchBar: UISearchBar = {
@@ -66,9 +66,8 @@ public class SearchViewController: UIViewController {
     }()
     
     // MARK: - Init & SetUp
-    public init(viewModel: SearchViewModel, delegate: ViewControllerDelegate?) {
+    public init(viewModel: SearchViewModel) {
         self.viewModel = viewModel
-        self.delegate = delegate
         
         super.init(nibName: nil, bundle: nil)
     }

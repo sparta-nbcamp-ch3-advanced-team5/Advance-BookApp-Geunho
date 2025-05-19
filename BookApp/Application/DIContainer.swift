@@ -16,7 +16,7 @@ import UIKit
 // 동시에 BookApp → DomainLayer 직접 import
 // -> DomainLayer 두 번 import 될 수 있음.
 
-struct DIContainer {
+class DIContainer {
     
     // API
     let bookResponseRepository: DomainLayer.BookResponseRepositoryProtocol
@@ -34,22 +34,24 @@ struct DIContainer {
     
         let bookResponseUsecase = BookResponseUsecase(bookResponseRepository: bookResponseRepository)
         let recentBookUsecase = RecentBookUsecase(recentBookCoreDataRespository: recentBookCoreDataRepository)
-        
         let viewModel = SearchViewModel(
             bookResponseUsecase: bookResponseUsecase,
             recentBookUsecase: recentBookUsecase
         )
-        return SearchViewController(viewModel: viewModel, delegate: delegate)
+        let searchVC = SearchViewController(viewModel: viewModel)
+        searchVC.delegate = delegate
+        return searchVC
     }
     
     func makeCartViewController(delegate: ViewControllerDelegate?) -> CartViewController {
         
         let cartUsecase = CartUsecase(cartCoreDataRepository: cartCoreDataRepository)
-        
         let viewModel = CartViewModel(
             cartUsecase: cartUsecase
         )
-        return CartViewController(viewModel: viewModel, delegate: delegate)
+        let cartVC = CartViewController(viewModel: viewModel)
+        cartVC.delegate = delegate
+        return cartVC
     }
     
     func makeInfoViewController(book: Book) -> InfoViewController {

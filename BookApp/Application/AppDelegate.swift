@@ -15,6 +15,8 @@ import PresentationLayer
 class AppDelegate: UIResponder, UIApplicationDelegate {
     
     var window: UIWindow?
+    // Coordinator 조기 메모리 해제 해결
+    var coordinator: Coordinator?
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
@@ -26,11 +28,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         let context = persistentContainer.viewContext
         
-        let diContainer = DIContainer(context: context)
-        
         let navigationController = UINavigationController()
         
-        let coordinator = Coordinator(navigationController: navigationController, diContainer: diContainer)
+        let diContainer = DIContainer(context: context)
+        
+        coordinator = Coordinator(navigationController: navigationController, diContainer: diContainer)
+        
+        guard let coordinator = coordinator else { return false }
+        
     
         window.rootViewController = coordinator.start()
         window.makeKeyAndVisible()
