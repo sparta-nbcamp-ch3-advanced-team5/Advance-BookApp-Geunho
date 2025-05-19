@@ -79,7 +79,7 @@ public final class InfoViewController: UIViewController {
     private lazy var addButton: UIButton = {
         let button = UIButton()
         button.setTitle("담기", for: .normal)
-        button.titleLabel?.textColor = .systemBackground
+        button.setTitleColor(.systemBackground, for: .normal)
         button.backgroundColor = .label
         button.layer.cornerRadius = 10
         button.addTarget(self, action: #selector(addToCart), for: .touchUpInside)
@@ -89,7 +89,7 @@ public final class InfoViewController: UIViewController {
     private lazy var closeButton: UIButton = {
         let button = UIButton()
         button.setTitle("X", for: .normal)
-        button.titleLabel?.textColor = .systemBackground
+        button.setTitleColor(.systemBackground, for: .normal)
         button.backgroundColor = .lightGray
         button.layer.cornerRadius = 10
         button.addTarget(self, action: #selector(closeSelf), for: .touchUpInside)
