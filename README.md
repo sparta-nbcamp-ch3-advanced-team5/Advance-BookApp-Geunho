@@ -44,7 +44,7 @@
 - AutoLayout
 
 ## 🚨 Trouble Shooting
-[관련링크](https://feather-cotija-f8b.notion.site/BOOKAPP-Trouble-Shooting-1f86a15498a0804290a9f87546e026b0?pvs=4)</br>
+[관련링크](https://ellghts.notion.site/BOOKAPP-Trouble-Shooting-1f86a15498a0804290a9f87546e026b0?source=copy_link)</br>
 - Multiple commands produce '…Info.plist' 오류
 - autoLayout 관련 오류
 - 두 개의 섹션 중 첫번째 섹션만 보이는 오류
